@@ -1,0 +1,187 @@
+.tooltip .tooltip-inner {
+  font-size: 80%;
+  line-height: 1;
+  margin: 1px;
+  font-family: "Times New Roman";
+  letter-spacing: 95%;
+  background-color:#514A4A;
+}
+
+.tooltip .arrow {
+  bottom: 1px;
+}
+.tooltip .arrow::before {
+  border-top-color:#514A4A;
+}
+
+.invalidIcon {
+  height: 25px;
+  width: auto;
+  position: relative;
+  bottom: 10px;
+  left: 30px;
+}
+
+body {
+  font-family: "Times New Roman";
+  font-size: 90%;
+  letter-spacing: 95%;
+  color:#514A4A;
+}
+
+input {
+  text-align: center;
+  font-family: "Times New Roman";
+  font-size: 90%;
+  letter-spacing: 95%;
+  padding-left: 1px;
+  padding-right: 1px;
+}
+
+.numberInput {
+  padding: 0px;
+}
+
+select {
+  text-align-last:center;
+  font-family: "Times New Roman";
+  font-size: 90%;
+  letter-spacing: 95%;
+}
+label {
+  font-family: "Times New Roman";
+  font-size: 90%;
+  letter-spacing: 95%;
+}
+h1 {
+  font-family: "Times New Roman";
+  letter-spacing: 95%;
+}
+
+.btn-link:disabled {
+  background-color: rgb(153, 153, 153);
+}
+.btn-secondary:disabled {
+  background-color: rgb(153, 153, 153);
+  border:rgb(153, 153, 153);
+}
+.btn-light {
+  background-color:  rgb(255, 255, 255);
+  border: none;
+}
+.btn-light:disabled {
+  background-color: rgb(153, 153, 153);
+}
+.btn-light:hover:enabled {
+  background-color:  rgb(208, 226, 247);
+}
+
+.nav-link {
+  padding-right: 10px !important;
+  padding-left: 10px !important;
+  color:#514A4A !important;
+}
+.table tbody tr:hover {
+  background-color:  rgb(208, 226, 247) !important;
+}
+.page-link {
+  border-color:rgb(208, 226, 247) !important;
+  color:#514A4A !important;
+}
+
+.modal-open .modal {
+  height: 100vh;
+  width: 100vw;
+  overflow-y: auto !important;
+  overflow-x: auto !important;
+}
+
+.highlight {
+  background-color:  rgb(208, 226, 247) !important;
+}
+
+.page-link:hover {
+  background-color:  rgb(208, 226, 247) !important;
+}
+
+li.active .page-link {
+  background-color:  rgb(208, 226, 247) !important;
+}
+
+
+.btn-light:active:enabled {
+  background-color:  rgb(208, 226, 247);
+}
+.is-invalid {
+  outline: dotted 2px red !important;
+  /* To keep selects from getting wider when invalid */
+  padding-right: 0 !important;
+  background-color: white;
+  background-image: url('~@/assets/invalid-red.png') !important;
+}
+
+input[type]:focus:not(.is-invalid) {
+  border-color:  rgb(208, 226, 247) !important;
+  box-shadow: 0 1px 1px rgba(128, 147, 168, 0.075) inset, 0 0 8px rgba(128, 147, 168, 0.6) !important;
+  outline: 0 none !important;
+}
+
+*:focus:not(.focus-visible) {
+  border-color: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+.js-focus-visible :focus:not([data-focus-visible-added]) {
+  border-color: none !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.custom-control-input~.custom-control-label::before
+{
+  border-color:  rgb(208, 226, 247) !important;
+  outline: none !important;
+  box-shadow: none !important;
+}
+
+.custom-checkbox .custom-control-input:checked~.custom-control-label::before{
+  background-color: #3B88BF !important;
+}
+
+.custom-select
+{
+  border-color:  rgb(208, 226, 247) !important;
+}
+
+.custom-control-input.focus-visible~.custom-control-label::before
+{
+  border-color:  rgb(208, 226, 247) !important;
+  box-shadow: 0 1px 1px rgba(128, 147, 168, 0.075) inset, 0 0 8px rgba(128, 147, 168, 0.6) !important;
+  outline: 0 none !important;
+}
+
+.focus-visible {
+  border-color:  rgb(208, 226, 247) !important;
+  box-shadow: 0 1px 1px rgba(128, 147, 168, 0.075) inset, 0 0 8px rgba(128, 147, 168, 0.6) !important;
+  outline: 0 none !important;
+}
+.dropdown-menu {
+  padding:none !important;
+  padding-top:0px !important;
+  padding-bottom:0px !important;
+}
+
+.dropdown-item {
+  line-height:15px !important;
+  font-family: "Times New Roman" !important;
+  font-size: 90% !important;
+  letter-spacing: 95% !important;
+}
+
+.dropdown-item:hover {
+  background-color:  rgb(208, 226, 247) !important;
+}
+
+.dropdown-toggle::after {
+  color:#514A4A;
+}
