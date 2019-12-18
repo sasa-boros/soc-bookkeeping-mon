@@ -667,7 +667,7 @@
       },
       firstPartPosOptions: function() {
         var options = this.getInitialPartPosOptions()
-        if(this.form.secondPartition) {
+        if(this.form.secondPartition || this.form.secondPartition == 0) {
           for (let i=0; i<options.length; i++) {
             if (options[i].value == (this.form.secondPartition + '/' + this.form.secondPosition)) {
               options.splice(i, 1)
@@ -675,7 +675,7 @@
             }
           }
         }
-        if(this.form.thirdPartition) {
+        if(this.form.thirdPartition || this.form.thirdPartition == 0) {
           for (let i=0; i<options.length; i++) {
             if (options[i].value == (this.form.thirdPartition + '/' + this.form.thirdPosition)) {
               options.splice(i, 1)
@@ -683,7 +683,7 @@
             }
           }
         }
-        if(this.form.fourthPartition) {
+        if(this.form.fourthPartition || this.form.fourthPartition == 0) {
           for (let i=0; i<options.length; i++) {
             if (options[i].value == (this.form.fourthPartition + '/' + this.form.fourthPosition)) {
               options.splice(i, 1)
@@ -691,7 +691,7 @@
             }
           }
         }
-        if(this.form.fifthPartition) {
+        if(this.form.fifthPartition || this.form.fifthPartition == 0) {
           for (let i=0; i<options.length; i++) {
             if (options[i].value == (this.form.fifthPartition + '/' + this.form.fifthPosition)) {
               options.splice(i, 1)
@@ -703,7 +703,7 @@
       },
       secondPartPosOptions: function() {
         var options = this.getInitialPartPosOptions()
-        if(this.form.firstPartition) {
+        if(this.form.firstPartition || this.form.firstPartition == 0) {
           for (let i=0; i<options.length; i++) {
             if (options[i].value == (this.form.firstPartition + '/' + this.form.firstPosition)) {
               options.splice(i, 1)
@@ -711,7 +711,7 @@
             }
           }
         }
-        if(this.form.thirdPartition) {
+        if(this.form.thirdPartition || this.form.thirdPartition == 0) {
           for (let i=0; i<options.length; i++) {
             if (options[i].value == (this.form.thirdPartition + '/' + this.form.thirdPosition)) {
               options.splice(i, 1)
@@ -719,7 +719,7 @@
             }
           }
         }
-        if(this.form.fourthPartition) {
+        if(this.form.fourthPartition || this.form.fourthPartition == 0) {
           for (let i=0; i<options.length; i++) {
             if (options[i].value == (this.form.fourthPartition + '/' + this.form.fourthPosition)) {
               options.splice(i, 1)
@@ -727,7 +727,7 @@
             }
           }
         }
-        if(this.form.fifthPartition) {
+        if(this.form.fifthPartition || this.form.fifthPartition == 0) {
           for (let i=0; i<options.length; i++) {
             if (options[i].value == (this.form.fifthPartition + '/' + this.form.fifthPosition)) {
               options.splice(i, 1)
@@ -739,7 +739,7 @@
       },
       thirdPartPosOptions: function() {
         var options = this.getInitialPartPosOptions()
-        if(this.form.firstPartition) {
+        if(this.form.firstPartition || this.form.firstPartition == 0) {
           for (let i=0; i<options.length; i++) {
             if (options[i].value == (this.form.firstPartition + '/' + this.form.firstPosition)) {
               options.splice(i, 1)
@@ -747,7 +747,7 @@
             }
           }
         }
-        if(this.form.secondPartition) {
+        if(this.form.secondPartition || this.form.secondPartition == 0) {
           for (let i=0; i<options.length; i++) {
             if (options[i].value == (this.form.secondPartition + '/' + this.form.secondPosition)) {
               options.splice(i, 1)
@@ -755,7 +755,7 @@
             }
           }
         }
-        if(this.form.fourthPartition) {
+        if(this.form.fourthPartition || this.form.fourthPartition == 0) {
           for (let i=0; i<options.length; i++) {
             if (options[i].value == (this.form.fourthPartition + '/' + this.form.fourthPosition)) {
               options.splice(i, 1)
@@ -763,7 +763,7 @@
             }
           }
         }
-        if(this.form.fifthPartition) {
+        if(this.form.fifthPartition || this.form.fifthPartition == 0) {
           for (let i=0; i<options.length; i++) {
             if (options[i].value == (this.form.fifthPartition + '/' + this.form.fifthPosition)) {
               options.splice(i, 1)
@@ -775,7 +775,7 @@
       },
       fourthPartPosOptions: function() {
         var options = this.getInitialPartPosOptions()
-        if(this.form.firstPartition) {
+        if(this.form.firstPartition || this.form.firstPartition == 0) {
           for (let i=0; i<options.length; i++) {
             if (options[i].value == (this.form.firstPartition + '/' + this.form.firstPosition)) {
               options.splice(i, 1)
@@ -783,7 +783,7 @@
             }
           }
         }
-        if(this.form.secondPartition) {
+        if(this.form.secondPartition || this.form.secondPartition == 0) {
           for (let i=0; i<options.length; i++) {
             if (options[i].value == (this.form.secondPartition + '/' + this.form.secondPosition)) {
               options.splice(i, 1)
@@ -791,7 +791,7 @@
             }
           }
         }
-        if(this.form.thirdPartition) {
+        if(this.form.thirdPartition || this.form.thirdPartition == 0) {
           for (let i=0; i<options.length; i++) {
             if (options[i].value == (this.form.thirdPartition + '/' + this.form.thirdPosition)) {
               options.splice(i, 1)
@@ -799,7 +799,7 @@
             }
           }
         }
-        if(this.form.fifthPartition) {
+        if(this.form.fifthPartition || this.form.fifthPartition == 0) {
           for (let i=0; i<options.length; i++) {
             if (options[i].value == (this.form.fifthPartition + '/' + this.form.fifthPosition)) {
               options.splice(i, 1)
@@ -811,7 +811,7 @@
       },
       fifthPartPosOptions: function() {
         var options = this.getInitialPartPosOptions()
-        if(this.form.firstPartition) {
+        if(this.form.firstPartition || this.form.firstPartition == 0) {
           for (let i=0; i<options.length; i++) {
             if (options[i].value == (this.form.firstPartition + '/' + this.form.firstPosition)) {
               options.splice(i, 1)
@@ -819,7 +819,7 @@
             }
           }
         }
-        if(this.form.secondPartition) {
+        if(this.form.secondPartition || this.form.secondPartition == 0) {
           for (let i=0; i<options.length; i++) {
             if (options[i].value == (this.form.secondPartition + '/' + this.form.secondPosition)) {
               options.splice(i, 1)
@@ -827,7 +827,7 @@
             }
           }
         }
-        if(this.form.thirdPartition) {
+        if(this.form.thirdPartition || this.form.thirdPartition == 0) {
           for (let i=0; i<options.length; i++) {
             if (options[i].value == (this.form.thirdPartition + '/' + this.form.thirdPosition)) {
               options.splice(i, 1)
@@ -835,7 +835,7 @@
             }
           }
         }
-        if(this.form.fourthPartition) {
+        if(this.form.fourthPartition || this.form.fourthPartition == 0) {
           for (let i=0; i<options.length; i++) {
             if (options[i].value == (this.form.fourthPartition + '/' + this.form.fourthPosition)) {
               options.splice(i, 1)
@@ -852,46 +852,46 @@
         return !this.form.income || this.form.income.trim() === ''
       },
       missingFirstPart: function () {
-        return !this.form.firstPartition || this.form.firstPartition.toString().trim() === ''
+        return !(this.form.firstPartition || this.form.firstPartition == 0) || this.form.firstPartition.toString().trim() === ''
       },
       missingFirstPos: function () {
-          return !this.form.firstPosition
+        return !(this.form.firstPosition || this.form.firstPosition == 0)
       },
       missingFirstIncome: function () {
         return !this.form.firstIncome || this.form.firstIncome.trim() === ''
       },
       missingSecondPart: function () {
-        return !this.form.secondPartition || this.form.secondPartition.toString().trim() === ''
+        return !(this.form.secondPartition || this.form.secondPartition == 0) || this.form.secondPartition.toString().trim() === ''
       },
       missingSecondPos: function () {
-          return !this.form.secondPosition
+        return !(this.form.secondPosition || this.form.secondPosition == 0)
       },
       missingSecondIncome: function () {
         return !this.form.secondIncome || this.form.secondIncome.trim() === ''
       },
       missingThirdPart: function () {
-        return !this.form.thirdPartition || this.form.thirdPartition.toString().trim() === ''
+        return !(this.form.thirdPartition || this.form.thirdPartition == 0) || this.form.thirdPartition.toString().trim() === ''
       },
       missingThirdPos: function () {
-          return !this.form.thirdPosition
+        return !(this.form.thirdPosition || this.form.thirdPosition == 0)
       },
       missingThirdIncome: function () {
         return !this.form.thirdIncome || this.form.thirdIncome.trim() === ''
       },
       missingFourthPart: function () {
-        return !this.form.fourthPartition || this.form.fourthPartition.toString().trim() === ''
+        return !(this.form.fourthPartition || this.form.fourthPartition == 0) || this.form.fourthPartition.toString().trim() === ''
       },
       missingFourthPos: function () {
-          return !this.form.fourthPosition
+        return !(this.form.fourthPosition || this.form.fourthPosition == 0)
       },
       missingFourthIncome: function () {
         return !this.form.fourthIncome || this.form.fourthIncome.trim() === ''
       },
       missingFifthPart: function () {
-        return !this.form.fifthPartition || this.form.fifthPartition.toString().trim() === ''
+        return !(this.form.fifthPartition || this.form.fifthPartition == 0) || this.form.fifthPartition.toString().trim() === ''
       },
       missingFifthPos: function () {
-          return !this.form.fifthPosition
+        return !(this.form.fifthPosition || this.form.fifthPosition == 0)
       },
       missingFifthIncome: function () {
         return !this.form.fifthIncome || this.form.fifthIncome.trim() === ''

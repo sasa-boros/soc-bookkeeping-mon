@@ -611,7 +611,7 @@ function populateTotalPage(annualReport, totalPageTemplate, annualReportPages, i
     totalPageContext.year = annualReport.year
   }
   totalPageContext.church = annualReport.churchMunicipality
-  if (itemsStartIndex == 0 &&  debtsStartIndex == 0) {
+  if (itemsStartIndex == 0 && debtsStartIndex == 0) {
     totalPageContext['E5'] = formatAmount(annualReport.totalOutcomePage.transferToNextYear)
     totalPageContext['E6'] = formatAmount(annualReport.sharesPage.savingAmountOnYearEnd)
     totalPageContext['E7'] = formatAmount(annualReport.sharesPage.nominalValueOnYearEnd)
