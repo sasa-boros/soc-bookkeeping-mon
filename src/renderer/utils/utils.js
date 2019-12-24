@@ -485,10 +485,12 @@ function mapPaymentSlipToPaymentSlipForm (paymentSlip) {
   paymentSlipForm.fifthPartition = null;
   paymentSlipForm.fifthPosition = null;
   paymentSlipForm.fifthIncome = null;
-  for (let i = 0; i < paymentSlip.incomePerCode.length; i++) {
-    paymentSlipForm[partPosNumber[i] + 'Partition'] = paymentSlip.incomePerCode[i].incomeCode.partition;
-    paymentSlipForm[partPosNumber[i] + 'Position'] = paymentSlip.incomePerCode[i].incomeCode.position;
-    paymentSlipForm[partPosNumber[i] + 'Income'] = asFormatedString(paymentSlip.incomePerCode[i].income, amountNumberOptions);
+  if (paymentSlip.incomePerCode) {
+    for (let i = 0; i < paymentSlip.incomePerCode.length; i++) {
+      paymentSlipForm[partPosNumber[i] + 'Partition'] = paymentSlip.incomePerCode[i].incomeCode.partition;
+      paymentSlipForm[partPosNumber[i] + 'Position'] = paymentSlip.incomePerCode[i].incomeCode.position;
+      paymentSlipForm[partPosNumber[i] + 'Income'] = asFormatedString(paymentSlip.incomePerCode[i].income, amountNumberOptions);
+    }
   }
   paymentSlipForm.income = asFormatedString(paymentSlip.income, amountNumberOptions);
   paymentSlipForm.incomeAsText = numberToSerbianDinars(paymentSlip.income);
@@ -572,11 +574,12 @@ function mapReceiptToReceiptForm (receipt) {
     receiptForm.fifthPartition = null;
     receiptForm.fifthPosition = null;
     receiptForm.fifthOutcome = null;
-
-    for (let i = 0; i < receipt.outcomePerCode.length; i++) {
-      receiptForm[partPosNumber[i] + 'Partition'] = receipt.outcomePerCode[i].outcomeCode.partition;
-      receiptForm[partPosNumber[i] + 'Position'] = receipt.outcomePerCode[i].outcomeCode.position;
-      receiptForm[partPosNumber[i] + 'Outcome'] = asFormatedString(receipt.outcomePerCode[i].outcome, amountNumberOptions);
+    if (receipt.outcomePerCode) {
+      for (let i = 0; i < receipt.outcomePerCode.length; i++) {
+        receiptForm[partPosNumber[i] + 'Partition'] = receipt.outcomePerCode[i].outcomeCode.partition;
+        receiptForm[partPosNumber[i] + 'Position'] = receipt.outcomePerCode[i].outcomeCode.position;
+        receiptForm[partPosNumber[i] + 'Outcome'] = asFormatedString(receipt.outcomePerCode[i].outcome, amountNumberOptions);
+      }
     }
     receiptForm.outcome = asFormatedString(receipt.outcome, amountNumberOptions);
     receiptForm.outcomeAsText = numberToSerbianDinars(receipt.outcome);
