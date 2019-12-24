@@ -1,8 +1,8 @@
 {
-  "name": "soc-bookkeeping",
+  "name": "soc-bookkeeping-mon",
   "version": "1.0.0",
   "author": "Daxon TECH",
-  "description": "Serbian Orthodox Church bookkeeping application",
+  "description": "Serbian Orthodox Church monastery bookkeeping application",
   "license": "MIT",
   "main": "./dist/electron/main.js",
   "scripts": {
