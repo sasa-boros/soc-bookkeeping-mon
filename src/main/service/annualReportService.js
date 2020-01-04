@@ -20,8 +20,6 @@ const { app } = require('electron')
 const Big = require('big.js')
 const fs = require('fs');
 const path = require('path')
-const util = require('util');
-const readFile = util.promisify(fs.readFile);
 const Mustache = require('mustache');
 const i18n = require('../../translations/i18n')
 const AutoNumeric = require('autonumeric')
@@ -303,59 +301,53 @@ const monthNames = ["January", "February", "March", "April", "May", "June",
 "July", "August", "September", "October", "November", "December"
 ]
 
+const headlineTemplate = fs.readFileSync(path.join(__static, "/templates/annual-report/headline.html"), { encoding: 'utf8'});
+Mustache.parse(headlineTemplate)
+const manualPageTemplate = fs.readFileSync(path.join(__static, "/templates/annual-report/manual-page.html"), { encoding: 'utf8'});
+Mustache.parse(manualPageTemplate)
+const incomePageTemplate = fs.readFileSync(path.join(__static, "/templates/annual-report/income-page.html"), { encoding: 'utf8'})
+Mustache.parse(incomePageTemplate)
+const outcomePageTemplate = fs.readFileSync(path.join(__static, "/templates/annual-report/outcome-page.html"), { encoding: 'utf8'})
+Mustache.parse(outcomePageTemplate)
+const totalIncomePageTemplate = fs.readFileSync(path.join(__static, "/templates/annual-report/total-income-page.html"), { encoding: 'utf8'})
+Mustache.parse(totalIncomePageTemplate)
+const totalOutcomePageTemplate = fs.readFileSync(path.join(__static, "/templates/annual-report/total-outcome-page.html"), { encoding: 'utf8'});
+Mustache.parse(totalOutcomePageTemplate)
+const sharesPageTemplate = fs.readFileSync(path.join(__static, "/templates/annual-report/shares-page.html"), { encoding: 'utf8'})
+Mustache.parse(sharesPageTemplate)
+const totalPageTemplate = fs.readFileSync(path.join(__static, "/templates/annual-report/total-page.html"), { encoding: 'utf8'});
+Mustache.parse(totalPageTemplate)
+const totalHeadlineTemplate = fs.readFileSync(path.join(__static, "/templates/annual-report/total-headline.html"), { encoding: 'utf8'});
+Mustache.parse(totalHeadlineTemplate)
+
 async function getAnnualReportPages (annualReport) {
   console.log('Getting annual report pages')
   const annualReportPages = []
   
-  const headlineTemplate = await readFile(path.join(__static, "/templates/annual-report/headline.html"), { encoding: 'utf8'});
-  Mustache.parse(headlineTemplate);
-  populateHeadline(annualReport, headlineTemplate, annualReportPages)
-  
-  const manualPageTemplate = await readFile(path.join(__static, "/templates/annual-report/manual-page.html"), { encoding: 'utf8'});
-  Mustache.parse(manualPageTemplate);
-  populateManualPage(annualReport, manualPageTemplate, annualReportPages)
+  populateHeadline(annualReport, annualReportPages)
+  populateManualPage(annualReport, annualReportPages)
 
-  const incomePageTemplate = await readFile(path.join(__static, "/templates/annual-report/income-page.html"), { encoding: 'utf8'})
-  Mustache.parse(incomePageTemplate);
-  
-  const outcomePageTemplate = await readFile(path.join(__static, "/templates/annual-report/outcome-page.html"), { encoding: 'utf8'})
-  Mustache.parse(outcomePageTemplate);
-  
   var i = 0
   while (i < annualReport.incomePages.length || i < annualReport.outcomePages.length) {
     if (i < annualReport.incomePages.length) {
-      populateIncomePage(annualReport, annualReport.incomePages[i], incomePageTemplate, annualReportPages, 0, i + 1)
+      populateIncomePage(annualReport, annualReport.incomePages[i], annualReportPages, 0, i + 1)
     }
     if (i < annualReport.outcomePages.length) {
-      populateOutcomePage(annualReport, annualReport.outcomePages[i], outcomePageTemplate, annualReportPages, 0, i + 1)
+      populateOutcomePage(annualReport, annualReport.outcomePages[i], annualReportPages, 0, i + 1)
     }
     i++
   }
-  const totalIncomePageTemplate = await readFile(path.join(__static, "/templates/annual-report/total-income-page.html"), { encoding: 'utf8'})
-  Mustache.parse(totalIncomePageTemplate)
-  populateTotalIncomePage(annualReport, totalIncomePageTemplate, annualReportPages)
-  
-  const totalOutcomePageTemplate = await readFile(path.join(__static, "/templates/annual-report/total-outcome-page.html"), { encoding: 'utf8'});
-  Mustache.parse(totalOutcomePageTemplate);
-  populateTotalOutcomePage(annualReport, totalOutcomePageTemplate, annualReportPages)
- 
-  const sharesPageTemplate = await readFile(path.join(__static, "/templates/annual-report/shares-page.html"), { encoding: 'utf8'})
-  Mustache.parse(sharesPageTemplate)
-  populateSharesPage(annualReport, sharesPageTemplate, annualReportPages, 0, 0)
-
-  const totalPageTemplate = await readFile(path.join(__static, "/templates/annual-report/total-page.html"), { encoding: 'utf8'});
-  Mustache.parse(totalPageTemplate);   // optional, speeds up future uses
-  populateTotalPage(annualReport, totalPageTemplate, annualReportPages, 0, 0)
-
-  const totalHeadlineTemplate = await readFile(path.join(__static, "/templates/annual-report/total-headline.html"), { encoding: 'utf8'});
-  Mustache.parse(totalHeadlineTemplate);
-  populateTotalHeadline(annualReport, totalHeadlineTemplate, annualReportPages)
+  populateTotalIncomePage(annualReport, annualReportPages)
+  populateTotalOutcomePage(annualReport, annualReportPages)
+  populateSharesPage(annualReport, annualReportPages, 0, 0)
+  populateTotalPage(annualReport, annualReportPages, 0, 0)
+  populateTotalHeadline(annualReport, annualReportPages)
 
   console.log(`Returning annual report ${annualReportPages.length} pages`)
   return annualReportPages
 }
 
-function populateHeadline(annualReport, headlineTemplate, annualReportPages) {
+function populateHeadline(annualReport, annualReportPages) {
   const headlineContext = {};
   if (!annualReport.year) {
     headlineContext.year = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
@@ -367,11 +359,11 @@ function populateHeadline(annualReport, headlineTemplate, annualReportPages) {
   annualReportPages.push(Mustache.render(headlineTemplate, headlineContext));
 }
 
-function populateManualPage(annualReport, manualPageTemplate, annualReportPages) {
+function populateManualPage(annualReport, annualReportPages) {
   annualReportPages.push(manualPageTemplate);
 }
 
-function populateIncomePage (annualReport, incomePage, incomePageTemplate, annualReportPages, paymentSlipStartIndex, pageNum) {
+function populateIncomePage (annualReport, incomePage, annualReportPages, paymentSlipStartIndex, pageNum) {
   var incomePageContext = {};
   incomePageContext.pageNum = pageNum
   incomePageContext.page = incomePage.ordinal;
@@ -389,9 +381,8 @@ function populateIncomePage (annualReport, incomePage, incomePageTemplate, annua
   var row = 14;
   for (let i = paymentSlipStartIndex; i < incomePage.paymentSlips.length; i++) {
     if (row >= 41) {
-      Mustache.parse(incomePageTemplate);
       annualReportPages.push(Mustache.render(incomePageTemplate, incomePageContext));
-      populateIncomePage(annualReport, incomePage, incomePageTemplate, annualReportPages, i)
+      populateIncomePage(annualReport, incomePage, annualReportPages, i)
       return
     }
     const paymentSlip = incomePage.paymentSlips[i]
@@ -422,7 +413,7 @@ function populateIncomePage (annualReport, incomePage, incomePageTemplate, annua
   annualReportPages.push(Mustache.render(incomePageTemplate, incomePageContext));
 }
 
-function populateOutcomePage (annualReport, outcomePage, outcomePageTemplate, annualReportPages, receiptStartIndex, pageNum) {
+function populateOutcomePage (annualReport, outcomePage, annualReportPages, receiptStartIndex, pageNum) {
   var outcomePageContext = {};
   outcomePageContext.pageNum = pageNum
   outcomePageContext.page = outcomePage.ordinal;
@@ -443,9 +434,8 @@ function populateOutcomePage (annualReport, outcomePage, outcomePageTemplate, an
   var row = 14;
   for (let i = receiptStartIndex; i < outcomePage.receipts.length; i++) {
     if (row >= 41) {
-      Mustache.parse(outcomePageTemplate);
       annualReportPages.push(Mustache.render(outcomePageTemplate, outcomePageContext));
-      populateOutcomePage(annualReport, outcomePage, outcomePageTemplate, annualReportPages, i)
+      populateOutcomePage(annualReport, outcomePage, annualReportPages, i)
       return
     }
     const receipt = outcomePage.receipts[i]
@@ -476,7 +466,7 @@ function populateOutcomePage (annualReport, outcomePage, outcomePageTemplate, an
   annualReportPages.push(Mustache.render(outcomePageTemplate, outcomePageContext));
 }
 
-function populateTotalIncomePage(annualReport, totalIncomePageTemplate, annualReportPages) {
+function populateTotalIncomePage(annualReport, annualReportPages) {
   var totalIncomePageContext = {};
   totalIncomePageContext.pageNum = 13
   var colsPerIncomeCodes = {}
@@ -510,7 +500,7 @@ function populateTotalIncomePage(annualReport, totalIncomePageTemplate, annualRe
   annualReportPages.push(Mustache.render(totalIncomePageTemplate, totalIncomePageContext))
 }
 
-function populateTotalOutcomePage(annualReport, totalOutcomePageTemplate, annualReportPages) {
+function populateTotalOutcomePage(annualReport, annualReportPages) {
   var totalOutcomePageContext = {};
   totalOutcomePageContext.pageNum = 13
   if (!annualReport.year) {
@@ -554,7 +544,7 @@ function populateTotalOutcomePage(annualReport, totalOutcomePageTemplate, annual
   annualReportPages.push(Mustache.render(totalOutcomePageTemplate, totalOutcomePageContext));
 }
 
-function populateSharesPage(annualReport, sharesPageTemplate, annualReportPages, sharesStartIndex, savingsStartIndex) {
+function populateSharesPage(annualReport, annualReportPages, sharesStartIndex, savingsStartIndex) {
   const sharesPageContext = {}
   sharesPageContext.pageNum = 14
   var newSharesStartIndex, newSavingsStartIndex
@@ -591,7 +581,7 @@ function populateSharesPage(annualReport, sharesPageTemplate, annualReportPages,
   }
   if(newSharesStartIndex || newSavingsStartIndex) {
     annualReportPages.push(Mustache.render(sharesPageTemplate, sharesPageContext))
-    populateSharesPage(annualReport, sharesPageTemplate, annualReportPages, newSharesStartIndex, newSavingsStartIndex)
+    populateSharesPage(annualReport, annualReportPages, newSharesStartIndex, newSavingsStartIndex)
     return
   }
   sharesPageContext['D15'] = formatAmount(annualReport.sharesPage.totalNominalValue)
@@ -606,7 +596,7 @@ function populateSharesPage(annualReport, sharesPageTemplate, annualReportPages,
   annualReportPages.push(Mustache.render(sharesPageTemplate, sharesPageContext))
 }
 
-function populateTotalPage(annualReport, totalPageTemplate, annualReportPages, itemsStartIndex, debtsStartIndex) {
+function populateTotalPage(annualReport, annualReportPages, itemsStartIndex, debtsStartIndex) {
   const totalPageContext = {}
   totalPageContext.pageNum = 14
   if (!annualReport.year) {
@@ -653,7 +643,7 @@ function populateTotalPage(annualReport, totalPageTemplate, annualReportPages, i
   }
   if(newItemsStartIndex || newDebtsStartIndex) {
     annualReportPages.push(Mustache.render(totalPageTemplate, totalPageContext))
-    populateTotalPage(annualReport, totalPageTemplate, annualReportPages, newItemsStartIndex, newDebtsStartIndex)
+    populateTotalPage(annualReport, annualReportPages, newItemsStartIndex, newDebtsStartIndex)
     return
   }
   totalPageContext['E16'] = formatAmount(annualReport.totalPage.totalPropertyValue)
@@ -665,7 +655,7 @@ function populateTotalPage(annualReport, totalPageTemplate, annualReportPages, i
   annualReportPages.push(Mustache.render(totalPageTemplate, totalPageContext))
 }
 
-function populateTotalHeadline(annualReport, totalHeadlineTemplate, annualReportPages) {
+function populateTotalHeadline(annualReport, annualReportPages) {
   const headlineContext = {};
   if (!annualReport.year) {
     headlineContext.year = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
