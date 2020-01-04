@@ -65,10 +65,10 @@
       <b-row>
         <b-col>
           <b-button-group class="float-right">
-            <b-button ref="saveShareBtn" id="saveShareBtn" v-on:mouseleave="hideTooltip('saveShareBtn')" type="submit" variant="link" class="btn-lg">
+            <b-button ref="saveShareBtn" id="saveShareBtn" v-on:mouseleave="hideTooltip('saveShareBtn')" type="submit" variant="light" class="btn-lg">
               <img src="~@/assets/save.png">
             </b-button>
-            <b-button ref="clearFormBtn" id="clearFormBtn" v-on:mouseleave="hideTooltip('clearFormBtn')" @click.stop="clearForm()" variant="link" class="btn-lg">
+            <b-button ref="clearFormBtn" id="clearFormBtn" v-on:mouseleave="hideTooltip('clearFormBtn')" @click.stop="clearForm()" variant="light" class="btn-lg">
               <img src="~@/assets/clear.png">
             </b-button>
           </b-button-group>
