@@ -52,7 +52,7 @@
       </b-row>
       <hr>
       <b-row>
-        <div v-html="annualReportPages[currentPage-1]" id="page-display" class="headline manualPage incomePage outcomePage sharesPage totalIncomePage totalOutcomePage totalPage">
+        <div v-html="annualReportPages[currentPage-1]" id="page-display" class="headline manualPage incomePage outcomePage sharesPage totalIncomePage totalOutcomePage totalPage totalHeadline">
         </div>
       </b-row>
       <b-tooltip boundary='window' ref="annualReportPrintDropdownTooltip" triggers="hover" target="annualReportPrintDropdown" v-on:hide.prevent>
@@ -233,6 +233,13 @@ const printPageStyle = `
       transform: scale(0.9) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
+    #total-headline {
+      position: relative;
+      top: 275px;
+      left: 113px;
+      transform: rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0;
+    }
   }
   </style>
 `
@@ -385,6 +392,13 @@ const downloadPageStyle = `
       top: 440px;
       left: 70px;
       transform: scale(0.9) rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0;
+    }
+    #total-headline {
+      position: relative;
+      top: 275px;
+      left: 113px;
+      transform: rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
   }
@@ -618,11 +632,12 @@ export default {
         page.innerHTML = this.annualReportPages[pageIndex]
         section.appendChild(page)
       } else {
-        this.annualReportPages.forEach(annualReportPage => {
-          var page = document.createElement('div')
+        for (let i = 0; i < this.annualReportPages.length - 1; i++) {
+          let annualReportPage = this.annualReportPages[i]
+          let page = document.createElement('div')
           page.innerHTML = annualReportPage
           section.appendChild(page)
-        })
+        }
       }
   
       return section
@@ -722,6 +737,13 @@ input {
 	position:relative;
 	bottom: 195px;
 	right: 103px;
+}
+
+.totalHeadline >>> #total-headline {
+	transform: scale(0.6);
+	position:relative;
+  bottom:110px;
+  left:190px;
 }
 
 i {

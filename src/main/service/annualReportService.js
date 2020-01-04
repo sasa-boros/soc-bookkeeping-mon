@@ -347,6 +347,10 @@ async function getAnnualReportPages (annualReport) {
   Mustache.parse(totalPageTemplate);   // optional, speeds up future uses
   populateTotalPage(annualReport, totalPageTemplate, annualReportPages, 0, 0)
 
+  const totalHeadlineTemplate = await readFile(path.join(__static, "/templates/annual-report/total-headline.html"), { encoding: 'utf8'});
+  Mustache.parse(totalHeadlineTemplate);
+  populateTotalHeadline(annualReport, totalHeadlineTemplate, annualReportPages)
+
   console.log(`Returning annual report ${annualReportPages.length} pages`)
   return annualReportPages
 }
@@ -659,6 +663,18 @@ function populateTotalPage(annualReport, totalPageTemplate, annualReportPages, i
   totalPageContext['G19'] = formatAmount(annualReport.totalPage.propertyValue)
 
   annualReportPages.push(Mustache.render(totalPageTemplate, totalPageContext))
+}
+
+function populateTotalHeadline(annualReport, totalHeadlineTemplate, annualReportPages) {
+  const headlineContext = {};
+  if (!annualReport.year) {
+    headlineContext.year = "&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;"
+  } else {
+    headlineContext.year = annualReport.year;
+  }
+  headlineContext.church = annualReport.churchMunicipality
+
+  annualReportPages.push(Mustache.render(totalHeadlineTemplate, headlineContext));
 }
 
 const amountNumberOptions = {
