@@ -118,7 +118,7 @@
   
   const receiptController = require('../../../controllers/receiptController')
   const i18n = require('../../../../translations/i18n')
-  const { asFormatedString, amountNumberOptions } = require('../../../utils/utils')
+  const { asFormatedString, largeAmountNumberOptions } = require('../../../utils/utils')
 
   export default {
     data () {
@@ -357,7 +357,7 @@
         return (new Date(date)).toLocaleDateString(language, options)
       },
       formatOutcome (outcome) {
-        return asFormatedString(outcome, amountNumberOptions) + " дин."
+        return asFormatedString(outcome, largeAmountNumberOptions) + " дин."
       }
     },
     watch: {

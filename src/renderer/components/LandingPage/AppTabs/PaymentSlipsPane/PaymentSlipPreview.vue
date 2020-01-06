@@ -6,10 +6,10 @@
       </b-button>
       <div class="payment-slip-preview-text">
         <h1> УПЛАТНИЦА </h1>
-        <br/>         На динара <b-form-input id="incomeInput" ref="incomeInput" :disabled="defaultPaymentSlipPreview" v-on:mouseleave="disableIncomeTooltip ? null : hideTooltip('incomeInput')" v-model="form.income" class="input-small number-input" v-bind:class="{ 'is-invalid': shouldValidate && missingIncome }" type="text" :autofocus="!paymentSlipPreview"></b-form-input> и словима <b-form-input type="text" disabled class="input-small" id="IncomeAsText1" v-model="generatedIncomeTextLine1"></b-form-input>
+        <br/>         На динара <b-form-input id="incomeInput" ref="incomeInput" disabled v-model="form.income" class="input-small number-input" type="text"></b-form-input> и словима <b-form-input type="text" disabled class="input-small" id="IncomeAsText1" v-model="generatedIncomeTextLine1"></b-form-input>
         <br/><b-form-input disabled class="input-small" id="IncomeAsText2" v-model="generatedIncomeTextLine2"></b-form-input>
         <br/>колико сам данас уплатио у благајну Српског православног манастира
-у <b-form-input id="townInput" v-on:keypress="limitInputPerSize" ref="townInput" v-model="form.town" class="input-small" type="text"></b-form-input> на име <b-form-input id="reasonInput" v-on:keypress="limitInputPerSize" ref="reasonInput" v-on:mouseleave="disableReasonTooltip ? null : hideTooltip('reasonInput')" :disabled="defaultPaymentSlipPreview" v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingReason}" type="text"></b-form-input>
+у <b-form-input id="townInput" v-on:keypress="limitInputPerSize" ref="townInput" v-model="form.town" class="input-small" type="text"></b-form-input> на име <b-form-input id="reasonInput" :autofocus="!paymentSlipPreview" v-on:keypress="limitInputPerSize" ref="reasonInput" v-on:mouseleave="disableReasonTooltip ? null : hideTooltip('reasonInput')" :disabled="defaultPaymentSlipPreview" v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingReason}" type="text"></b-form-input>
                                                                                                                                            Уплатио,
                          Примио благајник,                                                <b-form-input id="payedInput" :disabled="defaultPaymentSlipPreview" v-on:keypress="limitInputPerSize" ref="payedInput" v-model="form.payed" class="input-small" type="text"></b-form-input> 
 <br/><b-form-input disabled class="input-small" id="receivedInput" type="text"></b-form-input>                        Књижити у корист буџета за     <b-form-input disabled id="yearInput" ref="yearInput" class="input-small" v-model="year"></b-form-input> год.
@@ -18,7 +18,7 @@
 &nbsp;                                                                                                <span class="partText">”&nbsp;&nbsp;&nbsp;</span><b-form-input id="thirdPartInput" :disabled="defaultPaymentSlipPreview" type="text" v-model="formatedThirdPart" v-bind:class="{ 'is-invalid': !disableThirdPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableThirdPartTooltip ? null : hideTooltip('thirdPartPosSelect')"><b-dropdown id="thirdPartPosSelect" :disabled="defaultPaymentSlipPreview" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedThirdPartPos(option.value)" v-for="(option, index) in thirdPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableThirdPosTooltip ? null : hideTooltip('thirdPosInputWrapper')" id="thirdPosInputWrapper"><b-form-input id="thirdPosInput" v-model="form.thirdPosition" v-bind:class="{ 'is-invalid': !disableThirdPosTooltip }" class="input-small" disabled/></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableThirdIncomeTooltip ? null : hideTooltip('thirdIncomeInputWrapper')" id="thirdIncomeInputWrapper"><b-form-input v-model="form.thirdIncome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableThirdIncomeTooltip }" id="thirdIncomeInput" :disabled="missingThirdPart" type="text"></b-form-input></span>
 &nbsp;                                                                                                <span class="partText">”&nbsp;&nbsp;&nbsp;</span><b-form-input id="fourthPartInput" :disabled="defaultPaymentSlipPreview" type="text" v-model="formatedFourthPart" v-bind:class="{ 'is-invalid': !disableFourthPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableFourthPartTooltip ? null : hideTooltip('fourthPartPosSelect')"><b-dropdown id="fourthPartPosSelect" :disabled="defaultPaymentSlipPreview" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedFourthPartPos(option.value)" v-for="(option, index) in fourthPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableFourthPosTooltip ? null : hideTooltip('fourthPosInputWrapper')" id="fourthPosInputWrapper"><b-form-input id="fourthPosInput" v-model="form.fourthPosition" v-bind:class="{ 'is-invalid': !disableFourthPosTooltip }" class="input-small" disabled/></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableFourthIncomeTooltip ? null : hideTooltip('fourthIncomeInputWrapper')" id="fourthIncomeInputWrapper"><b-form-input v-model="form.fourthIncome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableFourthIncomeTooltip }" id="fourthIncomeInput" :disabled="missingFourthPart" type="text"></b-form-input></span>
 &nbsp;                                                                                                <span class="partText">”&nbsp;&nbsp;&nbsp;</span><b-form-input id="fifthPartInput" :disabled="defaultPaymentSlipPreview" type="text" v-model="formatedFifthPart" v-bind:class="{ 'is-invalid': !disableFifthPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableFifthPartTooltip ? null : hideTooltip('fifthPartPosSelect')"><b-dropdown id="fifthPartPosSelect" :disabled="defaultPaymentSlipPreview" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedFifthPartPos(option.value)" v-for="(option, index) in fifthPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableFifthPosTooltip ? null : hideTooltip('fifthPosInputWrapper')" id="fifthPosInputWrapper"><b-form-input id="fifthPosInput" v-model="form.fifthPosition" v-bind:class="{ 'is-invalid': !disableFifthPosTooltip }" class="input-small" disabled/></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableFifthIncomeTooltip ? null : hideTooltip('fifthIncomeInputWrapper')" id="fifthIncomeInputWrapper"><b-form-input v-model="form.fifthIncome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableFifthIncomeTooltip }" id="fifthIncomeInput" :disabled="missingFifthPart" type="text"></b-form-input></span>
-                                                                                                                                              Свега дин. <span v-on:mouseleave="disableTotalIncomeTooltip ? null : hideTooltip('totalIncomeInputWrapper')" id="totalIncomeInputWrapper"><b-form-input id="totalIncomeInput" disabled v-model="form.income" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableTotalIncomeTooltip }"></b-form-input></span>
+                                                                                                                                              Свега дин. <span id="totalIncomeInputWrapper"><b-form-input id="totalIncomeInput" disabled v-model="form.income" class="input-small numberInput"></b-form-input></span>
                                                                                                                                   НАРЕДБОДАВАЦ
 Књижено у Дневник благајне                                                                             Настојатељ манастира,
 страна <span v-on:mouseleave="hideTooltip('annualReportPageInputWrapper')" id="annualReportPageInputWrapper"><b-form-input disabled v-model="form.annualReportPage" class="input-small" id="annualReportPageInput" type="text"></b-form-input></span> бр. <span v-on:mouseleave="hideTooltip('ordinalInputWrapper')" id="ordinalInputWrapper"><b-form-input disabled v-model="form.ordinal" class="input-small" id="ordinalInput" type="text"></b-form-input></span>&nbsp;                                                         <b-form-input disabled class="input-small" id="municipalityPresidentInput" type="text"></b-form-input>
@@ -43,10 +43,6 @@
         </b-button>
       </div>
     </b-form>
-
-    <b-tooltip boundary='window' target="incomeInput" triggers="hover" placement="top" ref="incomeInputTooltip" :disabled.sync="disableIncomeTooltip" v-on:hide.prevent>
-      {{phrases.enterAmount}}
-    </b-tooltip>
 
     <b-tooltip boundary='window' target="reasonInput" triggers="hover" placement="top" ref="reasonInputTooltip" :disabled.sync="disableReasonTooltip" v-on:hide.prevent>
       {{phrases.enterReason}}
@@ -112,10 +108,6 @@
       {{fifthIncomeTooltipText}}
     </b-tooltip>
 
-    <b-tooltip boundary='window' target="totalIncomeInputWrapper" triggers="hover" placement="top" ref="totalIncomeInputTooltip" :disabled.sync="disableTotalIncomeTooltip" v-on:hide.prevent>
-      {{totalIncomeTooltipText}}
-    </b-tooltip>
-
     <b-tooltip boundary='window' target="dateInput" triggers="hover" placement="top" ref="dateInputTooltip" :disabled.sync="disableDateTooltip" v-on:hide.prevent>
       {{phrases.pickDate}}
     </b-tooltip>
@@ -161,7 +153,7 @@
   const incomeCodeController = require('../../../../controllers/incomeCodeController')
   const paymentSlipController = require('../../../../controllers/paymentSlipController')
   const defaultPaymentSlipController = require('../../../../controllers/defaultPaymentSlipController')
-  const { asRoman, numberToSerbianDinars, mapPaymentSlipToPaymentSlipForm, mapPaymentSlipFormToPaymentSlip, saveAs, asFloat, amountNumberOptions } = require('../../../../utils/utils')
+  const { asRoman, numberToSerbianDinars, mapPaymentSlipToPaymentSlipForm, mapPaymentSlipFormToPaymentSlip, saveAs, asFloat, asFormatedString, amountNumberOptions, largeAmountNumberOptions } = require('../../../../utils/utils')
   const i18n = require('../../../../../translations/i18n')
   const AutoNumeric = require('autonumeric')
   const Mousetrap = require('mousetrap')
@@ -204,7 +196,6 @@
           enterReason: i18n.getTranslation('Enter reason'),
           pickDate: i18n.getTranslation('Pick a date'),
           atLeastOnePartPosAmount: i18n.getTranslation('Enter at least one partition, position, amount'),
-          needsToBeEqualToSum: i18n.getTranslation('Needs to equal to sum of amount by partitions and position'),
           ok: i18n.getTranslation('Ok'),
           download: i18n.getTranslation('Download'),
           permissionDenied: i18n.getTranslation('Permission denied.'),
@@ -215,13 +206,11 @@
           sr: sr,
           srCYRL: srCYRL
         },
-        incomeInputAutonumeric: null,
         firstIncomeInputAutonumeric: null,
         secondIncomeInputAutonumeric: null,
         thirdIncomeInputAutonumeric: null,
         fourthIncomeInputAutonumeric: null,
         fifthIncomeInputAutonumeric: null,
-        totalIncomeInputAutonumeric: null,
         alreadyPressed: false,
         disablePrintAndDownload: true,
         tooltipTimeouts: [],
@@ -279,15 +268,28 @@
       this.$watch('form.fifthPartition', () => {
         self.formatedFifthPart = asRoman(self.form.fifthPartition)
       })
+      this.$watch('form.firstIncome', () => {
+        self.calculateTotalIncome()
+      })
+      this.$watch('form.secondIncome', () => {
+        self.calculateTotalIncome()
+      })
+      this.$watch('form.thirdIncome', () => {
+        self.calculateTotalIncome()
+      })
+      this.$watch('form.fourthIncome', () => {
+        self.calculateTotalIncome()
+      })
+      this.$watch('form.fifthIncome', () => {
+        self.calculateTotalIncome()
+      })
     },
     mounted () {
-      this.incomeInputAutonumeric = new AutoNumeric('#incomeInput', amountNumberOptions)
       this.firstIncomeInputAutonumeric = new AutoNumeric('#firstIncomeInput', amountNumberOptions)
       this.secondIncomeInputAutonumeric = new AutoNumeric('#secondIncomeInput', amountNumberOptions)
       this.thirdIncomeInputAutonumeric = new AutoNumeric('#thirdIncomeInput', amountNumberOptions)
       this.fourthIncomeInputAutonumeric = new AutoNumeric('#fourthIncomeInput', amountNumberOptions)
       this.fifthIncomeInputAutonumeric = new AutoNumeric('#fifthIncomeInput', amountNumberOptions)
-      this.totalIncomeInputAutonumeric = new AutoNumeric('#totalIncomeInput', amountNumberOptions)
       this.bindKeys()
     },
     beforeDestroy () {
@@ -303,7 +305,7 @@
         get: function () {
           var placeholder = ''
           if (this.form) {
-            var generatedText = numberToSerbianDinars(asFloat(this.form.income, amountNumberOptions))
+            var generatedText = numberToSerbianDinars(asFloat(this.form.income, largeAmountNumberOptions))
             if (!generatedText) {
               return placeholder
             } else {
@@ -418,24 +420,6 @@
           return this.phrases.enterAmount
         }
         return this.phrases.atLeastOnePartPosAmount
-      },
-      totalIncomeTooltipText: function () {
-        if (this.totalIncomeNotValid) {
-          return this.phrases.needsToBeEqualToSum
-        } else {
-          return this.phrases.enterValue
-        }
-      },
-      disableIncomeTooltip: {
-        get: function () {
-          return !this.missingIncome || !this.shouldValidate
-        },
-        set: function (newValue) {
-          /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
-          if (newValue) {
-            this.hideTooltip('incomeInput')
-          }
-        }
       },
       disableReasonTooltip: {
         get: function () {
@@ -643,17 +627,6 @@
           }
         }
       },
-      disableTotalIncomeTooltip: {
-        get: function () {
-          return !this.totalIncomeNotValid || !this.shouldValidate
-        },
-        set: function (newValue) {
-          /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
-          if (newValue) {
-            this.hideTooltip('totalIncomeInputWrapper')
-          }
-        }
-      },
       disableDateTooltip: {
         get: function () {
           return !this.missingDate || !this.shouldValidate
@@ -848,9 +821,6 @@
       missingReason: function () {
         return !this.form.reason || this.form.reason.toString().trim() === ''
       },
-      missingIncome: function () {
-        return !this.form.income || this.form.income.trim() === ''
-      },
       missingFirstPart: function () {
         return !(this.form.firstPartition || this.form.firstPartition == 0) || this.form.firstPartition.toString().trim() === ''
       },
@@ -896,23 +866,6 @@
       missingFifthIncome: function () {
         return !this.form.fifthIncome || this.form.fifthIncome.trim() === ''
       },
-      missingTotalIncome: function () {
-        return !this.form.income || this.form.income.trim() === ''
-      },
-      totalIncomeNotValid: function () {
-        if (!this.missingIncome) {
-          const totalIncome = Big(asFloat(this.form.income, amountNumberOptions))
-          const firstIncome = this.missingFirstIncome ? Big(0.0) : Big(asFloat(this.form.firstIncome, amountNumberOptions))
-          const secondIncome = this.missingSecondIncome ? Big(0.0) : Big(asFloat(this.form.secondIncome, amountNumberOptions))
-          const thirdIncome = this.missingThirdIncome ? Big(0.0) : Big(asFloat(this.form.thirdIncome, amountNumberOptions))
-          const fourthIncome = this.missingFourthIncome ? Big(0.0) : Big(asFloat(this.form.fourthIncome, amountNumberOptions))
-          const fifthIncome = this.missingFifthIncome ? Big(0.0) : Big(asFloat(this.form.fifthIncome, amountNumberOptions))
-          if (!firstIncome.plus(secondIncome).plus(thirdIncome).plus(fourthIncome).plus(fifthIncome).eq(totalIncome)) {
-            return true
-          }
-        }
-        return false
-      },
       missingDate: function () {
         return !this.form.date
       },
@@ -925,22 +878,32 @@
         return firstCombinationNotSet && secondCombinationNotSet && thirdCombinationNotSet && fourthCombinationNotSet && fifthCombinationNotSet
       },
       validForm: function () {
-        if (this.missingIncome ||
-            this.missingReason ||
+        if (this.missingReason ||
             this.missingDate ||
             this.atLeastOnePartPosNotSet ||
             (!this.missingFirstPart && this.missingFirstIncome) ||
             (!this.missingSecondPart && this.missingSecondIncome) ||
             (!this.missingThirdPart && this.missingThirdIncome) ||
             (!this.missingFourthPart && this.missingFourthIncome) ||
-            (!this.missingFifthPart && this.missingFifthIncome) ||
-            this.totalIncomeNotValid) {
+            (!this.missingFifthPart && this.missingFifthIncome)) {
           return false
         }
         return true
       }
     },
     methods: {
+      calculateTotalIncome () {
+        const firstIncome = this.missingFirstIncome ? Big(0.0) : Big(asFloat(this.form.firstIncome, amountNumberOptions))
+        const secondIncome = this.missingSecondIncome ? Big(0.0) : Big(asFloat(this.form.secondIncome, amountNumberOptions))
+        const thirdIncome = this.missingThirdIncome ? Big(0.0) : Big(asFloat(this.form.thirdIncome, amountNumberOptions))
+        const fourthIncome = this.missingFourthIncome ? Big(0.0) : Big(asFloat(this.form.fourthIncome, amountNumberOptions))
+        const fifthIncome = this.missingFifthIncome ? Big(0.0) : Big(asFloat(this.form.fifthIncome, amountNumberOptions))
+        if (firstIncome.eq(Big(0.0)) && secondIncome.eq(Big(0.0)) && thirdIncome.eq(Big(0.0)) && fourthIncome.eq(Big(0.0)) && fifthIncome.eq(Big(0.0))) {
+          this.form.income = null
+        } else {
+          this.form.income = asFormatedString(parseFloat(firstIncome.plus(secondIncome).plus(thirdIncome).plus(fourthIncome).plus(fifthIncome)), largeAmountNumberOptions)
+        }
+      },
       tabPressedHandler (evt) {
         if (this.preDatepickerJustBlurred) {
           /* Manually put focus on the datepicker object */
@@ -1106,9 +1069,7 @@
         } 
       },
       showInvalidTooltips () {
-        if (this.missingIncome) {
-          this.showTooltip('incomeInput')
-        } else if (this.missingReason) {
+        if (this.missingReason) {
           this.showTooltip('reasonInput')
         } else if (this.missingDate) {
           this.showTooltip('dateInput')
@@ -1124,8 +1085,6 @@
           this.showTooltip('fourthIncomeInputWrapper')
         } else if (!this.missingFifthPart && this.missingFifthIncome) {
           this.showTooltip('fifthIncomeInputWrapper')
-        } else if (this.totalIncomeNotValid) {
-          this.showTooltip('totalIncomeInputWrapper')
         }
       },
       showTooltip (elementId) {
@@ -1213,12 +1172,10 @@
         this.form.fifthIncome = null;
         this.fifthIncomeInputAutonumeric.clear()
         this.form.income = null;
-        this.incomeInputAutonumeric.clear()
         this.form.incomeAsText = null;
         this.form.town = null;
         this.form.reason = null;
         this.form.payed = null;
-        this.totalIncomeInputAutonumeric.clear()
       },
       openErrorModal(error) {
         this.errorText = error

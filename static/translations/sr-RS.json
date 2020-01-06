@@ -32,7 +32,7 @@
     "Enter partition": "Унеси партију",
     "Enter position": "Унеси позицију",
     "Automatically generated after save": "Аутоматски генерисано након чувања",
-    "Enter at least one partition, position, amount": "Унеси бар једну партију, позицију, износ",
+    "Enter at least one partition, position, amount": "Унеси бар једну партију, позицију и износ",
     "Needs to equal to sum of amount by partitions and position": "Мора бити једнако суми износа по партијама и позицијама",
     "Show annual report": "Прикажи дневник благајне",
     "Pick a date": "Изабери датум",

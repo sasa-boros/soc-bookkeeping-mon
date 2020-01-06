@@ -492,7 +492,7 @@ function mapPaymentSlipToPaymentSlipForm (paymentSlip) {
       paymentSlipForm[partPosNumber[i] + 'Income'] = asFormatedString(paymentSlip.incomePerCode[i].income, amountNumberOptions);
     }
   }
-  paymentSlipForm.income = asFormatedString(paymentSlip.income, amountNumberOptions);
+  paymentSlipForm.income = asFormatedString(paymentSlip.income, largeAmountNumberOptions);
   paymentSlipForm.incomeAsText = numberToSerbianDinars(paymentSlip.income);
   paymentSlipForm.town = paymentSlip.town;
   paymentSlipForm.townReceived = paymentSlip.townReceived;
@@ -509,7 +509,7 @@ function mapPaymentSlipFormToPaymentSlip(paymentSlipForm, incomeCodes, nullAsZer
   paymentSlip.updatedAt = paymentSlipForm.updatedAt;
   paymentSlip.isValid = paymentSlipForm.isValid;
   paymentSlip.date = paymentSlipForm.date;
-  paymentSlip.income = asFloat(paymentSlipForm.income, amountNumberOptions, nullAsZero);
+  paymentSlip.income = asFloat(paymentSlipForm.income, largeAmountNumberOptions, nullAsZero);
   paymentSlip.town = paymentSlipForm.town;
   paymentSlip.townReceived = paymentSlipForm.townReceived;
   paymentSlip.reason = paymentSlipForm.reason;
@@ -581,7 +581,7 @@ function mapReceiptToReceiptForm (receipt) {
         receiptForm[partPosNumber[i] + 'Outcome'] = asFormatedString(receipt.outcomePerCode[i].outcome, amountNumberOptions);
       }
     }
-    receiptForm.outcome = asFormatedString(receipt.outcome, amountNumberOptions);
+    receiptForm.outcome = asFormatedString(receipt.outcome, largeAmountNumberOptions);
     receiptForm.outcomeAsText = numberToSerbianDinars(receipt.outcome);
     receiptForm.churchMunicipality = receipt.churchMunicipality;
     receiptForm.town = receipt.town;
@@ -599,7 +599,7 @@ function mapReceiptFormToReceipt (receiptForm, outcomeCodes, nullAsZero) {
     receipt.updatedAt = receiptForm.updatedAt;
     receipt.isValid = receiptForm.isValid;
     receipt.date = receiptForm.date;
-    receipt.outcome = asFloat(receiptForm.outcome, amountNumberOptions, nullAsZero);
+    receipt.outcome = asFloat(receiptForm.outcome, largeAmountNumberOptions, nullAsZero);
     receipt.churchMunicipality = receiptForm.churchMunicipality;
     receipt.town = receiptForm.town;
     receipt.reason = receiptForm.reason;

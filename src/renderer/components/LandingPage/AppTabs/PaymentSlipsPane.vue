@@ -118,7 +118,7 @@
   
   const paymentSlipController = require('../../../controllers/paymentSlipController')
   const i18n = require('../../../../translations/i18n')
-  const { asFormatedString, amountNumberOptions } = require('../../../utils/utils')
+  const { asFormatedString, largeAmountNumberOptions } = require('../../../utils/utils')
 
   export default {
     data () {
@@ -357,7 +357,7 @@
         return (new Date(date)).toLocaleDateString(language, options)
       },
       formatIncome (income) {
-        return asFormatedString(income, amountNumberOptions) + " дин."
+        return asFormatedString(income, largeAmountNumberOptions) + " дин."
       }
     },
     watch: {
