@@ -461,6 +461,22 @@ ipcMain.on('create-settings', async (event, settings) => {
   }
 })
 
+ipcMain.on('export-backup', async (event) => {
+  try {
+    reply(event, 'export-backup-reply', await settingsService.exportBackup())
+  } catch (err) {
+    replyError(event, 'export-backup-reply', err.message ? err.message : err)
+  }
+})
+
+ipcMain.on('import-backup', async (event, path) => {
+  try {
+    reply(event, 'import-backup-reply', await settingsService.importBackup(path))
+  } catch (err) {
+    replyError(event, 'import-backup-reply', err.message ? err.message : err)
+  }
+})
+
 function reply (event, target, data) {
   event.sender.send(target, { data: data })
 }

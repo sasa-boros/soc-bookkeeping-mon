@@ -18,7 +18,27 @@ function createSettings (settings) {
   })
 }
 
+function exportBackup () {
+  return new Promise(function (resolve) {
+    ipcRenderer.send('export-backup')
+    ipcRenderer.once('export-backup-reply', (event, res) => {
+      resolve(res)
+    })
+  })
+}
+
+function importBackup (path) {
+  return new Promise(function (resolve) {
+    ipcRenderer.send('import-backup', path)
+    ipcRenderer.once('import-backup-reply', (event, res) => {
+      resolve(res)
+    })
+  })
+}
+
 module.exports = {
   getSettings: getSettings,
-  createSettings: createSettings
+  createSettings: createSettings,
+  exportBackup: exportBackup,
+  importBackup: importBackup
 }

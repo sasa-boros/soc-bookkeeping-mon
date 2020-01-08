@@ -66,7 +66,7 @@
         <br>
         <b-row>
           <b-col>
-            <div class="predictedAllowedDivWrapper">
+            <div class="predictedAllowedDivWrapper" style="padding-right:30px">
               Буџетом предвиђено:
               <br>
               <br>

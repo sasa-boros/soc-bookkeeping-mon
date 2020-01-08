@@ -61,6 +61,6 @@
   .codeSubHeader {
     text-align: center;
     font-size: 10.0pt;
-    color: #8e8e8e;
+    color: #888585;
   }
 </style>

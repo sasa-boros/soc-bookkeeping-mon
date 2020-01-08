@@ -2,6 +2,7 @@ const dbPath = '/bookkeeping_db'
 
 const config = {
   db: {
+    path: dbPath,
     collections: {
       annualReportCommons: `${dbPath}/annualReportCommons`,
       annualReports: `${dbPath}/annualReports`,

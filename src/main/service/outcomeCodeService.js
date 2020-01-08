@@ -45,10 +45,11 @@ async function updateDbAfterDelete (deletedOutcomeCode) {
     })
     if (outcomePerCodeIndex != -1) {
       receipt.isValid = false
-      receipt.outcomePerCode.splice(outcomePerCodeIndex, 1)
-      if (receipt.outcomePerCode.length == 0) {
-        receipt.outcomePerCode = null
-      }
+      //receipt.outcomePerCode.splice(outcomePerCodeIndex, 1)
+      receipt.outcomePerCode[outcomePerCodeIndex].isValid = false
+      //if (receipt.outcomePerCode.length == 0) {
+      //  receipt.outcomePerCode = null
+      //}
       await receiptDao.updateById(receipt._id, receipt, true)
       console.log(`Receipt with id ${receipt._id} is no longer valid`)
     }

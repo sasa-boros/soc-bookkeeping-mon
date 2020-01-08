@@ -7,7 +7,7 @@
     "Inventory": "Инвентар",
     "Debts": "Дуговања",
     "Income and outcome codes": "Партије и позиције",
-    "Settings": "Подешавања",
+    "Settings": "Поставке",
     "Information": "О апликацији",
 
     "Delete selected": "Обриши означено",
@@ -138,6 +138,7 @@
     "Invalid receipts exist": "Постоје невалидне признанице",
     "Maximum number of income codes reached (15).": "Досегли сте максималан број партија и позиција примања (15).",
     "Maximum number of outcome codes reached (16).": "Досегли сте максималан број партија и позиција издавања (16).",
+    "Unexisting partition and position": "Партија и позиција је обрисана",
 
     "Town": "Место",
     "Amount": "Износ",
@@ -156,5 +157,14 @@
 
     "Default zoom level": "Подразумевано зумирање",
     "Increase": "Повећај",
-    "Decrease": "Смањи"
+    "Decrease": "Смањи",
+    "Export backup": "Направи резервну копију података",
+    "Export copy": "Направи копију",
+    "Import backup": "Учитај резервну копију података",
+    "Import copy": "Учитај копију",
+    "Are you sure you want to import backup?" : "Да ли сте сигурни да желите да учитате резервну копију?",
+    "Import will cause that all data is lost." : "Учитани подаци ће трајно заменити све постојеће податке у апликацији.",
+    "backup" : "дб-рез-копија",
+    "Import backup error": "Неуспешно учитавање. Изабрана резервна копија није валидна.",
+    "Failed saving error": "Неуспешно чување. Постоји могућност да немате права уписа на изабрану локацију."
 }

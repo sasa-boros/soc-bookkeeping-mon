@@ -1,27 +1,11 @@
 // Using chrome cache to speed up app
-require('v8-compile-cache');
+require('v8-compile-cache')
+const settingsService = require('./service/settingsService')
 
 const { app, BrowserWindow } = require('electron')
-const Datastore = require('nedb')
 const path = require('path')
-const config = require('./config')
 
-// Connecting to neDB
-var db = {}
-db.annualReportCommons = new Datastore({ filename: path.join(app.getPath('userData'), config.db.collections.annualReportCommons), autoload: true})
-db.annualReports = new Datastore({ filename:  path.join(app.getPath('userData'), config.db.collections.annualReports), autoload: true})
-db.paymentSlips = new Datastore({ filename:  path.join(app.getPath('userData'), config.db.collections.paymentSlips), autoload: true})
-db.defaultPaymentSlips = new Datastore({ filename: path.join(app.getPath('userData'), config.db.collections.defaultPaymentSlips), autoload: true})
-db.receipts = new Datastore({ filename: path.join(app.getPath('userData'), config.db.collections.receipts), autoload: true})
-db.defaultReceipts = new Datastore({ filename: path.join(app.getPath('userData'), config.db.collections.defaultReceipts), autoload: true})
-db.shares = new Datastore({ filename: path.join(app.getPath('userData'), config.db.collections.shares), autoload: true})
-db.savings = new Datastore({ filename: path.join(app.getPath('userData'), config.db.collections.savings), autoload: true})
-db.items = new Datastore({ filename: path.join(app.getPath('userData'), config.db.collections.items), autoload: true})
-db.debts = new Datastore({ filename: path.join(app.getPath('userData'), config.db.collections.debts), autoload: true})
-db.incomeCodes = new Datastore({ filename: path.join(app.getPath('userData'), config.db.collections.incomeCodes), autoload: true})
-db.outcomeCodes = new Datastore({ filename: path.join(app.getPath('userData'), config.db.collections.outcomeCodes), autoload: true})
-db.settings = new Datastore({ filename: path.join(app.getPath('userData'), config.db.collections.settings), autoload: true})
-global.db = db
+settingsService.loadDbs()
 
 /**
  * Set `__static` path to static files in production
@@ -35,8 +19,6 @@ if (process.env.NODE_ENV !== 'development') {
 require('../renderer/store')
 // Loading ipc main router
 require('./ipcRouter')
-
-const settingsService = require('./service/settingsService')
 
 let mainWindow
 const winURL = process.env.NODE_ENV === 'development'

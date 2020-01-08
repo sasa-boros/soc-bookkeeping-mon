@@ -198,9 +198,10 @@
           atLeastOnePartPosAmount: i18n.getTranslation('Enter at least one partition, position, amount'),
           ok: i18n.getTranslation('Ok'),
           download: i18n.getTranslation('Download'),
-          permissionDenied: i18n.getTranslation('Permission denied.'),
           paymentSlipFileName: i18n.getTranslation('payment-slip'),
-          automaticallyGeneratedAfterSave: i18n.getTranslation('Automatically generated after save')
+          automaticallyGeneratedAfterSave: i18n.getTranslation('Automatically generated after save'),
+          saveError: i18n.getTranslation('Failed saving error'),
+          unexistingPartitionAndPosition: i18n.getTranslation('Unexisting partition and position')
         },
         calendarLanguages: {
           sr: sr,
@@ -362,9 +363,15 @@
         }
       },
       firstPartTooltipText: function () {
+        if (this.invalidFirstCode) {
+          return this.phrases.unexistingPartitionAndPosition
+        }
         return this.phrases.atLeastOnePartPosAmount
       },
       firstPosTooltipText: function () {
+        if (this.invalidFirstCode) {
+          return this.phrases.unexistingPartitionAndPosition
+        }
         return this.phrases.atLeastOnePartPosAmount
       },
       firstIncomeTooltipText: function () {
@@ -374,9 +381,15 @@
         return this.phrases.atLeastOnePartPosAmount
       },
       secondPosTooltipText: function () {
+        if (this.invalidSecondCode) {
+          return this.phrases.unexistingPartitionAndPosition
+        }
         return this.phrases.atLeastOnePartPosAmount
       },
       secondPartTooltipText: function () {
+        if (this.invalidSecondCode) {
+          return this.phrases.unexistingPartitionAndPosition
+        }
         return this.phrases.atLeastOnePartPosAmount
       },
       secondIncomeTooltipText: function () {
@@ -386,9 +399,15 @@
         return this.phrases.atLeastOnePartPosAmount
       },
       thirdPosTooltipText: function () {
+        if (this.invalidThirdCode) {
+          return this.phrases.unexistingPartitionAndPosition
+        }
         return this.phrases.atLeastOnePartPosAmount
       },
       thirdPartTooltipText: function () {
+        if (this.invalidThirdCode) {
+          return this.phrases.unexistingPartitionAndPosition
+        }
         return this.phrases.atLeastOnePartPosAmount
       },
       thirdIncomeTooltipText: function () {
@@ -398,9 +417,15 @@
         return this.phrases.atLeastOnePartPosAmount
       },
       fourthPosTooltipText: function () {
+        if (this.invalidFourthCode) {
+          return this.phrases.unexistingPartitionAndPosition
+        }
         return this.phrases.atLeastOnePartPosAmount
       },
       fourthPartTooltipText: function () {
+        if (this.invalidFourthCode) {
+          return this.phrases.unexistingPartitionAndPosition
+        }
         return this.phrases.atLeastOnePartPosAmount
       },
       fourthIncomeTooltipText: function () {
@@ -410,9 +435,15 @@
         return this.phrases.atLeastOnePartPosAmount
       },
       fifthPosTooltipText: function () {
+        if (this.invalidFifthCode) {
+          return this.phrases.unexistingPartitionAndPosition
+        }
         return this.phrases.atLeastOnePartPosAmount
       },
       fifthPartTooltipText: function () {
+        if (this.invalidFifthCode) {
+          return this.phrases.unexistingPartitionAndPosition
+        }
         return this.phrases.atLeastOnePartPosAmount
       },
       fifthIncomeTooltipText: function () {
@@ -434,7 +465,7 @@
       },
       disableFirstPartTooltip: {
         get: function () {
-          return !this.atLeastOnePartPosNotSet || !this.missingFirstPart || !this.shouldValidate
+          return ((!this.atLeastOnePartPosNotSet || !this.missingFirstPart) && !this.invalidFirstCode) || !this.shouldValidate
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
@@ -445,7 +476,7 @@
       },
       disableFirstPosTooltip: {
         get: function () {
-          return !this.atLeastOnePartPosNotSet || !this.missingFirstPos || !this.shouldValidate
+          return ((!this.atLeastOnePartPosNotSet || !this.missingFirstPos) && !this.invalidFirstCode) || !this.shouldValidate
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
@@ -473,7 +504,7 @@
       },
       disableSecondPartTooltip: {
         get: function () {
-          return !this.atLeastOnePartPosNotSet || !this.missingSecondPart || !this.shouldValidate 
+          return ((!this.atLeastOnePartPosNotSet || !this.missingSecondPart) && !this.invalidSecondCode) || !this.shouldValidate 
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
@@ -484,7 +515,7 @@
       },
       disableSecondPosTooltip: {
         get: function () {
-          return !this.atLeastOnePartPosNotSet || !this.missingSecondPos || !this.shouldValidate
+          return ((!this.atLeastOnePartPosNotSet || !this.missingSecondPos) && !this.invalidSecondCode) || !this.shouldValidate
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
@@ -512,7 +543,7 @@
       },
       disableThirdPartTooltip: {
         get: function () {
-          return !this.atLeastOnePartPosNotSet || !this.missingThirdPart || !this.shouldValidate 
+          return ((!this.atLeastOnePartPosNotSet || !this.missingThirdPart) && !this.invalidThirdCode) || !this.shouldValidate
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
@@ -523,7 +554,7 @@
       },
       disableThirdPosTooltip: {
         get: function () {
-          return !this.atLeastOnePartPosNotSet || !this.missingThirdPos || !this.shouldValidate
+          return ((!this.atLeastOnePartPosNotSet || !this.missingThirdPos) && !this.invalidThirdCode) || !this.shouldValidate
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
@@ -551,7 +582,7 @@
       },
       disableFourthPartTooltip: {
         get: function () {
-          return !this.atLeastOnePartPosNotSet || !this.missingFourthPart || !this.shouldValidate 
+          return ((!this.atLeastOnePartPosNotSet || !this.missingFourthPart) && !this.invalidFourthCode) || !this.shouldValidate 
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
@@ -562,7 +593,7 @@
       },
       disableFourthPosTooltip: {
         get: function () {
-          return !this.atLeastOnePartPosNotSet || !this.missingFourthPos || !this.shouldValidate
+          return ((!this.atLeastOnePartPosNotSet || !this.missingFourthPos) && !this.invalidFourthCode) || !this.shouldValidate
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
@@ -590,7 +621,7 @@
       },
       disableFifthPartTooltip: {
         get: function () {
-          return !this.atLeastOnePartPosNotSet || !this.missingFifthPart || !this.shouldValidate 
+          return ((!this.atLeastOnePartPosNotSet || !this.missingFifthPart) && !this.invalidFifthCode) || !this.shouldValidate 
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
@@ -601,7 +632,7 @@
       },
       disableFifthPosTooltip: {
         get: function () {
-          return !this.atLeastOnePartPosNotSet || !this.missingFifthPos || !this.shouldValidate
+          return ((!this.atLeastOnePartPosNotSet || !this.missingFifthPos) && !this.invalidFifthCode) || !this.shouldValidate
         },
         set: function (newValue) {
           /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
@@ -866,6 +897,21 @@
       missingFifthIncome: function () {
         return !this.form.fifthIncome || this.form.fifthIncome.trim() === ''
       },
+      invalidFirstCode: function () {
+        return this.form.firstCodeValid == false
+      },
+      invalidSecondCode: function () {
+        return this.form.secondCodeValid == false
+      },
+      invalidThirdCode: function () {
+        return this.form.thirdCodeValid == false
+      },
+      invalidFourthCode: function () {
+        return this.form.fourthCodeValid == false
+      },
+      invalidFifthCode: function () {
+        return this.form.fifthCodeValid == false
+      },
       missingDate: function () {
         return !this.form.date
       },
@@ -885,7 +931,12 @@
             (!this.missingSecondPart && this.missingSecondIncome) ||
             (!this.missingThirdPart && this.missingThirdIncome) ||
             (!this.missingFourthPart && this.missingFourthIncome) ||
-            (!this.missingFifthPart && this.missingFifthIncome)) {
+            (!this.missingFifthPart && this.missingFifthIncome) ||
+            this.invalidFirstCode ||
+            this.invalidSecondCode ||
+            this.invalidThirdCode ||
+            this.invalidFourthCode ||
+            this.invalidFifthCode) {
           return false
         }
         return true
@@ -994,10 +1045,12 @@
           const partPos = selectedPartPos.split('/')
           this.form.firstPartition = partPos[0]
           this.form.firstPosition = partPos[1]
+          this.form.firstCodeValid = true
         } else {
           this.form.firstPartition = null
           this.form.firstPosition = null
           this.form.firstIncome = null
+          this.form.firstCodeValid = true
           if (this.firstIncomeInputAutonumeric) {
             this.firstIncomeInputAutonumeric.clear()
           }
@@ -1008,10 +1061,12 @@
           const partPos = selectedPartPos.split('/')
           this.form.secondPartition = partPos[0]
           this.form.secondPosition = partPos[1]
+          this.form.secondCodeValid = true
         } else {
           this.form.secondPartition = null
           this.form.secondPosition = null
           this.form.secondIncome = null
+          this.form.secondCodeValid = true
           if (this.secondIncomeInputAutonumeric) {
             this.secondIncomeInputAutonumeric.clear()
           }
@@ -1022,10 +1077,12 @@
           const partPos = selectedPartPos.split('/')
           this.form.thirdPartition = partPos[0]
           this.form.thirdPosition = partPos[1]
+          this.form.thirdCodeValid = true
         } else {
           this.form.thirdPartition = null
           this.form.thirdPosition = null
           this.form.thirdIncome = null
+          this.form.thirdCodeValid = true
           if (this.thirdIncomeInputAutonumeric) {
             this.thirdIncomeInputAutonumeric.clear()
           }
@@ -1036,10 +1093,12 @@
           const partPos = selectedPartPos.split('/')
           this.form.fourthPartition = partPos[0]
           this.form.fourthPosition = partPos[1]
+          this.form.fourthCodeValid = true
         } else {
           this.form.fourthPartition = null
           this.form.fourthPosition = null
           this.form.fourthIncome = null
+          this.form.fourthCodeValid = true
           if (this.fourthIncomeInputAutonumeric) {
             this.fourthIncomeInputAutonumeric.clear()
           }
@@ -1050,10 +1109,12 @@
           const partPos = selectedPartPos.split('/')
           this.form.fifthPartition = partPos[0]
           this.form.fifthPosition = partPos[1]
+          this.form.fifthCodeValid = true
         } else {
           this.form.fifthPartition = null
           this.form.fifthPosition = null
           this.form.fifthIncome = null
+          this.form.fifthCodeValid = true
           if (this.fifthIncomeInputAutonumeric) {
             this.fifthIncomeInputAutonumeric.clear()
           }
@@ -1085,6 +1146,16 @@
           this.showTooltip('fourthIncomeInputWrapper')
         } else if (!this.missingFifthPart && this.missingFifthIncome) {
           this.showTooltip('fifthIncomeInputWrapper')
+        } else if (this.invalidFirstCode) {
+          this.showTooltip('firstPartPosSelect')
+        } else if (this.invalidSecondCode) {
+          this.showTooltip('secondPartPosSelect')
+        } else if (this.invalidThirdCode) {
+          this.showTooltip('thirdPartPosSelect')
+        } else if (this.invalidFourthCode) {
+          this.showTooltip('fourthPartPosSelect')
+        } else if (this.invalidFifthCode) {
+          this.showTooltip('fifthPartPosSelect')
         }
       },
       showTooltip (elementId) {
@@ -1154,26 +1225,33 @@
         this.form.firstPartition = null;
         this.form.firstPosition = null;
         this.form.firstIncome = null;
+        this.form.firstCodeValid = null;
         this.firstIncomeInputAutonumeric.clear()
         this.form.secondPartition = null;
         this.form.secondPosition = null;
         this.form.secondIncome = null;
+        this.form.secondCodeValid = null;
         this.secondIncomeInputAutonumeric.clear()
         this.form.thirdPartition = null;
         this.form.thirdPosition = null;
         this.form.thirdIncome = null;
+        this.form.thirdCodeValid = null;
         this.thirdIncomeInputAutonumeric.clear()
         this.form.fourthPartition = null;
         this.form.fourthPosition = null;
         this.form.fourthIncome = null;
+        this.form.fourthCodeValid = null;
         this.fourthIncomeInputAutonumeric.clear()
         this.form.fifthPartition = null;
         this.form.fifthPosition = null;
         this.form.fifthIncome = null;
+        this.form.fifthCodeValid = null;
         this.fifthIncomeInputAutonumeric.clear()
         this.form.income = null;
         this.form.incomeAsText = null;
         this.form.town = null;
+        this.form.town = null;
+        this.form.townReceived = null;
         this.form.reason = null;
         this.form.payed = null;
       },
@@ -1209,11 +1287,7 @@
             const date = new Date(this.form.date)
             saveAs('/payment-slip.pdf', this.phrases.paymentSlipFileName  + '-' + date.getUTCDate()  + '-' + (date.getUTCMonth() +1) + '-' + date.getUTCFullYear() +  '.pdf', err => {
               if (err) {
-                if (err.message.toLowerCase().indexOf('permission denied') != -1) {
-                  self.openErrorModal(self.phrases.permissionDenied)
-                } else {
-                  self.openErrorModal(err.message)
-                }
+                self.openErrorModal(self.phrases.saveError)
               }
             })
           } else {

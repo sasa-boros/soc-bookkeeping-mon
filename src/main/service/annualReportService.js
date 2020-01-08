@@ -355,6 +355,7 @@ function populateHeadline(annualReport, annualReportPages) {
     headlineContext.year = annualReport.year;
   }
   headlineContext.church = annualReport.churchMunicipality
+  headlineContext.pageNum = 0
 
   annualReportPages.push(Mustache.render(headlineTemplate, headlineContext));
 }
@@ -663,6 +664,7 @@ function populateTotalHeadline(annualReport, annualReportPages) {
     headlineContext.year = annualReport.year;
   }
   headlineContext.church = annualReport.churchMunicipality
+  headlineContext.pageNum = 15
 
   annualReportPages.push(Mustache.render(totalHeadlineTemplate, headlineContext));
 }

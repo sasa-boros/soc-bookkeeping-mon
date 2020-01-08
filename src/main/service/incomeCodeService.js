@@ -45,10 +45,11 @@ async function updateDbAfterDelete (deletedIncomeCode) {
     })
     if (incomePerCodeIndex != -1) {
       paymentSlip.isValid = false
-      paymentSlip.incomePerCode.splice(incomePerCodeIndex, 1)
-      if (paymentSlip.incomePerCode.length == 0) {
-        paymentSlip.incomePerCode = null
-      }
+      //paymentSlip.incomePerCode.splice(incomePerCodeIndex, 1)
+      paymentSlip.incomePerCode[incomePerCodeIndex].isValid = false
+      //if (paymentSlip.incomePerCode.length == 0) {
+      //  paymentSlip.incomePerCode = null
+      //}
       await paymentSlipDao.updateById(paymentSlip._id, paymentSlip, true)
       console.log(`Payment slip with id ${paymentSlip._id} is no longer valid`)
     }

@@ -2,7 +2,7 @@
   <b-container fluid>
     <b-row>
       <b-col cols=3>
-        <span class="zoomLevelText">{{ phrases.setDefaultZoomLevel }}:</span> 
+        <span class="buttonLeveledText">{{ phrases.setDefaultZoomLevel }}:</span> 
       </b-col>
       <b-col>
         <b-btn id="decreaseZoomLevelButton" v-on:mouseleave="hideTooltip('decreaseZoomLevelButton')" @click.stop="decreaseZoomLevel()" variant="light" class="btn-lg">
@@ -14,7 +14,27 @@
         </b-btn>
       </b-col>
     </b-row>
-    <br>
+        <b-row>
+      <b-col cols=3>
+        <span class="buttonLeveledText">{{ phrases.exportBackup }}:</span> 
+      </b-col>
+      <b-col>
+        <b-btn id="exportBackupButton" v-on:mouseleave="hideTooltip('exportBackupButton')" @click.stop="exportBackup" variant="light" class="btn-lg">
+          <img src="~@/assets/export.png">
+        </b-btn>
+      </b-col>
+    </b-row>
+    <b-row>
+      <b-col cols=3>
+        <span class="buttonLeveledText">{{ phrases.importBackup }}:</span> 
+      </b-col>
+      <b-col>
+        <b-btn id="importBackupButton" v-on:mouseleave="hideTooltip('importBackupButton')" @click.stop="importBackup" variant="light" class="btn-lg">
+          <img src="~@/assets/import.png">
+        </b-btn>
+      </b-col>
+    </b-row>
+    <hr>
     <!--<b-row>
       <b-col cols=4>
         {{ phrases.setDefaultPaymentSlip }}:
@@ -52,18 +72,30 @@
     <code-pane v-on:updateDefaultPaymentSlip="updateDefaultPaymentSlip" v-on:updateDefaultReceipt="updateDefaultReceipt"></code-pane>
 
     <!-- Default slip modal -->
+    <!--
     <b-modal no-close-on-backdrop hide-footer hide-header size="a5" id="default-payment-slip-modal">
       <payment-slip-preview parentModal="default-payment-slip-modal" :defaultPaymentSlipPreview='true' v-on:updateDefaultPaymentSlip="updateDefaultPaymentSlip"></payment-slip-preview>
     </b-modal>
+    -->
 
     <!-- Default receipt modal -->
+    <!--
     <b-modal no-close-on-backdrop hide-footer hide-header size="a5" id="default-receipt-modal">
       <receipt-preview parentModal="default-receipt-modal" :defaultReceiptPreview='true' v-on:updateDefaultReceipt="updateDefaultReceipt"></receipt-preview>
     </b-modal>
+    -->
+
+    <b-modal no-close-on-backdrop id="import-backup-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('importBackupModal')">
+      <message-confirm-dialog ref="importBackupModal" parentModal="import-backup-modal" type="confirm" :text="phrases.areYouSureToImportBackup" :subText="phrases.importWillCauseDataLoss" :cancelOkText="phrases.cancel" :confirmText="phrases.ok" v-on:confirmed="importBackupConfirmed"></message-confirm-dialog>
+    </b-modal>
+
+    <b-modal no-close-on-backdrop id="settings-pane-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('settingsPaneErrorModal')">
+      <message-confirm-dialog ref="settingsPaneErrorModal" parentModal="settings-pane-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
+    </b-modal>
 
     <b-tooltip boundary='window' target="commonSaveBtn" triggers="hover" placement="top" ref="commonSaveBtnTooltip" v-on:hide.prevent>
-        {{phrases.save}}
-      </b-tooltip>
+      {{phrases.save}}
+    </b-tooltip>
       
     <b-tooltip boundary='window' target="defaultPaymentSlipBtn" triggers="hover" placement="top" ref="defaultPaymentSlipBtnTooltip" v-on:hide.prevent>
       {{phrases.adaptPaymentSlips}}
@@ -80,6 +112,14 @@
     <b-tooltip boundary='window' target="decreaseZoomLevelButton" triggers="hover" placement="top" ref="decreaseZoomLevelButtonTooltip" v-on:hide.prevent>
       {{phrases.decrease}}
     </b-tooltip>
+
+    <b-tooltip boundary='window' target="exportBackupButton" triggers="hover" placement="top" ref="exportBackupButtonTooltip" v-on:hide.prevent>
+      {{phrases.exportCopy}}
+    </b-tooltip>
+
+    <b-tooltip boundary='window' target="importBackupButton" triggers="hover" placement="top" ref="importBackupButtonTooltip" v-on:hide.prevent>
+      {{phrases.importCopy}}
+    </b-tooltip>
   </b-container>
 </template>
 
@@ -87,11 +127,13 @@
   import PaymentSlipPreview from './PaymentSlipsPane/PaymentSlipPreview'
   import ReceiptPreview from './ReceiptsPane/ReceiptPreview'
   import CodePane from './CodePane'
+  import MessageConfirmDialog from '../../MessageConfirmDialog'
 
   const Big = require('big.js')
   const i18n = require('../../../../translations/i18n')
   const annualReportController = require('../../../controllers/annualReportController')
   const settingsController = require('../../../controllers/settingsController')
+  const { saveAs, open, reloadApp } = require('../../../utils/utils')
 
   export default {
     data () {
@@ -102,16 +144,29 @@
           setDefaultZoomLevel: i18n.getTranslation('Default zoom level'),
           adaptPaymentSlips: i18n.getTranslation('Adapt payment slips'),
           adaptReceipts: i18n.getTranslation('Adapt receipts'),
+          exportBackup: i18n.getTranslation('Export backup'),
+          exportCopy: i18n.getTranslation('Export copy'),
+          importBackup: i18n.getTranslation('Import backup'),
+          importCopy: i18n.getTranslation('Import copy'),
+          areYouSureToImportBackup: i18n.getTranslation('Are you sure you want to import backup?'),
+          importWillCauseDataLoss: i18n.getTranslation('Import will cause that all data is lost.'),
           increase: i18n.getTranslation('Increase'),
           decrease: i18n.getTranslation('Decrease'),
           save: i18n.getTranslation('Save'),
-          alreadyPressed: false
+          ok: i18n.getTranslation('Ok'),
+          cancel: i18n.getTranslation('Cancel'),
+          backup: i18n.getTranslation('backup'),
+          saveError: i18n.getTranslation('Failed saving error'),
+          importBackupError: i18n.getTranslation('Import backup error')
         },
         churchMunicipality: null,
         churchTown: null,
         zoomLevel: Big(1.3),
         commonDataSaveTimeout: null,
-        disableCommonSaveBtn: true
+        alreadyPressed: false,
+        disableCommonSaveBtn: true,
+        errorText: null,
+        backupPath: null
       }
     },
     created () {
@@ -128,6 +183,50 @@
       }
     },
     methods: {
+      exportBackup (evt) {
+        evt.preventDefault()
+        this.hideTooltip('exportBackupButton')
+        const self = this
+        settingsController.exportBackup().then(function(res) {
+          if (!res.err) {
+            saveAs('/backup.zip', self.phrases.backup + '_' + Date.now() + '.bak', err => {
+              if (err) {
+                self.openErrorModal(self.phrases.saveError)
+              }
+            })
+          } else {
+            self.openErrorModal(res.err)
+          }
+        })
+      },
+      importBackup () {
+        this.hideTooltip('exportBackupButton')
+        const self = this
+        const backup = open({ filters: [{ name: 'Backup', extensions: ['bak'] }, { name: 'All Files', extensions: ['*'] }] })
+        if (!backup || backup.length == 0) {
+          return
+        }
+        this.backupPath = backup[0]
+        this.hideTooltip('importBackupButton')
+        this.$root.$emit('bv::show::modal', 'import-backup-modal')
+      },
+      importBackupConfirmed () {
+        const self = this
+        settingsController.importBackup(this.backupPath).then(function(res) {
+          if (!res.err) {
+            reloadApp()
+          } else {
+            self.openErrorModal(self.phrases.importBackupError)
+          }
+        })
+      },
+      focusModalCloseButton (modalRef) {
+        this.$refs[modalRef].$refs.closeButton.focus()
+      },
+      openErrorModal(error) {
+        this.errorText = error
+        this.$root.$emit('bv::show::modal', 'settings-pane-error-modal')
+      },
       loadAnnualReportCommon () {
         const self = this
         annualReportController.getAnnualReportCommonData().then((res) => {
@@ -226,7 +325,7 @@
         }
       }
     },
-    components: { PaymentSlipPreview, ReceiptPreview, CodePane }
+    components: { PaymentSlipPreview, ReceiptPreview, CodePane, MessageConfirmDialog }
   }
 </script>
 
@@ -277,7 +376,7 @@
     letter-spacing: 95%;
   }
 
-  .zoomLevelText {
+ .buttonLeveledText {
     position: relative;
     top:13px;
   }

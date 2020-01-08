@@ -428,9 +428,9 @@ export default {
         previousPage: i18n.getTranslation('Previous page'),
         nextPage: i18n.getTranslation('Next page'),
         ok: i18n.getTranslation('Ok'),
-        permissionDenied: i18n.getTranslation('Permission denied.'),
         annualReportFileName: i18n.getTranslation('annual-report'),
-        page: i18n.getTranslation('page')
+        page: i18n.getTranslation('page'),
+        saveError: i18n.getTranslation('Failed saving error')
       },
       currentPage: 1,
       annualReportPagesNums: null,
@@ -580,11 +580,7 @@ export default {
             const self = this
             saveAs('/annual-report.pdf', this.phrases.annualReportFileName + (this.year ? '-' + this.year : '' ) + '.pdf', err => {
               if (err) {
-                if (err.message.toLowerCase().indexOf('permission denied') != -1) {
-                  self.openErrorModal(self.phrases.permissionDenied)
-                } else {
-                  self.openErrorModal(err.message)
-                }
+                self.openErrorModal(self.phrases.saveError)
               }
             })
           } else {
@@ -608,11 +604,7 @@ export default {
             const self = this
             saveAs('/annual-report.pdf', this.phrases.annualReportFileName + '-' + this.year + '-' + this.phrases.page +  '-' + this.currentPage  + '.pdf', err => {
               if (err) {
-                if (err.message.toLowerCase().indexOf('permission denied') != -1) {
-                  self.openErrorModal(self.phrases.permissionDenied)
-                } else {
-                  self.openErrorModal(err.message)
-                }
+                self.openErrorModal(self.phrases.saveError)
               }
             })
           } else {
