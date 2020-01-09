@@ -14,7 +14,7 @@
                         Исплатио благајник,                                              <b-form-input v-on:keypress="limitInputPerSize" :disabled="defaultReceiptPreview" v-model="form.received" class="input-small" id="receivedInput" type="text"></b-form-input>
 <br><b-form-input disabled class="input-small" id="payedInput" type="text"></b-form-input>&nbsp;                       Да се исплати на терет расхода <b-form-input disabled id="yearInput" ref="yearInput" class="input-small" v-model="year"></b-form-input> год.                      
 у <b-form-input id="townPayedInput" v-on:keypress="limitInputPerSize" v-model="form.townPayed" class="input-small" type="text"></b-form-input>&nbsp;         <span class="partText">Парт. </span><b-form-input id="firstPartInput" :disabled="defaultReceiptPreview" type="text" v-model="formatedFirstPart" v-bind:class="{ 'is-invalid': !disableFirstPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableFirstPartTooltip ? null : hideTooltip('firstPartPosSelect')"><b-dropdown :disabled="defaultReceiptPreview" id="firstPartPosSelect" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedFirstPartPos(option.value)" v-for="(option, index) in firstPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span> поз. <span v-on:mouseleave="disableFirstPosTooltip ? null : hideTooltip('firstPosInputWrapper')" id="firstPosInputWrapper"><b-form-input id="firstPosInput" v-model="form.firstPosition" v-bind:class="{ 'is-invalid': !disableFirstPosTooltip}" class="input-small" disabled/></span> дин. <span v-on:mouseleave="disableFirstOutcomeTooltip ? null : hideTooltip('firstOutcomeInputWrapper')" id="firstOutcomeInputWrapper"><b-form-input id="firstOutcomeInput" v-model="form.firstOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableFirstOutcomeTooltip }" :disabled="missingFirstPart" type="text"></b-form-input></span>
-<span v-on:mouseleave="disableDateTooltip ? null : hideTooltip('dateInput')"><datepicker id="dateInput" ref="dateInput" v-model="form.date"  v-bind:class="{ 'is-invalid': shouldValidate && missingDate, 'disabledDatepicker': defaultReceiptPreview }" :language="calendarLanguages.srCYRL" :disabled="defaultReceiptPreview" input-class="receiptDatepickerInput" wrapper-class="receiptDatepickerWrapper" calendar-class="receiptDatepickerCalendar"></datepicker>год.</span>&nbsp;                                                             <span class="partText">”&nbsp;&nbsp;&nbsp;</span><b-form-input id="secondPartInput" type="text" :disabled="defaultReceiptPreview" v-model="formatedSecondPart" v-bind:class="{ 'is-invalid': !disableSecondPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableSecondPartTooltip ? null : hideTooltip('secondPartPosSelect')"><b-dropdown :disabled="defaultReceiptPreview" id="secondPartPosSelect" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedSecondPartPos(option.value)" v-for="(option, index) in secondPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableSecondPosTooltip ? null : hideTooltip('secondPosInputWrapper')" id="secondPosInputWrapper"><b-form-input id="secondPosInput" v-model="form.secondPosition" v-bind:class="{ 'is-invalid': !disableSecondPosTooltip }" class="input-small" disabled/></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableSecondOutcomeTooltip ? null : hideTooltip('secondOutcomeInputWrapper')" id="secondOutcomeInputWrapper"><b-form-input v-model="form.secondOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableSecondOutcomeTooltip }" id="secondOutcomeInput" :disabled="missingSecondPart" type="text"></b-form-input></span>
+<span v-on:mouseleave="disableDateTooltip ? null : hideTooltip('dateInput')"><datepicker id="dateInput" ref="dateInput" v-model="form.date"  :input-class="{ 'is-invalid-date': shouldValidate && missingDate, 'disabledDatepicker': defaultReceiptPreview, 'receiptDatepickerInput': true }" :language="calendarLanguages.srCYRL" :disabled="defaultReceiptPreview" wrapper-class="receiptDatepickerWrapper" calendar-class="receiptDatepickerCalendar"></datepicker>год.</span>&nbsp;                                                             <span class="partText">”&nbsp;&nbsp;&nbsp;</span><b-form-input id="secondPartInput" type="text" :disabled="defaultReceiptPreview" v-model="formatedSecondPart" v-bind:class="{ 'is-invalid': !disableSecondPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableSecondPartTooltip ? null : hideTooltip('secondPartPosSelect')"><b-dropdown :disabled="defaultReceiptPreview" id="secondPartPosSelect" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedSecondPartPos(option.value)" v-for="(option, index) in secondPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableSecondPosTooltip ? null : hideTooltip('secondPosInputWrapper')" id="secondPosInputWrapper"><b-form-input id="secondPosInput" v-model="form.secondPosition" v-bind:class="{ 'is-invalid': !disableSecondPosTooltip }" class="input-small" disabled/></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableSecondOutcomeTooltip ? null : hideTooltip('secondOutcomeInputWrapper')" id="secondOutcomeInputWrapper"><b-form-input v-model="form.secondOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableSecondOutcomeTooltip }" id="secondOutcomeInput" :disabled="missingSecondPart" type="text"></b-form-input></span>
 &nbsp;                                                                                               <span class="partText">”&nbsp;&nbsp;&nbsp;</span><b-form-input id="thirdPartInput" type="text" :disabled="defaultReceiptPreview" v-model="formatedThirdPart" v-bind:class="{ 'is-invalid': !disableThirdPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableThirdPartTooltip ? null : hideTooltip('thirdPartPosSelect')"><b-dropdown :disabled="defaultReceiptPreview" id="thirdPartPosSelect" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedThirdPartPos(option.value)" v-for="(option, index) in thirdPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableThirdPosTooltip ? null : hideTooltip('thirdPosInputWrapper')" id="thirdPosInputWrapper"><b-form-input id="thirdPosInput" v-model="form.thirdPosition" v-bind:class="{ 'is-invalid': !disableThirdPosTooltip }" class="input-small" disabled/></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableThirdOutcomeTooltip ? null : hideTooltip('thirdOutcomeInputWrapper')" id="thirdOutcomeInputWrapper"><b-form-input v-model="form.thirdOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableThirdOutcomeTooltip }" id="thirdOutcomeInput" :disabled="missingThirdPart" type="text"></b-form-input></span>
 &nbsp;                                                                                               <span class="partText">”&nbsp;&nbsp;&nbsp;</span><b-form-input id="fourthPartInput" type="text" :disabled="defaultReceiptPreview" v-model="formatedFourthPart" v-bind:class="{ 'is-invalid': !disableFourthPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableFourthPartTooltip ? null : hideTooltip('fourthPartPosSelect')"><b-dropdown :disabled="defaultReceiptPreview" id="fourthPartPosSelect" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedFourthPartPos(option.value)" v-for="(option, index) in fourthPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableFourthPosTooltip ? null : hideTooltip('fourthPosInputWrapper')" id="fourthPosInputWrapper"><b-form-input id="fourthPosInput" v-model="form.fourthPosition" v-bind:class="{ 'is-invalid': !disableFourthPosTooltip }" class="input-small" disabled/></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableFourthOutcomeTooltip ? null : hideTooltip('fourthOutcomeInputWrapper')" id="fourthOutcomeInputWrapper"><b-form-input v-model="form.fourthOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableFourthOutcomeTooltip }" id="fourthOutcomeInput" :disabled="missingFourthPart" type="text"></b-form-input></span>
 &nbsp;                                                                                               <span class="partText">”&nbsp;&nbsp;&nbsp;</span><b-form-input id="fifthPartInput" type="text" :disabled="defaultReceiptPreview" v-model="formatedFifthPart" v-bind:class="{ 'is-invalid': !disableFifthPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableFifthPartTooltip ? null : hideTooltip('fifthPartPosSelect')"><b-dropdown :disabled="defaultReceiptPreview" id="fifthPartPosSelect" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedFifthPartPos(option.value)" v-for="(option, index) in fifthPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableFifthPosTooltip ? null : hideTooltip('fifthPosInputWrapper')" id="fifthPosInputWrapper"><b-form-input id="fifthPosInput" v-model="form.fifthPosition" v-bind:class="{ 'is-invalid': !disableFifthPosTooltip }" class="input-small" disabled/></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableFifthOutcomeTooltip ? null : hideTooltip('fifthOutcomeInputWrapper')" id="fifthOutcomeInputWrapper"><b-form-input v-model="form.fifthOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableFifthOutcomeTooltip }" id="fifthOutcomeInput" :disabled="missingFifthPart" type="text"></b-form-input></span>
@@ -216,10 +216,12 @@
         formatedSecondPart: null,
         formatedThirdPart: null,
         formatedFourthPart: null,
-        formatedFifthPart: null
+        formatedFifthPart: null,
+        commonData: null
       }
     },
     created () {
+      this.loadAnnualReportCommon()
       if(this.receiptPreview) {
         var receipt = JSON.parse(JSON.stringify(this.receipt));
         this.form = mapReceiptToReceiptForm(receipt);
@@ -232,7 +234,6 @@
         var defaultReceipt = JSON.parse(JSON.stringify(this.defaultReceipt))
         defaultReceipt._id = undefined;
         this.form = mapReceiptToReceiptForm(defaultReceipt);
-        this.loadAnnualReportCommon()
       } 
       const self = this;
       outcomeCodeController.getOutcomeCodes().then(function (res) {
@@ -980,9 +981,12 @@
         const self = this
         annualReportController.getAnnualReportCommonData().then((res) => {
           if (!res.err) {
-            self.form.churchMunicipality = res.data ? res.data.churchMunicipality : null
-            self.form.town = res.data ? res.data.churchTown : null
-            self.form.townPayed = self.form.town
+            if(!self.receiptPreview) {
+              self.form.churchMunicipality = res.data ? res.data.churchMunicipality : null
+              self.form.town = res.data ? res.data.churchTown : null
+              self.form.townPayed = self.form.town
+            }
+            self.commonData = res.data
           } else {
             self.openErrorModal(res.err)
           }
@@ -1246,11 +1250,11 @@
         this.fifthOutcomeInputAutonumeric.clear()
         this.form.outcome = null
         this.form.outcomeAsText = null
-        this.form.churchMunicipality = null
-        this.form.town = null
         this.form.reason = null
-        this.form.townPayed = null
         this.form.received = null
+        this.form.churchMunicipality = this.commonData ? this.commonData.churchMunicipality : null
+        this.form.town = this.commonData ? this.commonData.churchTown : null
+        this.form.townPayed = this.form.town
       },
       openErrorModal(error) {
         this.errorText = error
@@ -1348,7 +1352,7 @@
     height: 560px;
     /*border-style: solid;
     border-color: blue;*/
-    color: #16264C;
+    color: black;
     line-height: 2;
     margin: 0;
     position: relative;
@@ -1593,7 +1597,8 @@
   .disabledDatepicker .receiptDatepickerInput {
     background-color: rgb(235, 236, 238);
   }
-  .is-invalid .receiptDatepickerInput {    
+  .is-invalid-date {   
+    outline: dotted 2px red !important;    
     background-image: url('~@/assets/invalid-red.png');
     background-repeat: no-repeat;
     background-position: center right calc(2.25rem / 4);

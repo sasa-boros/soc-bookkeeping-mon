@@ -36,15 +36,13 @@
             <i class="arrow right"></i>
           </b-button>
         </b-col>
-        <b-col cols="4">
+        <b-col>
           <div style="text-align:center">Страна дневника:</div>
           <span align="justify">
             <b-button v-for="(value, arpn, index) in annualReportPagesNums" v-bind:key="value" v-on:click="setPage(value)" type="text" variant="light" class="btn-sm">
-              {{index + 1}}
+              {{computePageIndex(index)}}
             </b-button>
           </span>
-        </b-col>
-        <b-col>
           <b-button @click.stop="closeModal()" variant="link" id="modalCancelBtn" class="btn-xs float-right">
             <img src="~@/assets/close.png">
           </b-button>
@@ -459,13 +457,24 @@ export default {
     this.unbindKeys()
   },
   methods: {
+    computePageIndex (index) {
+      if (index == 0) {
+        return 'Н'
+      } else if (index == 15) {
+        return 'З'
+      } else {
+        return index
+      }
+    },
     setPage (pageNum) {
       this.currentPage = pageNum
     },
     findAnnualReportPagesNums () {
       const annualReportPagesNums = {}
-      for (let i=2;i<this.annualReportPages.length;i++) {
-        if (!annualReportPagesNums.page1 && this.annualReportPages[i].startsWith('<style accesskey="1">')) {
+      for (let i=0;i<this.annualReportPages.length;i++) {
+        if (!annualReportPagesNums.page0 && this.annualReportPages[i].startsWith('<style accesskey="0">')) {
+          annualReportPagesNums.page0 = i + 1
+        } else if (i > 1 && !annualReportPagesNums.page1 && this.annualReportPages[i].startsWith('<style accesskey="1">')) {
           annualReportPagesNums.page1 = i + 1
         } else if (i > 3 && !annualReportPagesNums.page2 && this.annualReportPages[i].startsWith('<style accesskey="2">')) {
           annualReportPagesNums.page2 = i + 1
@@ -493,6 +502,8 @@ export default {
           annualReportPagesNums.page13 = i + 1
         } else if (i > 27 && !annualReportPagesNums.page14 && this.annualReportPages[i].startsWith('<style accesskey="14">')) {
           annualReportPagesNums.page14 = i + 1
+        } else if (i > 29 && !annualReportPagesNums.page15 && this.annualReportPages[i].startsWith('<style accesskey="15">')) {
+          annualReportPagesNums.page15 = i + 1
         }
       }
       this.annualReportPagesNums = annualReportPagesNums
@@ -654,7 +665,6 @@ export default {
 </script>
 
 <style scoped>
-
 input {
   text-align: center;
   font-family: "Times New Roman";
@@ -663,6 +673,10 @@ input {
   height:20px;
   border-bottom: .5pt solid black !important;
   border-radius: 0 !important;
+}
+#modalCancelBtn {
+  position: relative;
+  bottom: 30px;
 }
 #currentPageInput {
   width: 38px;

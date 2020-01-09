@@ -54,7 +54,7 @@
         </template>
         <template v-slot:cell(preview)="row">
           <b-button-group>
-            <b-button id="updateDebtBtn" v-on:mouseleave="hideTooltip('updateDebtBtn')" v-b-tooltip.hover.top.window="{title: phrases.seeDetails}" @click.stop="openUpdateDebtModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
+            <b-button id="updateDebtBtn" v-on:mouseleave="hideTooltip('updateDebtBtn')" v-b-tooltip.hover.top.window="{title: phrases.seeDetails}" @click.stop="openUpdateDebtModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:8px;">
               <img src="~@/assets/see-more.png">                                           
             </b-button>
           </b-button-group>                
@@ -70,7 +70,7 @@
         <template v-slot:cell(year)="row">{{ row.item.year }}</template>
         <template v-slot:cell(delete)="row">
           <b-button-group>
-            <b-button id="deleteDebtBtn" v-on:mouseleave="hideTooltip('deleteDebtBtn')" v-b-tooltip.hover.top.window="{title: phrases.deleteDebt}" @click.stop="openDeleteDebtModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
+            <b-button id="deleteDebtBtn" v-on:mouseleave="hideTooltip('deleteDebtBtn')" v-b-tooltip.hover.top.window="{title: phrases.deleteDebt}" @click.stop="openDeleteDebtModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:8px;">
               <img src="~@/assets/delete.png">                                           
             </b-button>     
           </b-button-group>                

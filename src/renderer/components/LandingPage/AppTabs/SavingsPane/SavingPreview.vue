@@ -388,7 +388,7 @@
         }
       },
       clearForm () {
-        this.form.year = null
+        this.form.year = new Date()
         this.form.account = null
         this.form.savingEntity = null
         this.form.amount = null

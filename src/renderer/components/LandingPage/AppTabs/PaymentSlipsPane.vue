@@ -55,7 +55,7 @@
         </template>
         <template v-slot:cell(preview)="row">
           <b-button-group>
-            <b-button id="updatePaymentSlipBtn" v-on:mouseleave="hideTooltip('updatePaymentSlipBtn')" v-b-tooltip.hover.top.window="{title: phrases.seeDetails}" @click.stop="openUpdatePaymentSlipModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
+            <b-button id="updatePaymentSlipBtn" v-on:mouseleave="hideTooltip('updatePaymentSlipBtn')" v-b-tooltip.hover.top.window="{title: phrases.seeDetails}" @click.stop="openUpdatePaymentSlipModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:8px;">
               <img src="~@/assets/see-more.png">                                           
             </b-button>
           </b-button-group>                
@@ -71,7 +71,7 @@
         <template v-slot:cell(formatedDate)="row">{{ row.item.date | formatDate }}</template>
         <template v-slot:cell(delete)="row">
           <b-button-group>
-            <b-button id="deletePaymentSlipBtn" v-on:mouseleave="hideTooltip('deletePaymentSlipBtn')" v-b-tooltip.hover.top.window="{title: phrases.deletePaymentSlip}" @click.stop="openDeletePaymentSlipModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
+            <b-button id="deletePaymentSlipBtn" v-on:mouseleave="hideTooltip('deletePaymentSlipBtn')" v-b-tooltip.hover.top.window="{title: phrases.deletePaymentSlip}" @click.stop="openDeletePaymentSlipModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:8px;">
               <img src="~@/assets/delete.png">                                           
             </b-button>     
           </b-button-group>               
@@ -402,25 +402,6 @@
   .tableDiv {
     display: block;
     overflow: auto;
-  }
-  .inputWithIcon input[type="text"] {
-    padding-left: 40px;
-  }
-  .inputWithIcon {
-    position: relative;
-    transition: 0.3s;
-  }
-  .inputWithIcon img {
-    position: absolute;
-    left: 0;
-    top: 0px;
-    padding: 3px 2px;
-    color: #111;
-    transition: 0.3s;
-    filter: grayscale(100%);
-  }
-  .inputWithIcon input[type="text"]:focus + img {
-    filter: none;
   }
   #perPageSelect{
     width: 60px;

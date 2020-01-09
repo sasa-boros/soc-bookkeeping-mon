@@ -309,7 +309,7 @@
         }
       },
       clearForm () {
-        this.form.year = null
+        this.form.year = new Date()
         this.form.series = null
         this.form.ordinal = null
         this.form.name = null

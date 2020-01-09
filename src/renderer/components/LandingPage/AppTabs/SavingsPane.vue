@@ -54,7 +54,7 @@
         </template>
         <template v-slot:cell(preview)="row">
           <b-button-group>
-            <b-button id="updateSavingBtn" v-on:mouseleave="hideTooltip('updateSavingBtn')" v-b-tooltip.hover.top.window="{title: phrases.seeDetails}" @click.stop="openUpdateSavingModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
+            <b-button id="updateSavingBtn" v-on:mouseleave="hideTooltip('updateSavingBtn')" v-b-tooltip.hover.top.window="{title: phrases.seeDetails}" @click.stop="openUpdateSavingModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:8px;">
               <img src="~@/assets/see-more.png">                                           
             </b-button>
           </b-button-group>                
@@ -73,7 +73,7 @@
         <template v-slot:cell(year)="row">{{ row.item.year }}</template>
         <template v-slot:cell(delete)="row">
           <b-button-group>
-            <b-button id="deleteSavingBtn" v-on:mouseleave="hideTooltip('deleteSavingBtn')" v-b-tooltip.hover.top.window="{title: phrases.deleteSaving}" @click.stop="openDeleteSavingModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
+            <b-button id="deleteSavingBtn" v-on:mouseleave="hideTooltip('deleteSavingBtn')" v-b-tooltip.hover.top.window="{title: phrases.deleteSaving}" @click.stop="openDeleteSavingModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:8px;">
               <img src="~@/assets/delete.png">                                           
             </b-button>     
           </b-button-group>                

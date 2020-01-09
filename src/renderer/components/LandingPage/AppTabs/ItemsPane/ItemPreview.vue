@@ -287,7 +287,7 @@
         }
       },
       clearForm () {
-        this.form.year = null
+        this.form.year = new Date()
         this.form.name = null
         this.form.value = null
         this.valueInputAutonumeric.clear()

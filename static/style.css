@@ -1,3 +1,14 @@
+.no-margins-and-pads {
+  padding-left: 0px;
+  padding-right: 0px;
+  padding-top: 0px;
+  padding-bottom: 0px;
+  margin-left: 0px;
+  margin-right: 0px;
+  margin-top: 0px;
+  margin-bottom: 0px;
+}
+
 .tooltip .tooltip-inner {
   font-size: 80%;
   line-height: 1;
@@ -17,9 +28,6 @@
 .invalidIcon {
   height: 25px;
   width: auto;
-  position: relative;
-  bottom: 10px;
-  left: 30px;
 }
 
 body {
@@ -69,6 +77,7 @@ h1 {
   background-color:  rgb(255, 255, 255);
   border: none;
 }
+
 .btn-light:disabled {
   background-color: rgb(153, 153, 153);
 }
@@ -77,10 +86,23 @@ h1 {
 }
 
 .nav-link {
-  padding-right: 10px !important;
-  padding-left: 10px !important;
+  padding-right: 5px !important;
+  padding-left: 5px !important;
+  padding-top:4px !important;
+  padding-bottom:4px !important;
   color:#514A4A !important;
 }
+
+td .btn-group {
+  height:30px;
+}
+th .custom-checkbox {
+  height:30px;
+}
+td .custom-checkbox {
+  height:30px;
+}
+
 .table tbody tr:hover {
   background-color:  rgb(208, 226, 247) !important;
 }

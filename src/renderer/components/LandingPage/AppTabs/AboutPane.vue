@@ -65,12 +65,12 @@
     </b-row>
     <b-row>
       <b-col>
-        <p align="center"><b>{{phrases.commandOrControl}}</b> + <b>s</b>&nbsp;&nbsp;&nbsp;сачувај</p>
+        <p align="center"><b>{{phrases.commandOrControl}}</b> + <b>s</b>,<b> enter</b>&nbsp;&nbsp;&nbsp;сачувај</p>
       </b-col>
     </b-row>
     <b-row>
       <b-col>
-        <p align="center"><b>{{phrases.commandOrControl}}</b> + <b>e</b>&nbsp;&nbsp;&nbsp;обриши унето</p>
+        <p align="center"><b>{{phrases.commandOrControl}}</b> + <b>e</b>&nbsp;&nbsp;&nbsp;ресетуј унос</p>
       </b-col>
     </b-row>    
     <b-row>

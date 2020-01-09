@@ -1,5 +1,5 @@
 <template>
-  <b-container fluid>
+  <b-container fluid class="no-margins-and-pads">
     <b-card no-body id="appTabsCard">
       <b-tabs card>
         <b-tab class="appTab">

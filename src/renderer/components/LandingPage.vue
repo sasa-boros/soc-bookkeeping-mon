@@ -1,5 +1,5 @@
 <template>
-<b-container fluid>
+<b-container fluid class="no-margins-and-pads">
   <div id="wrapper">
     <main>
       <app-tabs></app-tabs>
@@ -21,8 +21,6 @@
 
 <style>
   #wrapper {
-    margin-top: 20px;
-    margin-bottom: 20px;
     overflow: auto;
     -webkit-overflow-scrolling: touch;
   }
