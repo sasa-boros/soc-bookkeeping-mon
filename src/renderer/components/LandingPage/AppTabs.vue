@@ -1,18 +1,18 @@
 <template>
   <b-container fluid class="no-margins-and-pads">
     <b-card no-body id="appTabsCard">
-      <b-tabs card>
+      <b-tabs card fill no-fade>
         <b-tab class="appTab">
           <template slot="title">
             <img src="~@/assets/annual-report.png" class="appTabsIcon">  
-            {{phrases.annualReport}}
+            <span class="navText">{{phrases.annualReport}}</span>
           </template>
           <annual-report-pane></annual-report-pane>
         </b-tab>
         <b-tab active class="appTab">
           <template slot="title">
             <img src="~@/assets/payment-slip.png" class="appTabsIcon">  
-            {{phrases.paymentSlips}} 
+            <span class="navText">{{phrases.paymentSlips}}</span>
             <span v-show="!arePaymentSlipsValid">
               &nbsp;
               <img id="invalidPsImg" v-on:mouseleave="hideTooltip('invalidPsImg')" src="~@/assets/invalid.png" class="invalidTabIcon">
@@ -26,7 +26,7 @@
         <b-tab class="appTab">
           <template slot="title">
             <img src="~@/assets/receipt.png" class="appTabsIcon">  
-            {{phrases.receipts}}
+            <span class="navText">{{phrases.receipts}}</span>
             <span v-show="!areReceiptsValid">
               &nbsp;
               <img id="invalidRImg" v-on:mouseleave="hideTooltip('invalidRImg')" src="~@/assets/invalid.png" class="invalidTabIcon">
@@ -40,42 +40,42 @@
         <b-tab class="appTab">
           <template slot="title">
             <img src="~@/assets/share.png" class="appTabsIcon">  
-            {{phrases.shares}}
+            <span class="navText">{{phrases.shares}}</span>
           </template>
           <shares-pane v-on:updateBookedYears="updateBookedYears"></shares-pane>
         </b-tab>
         <b-tab class="appTab">
           <template slot="title">
             <img src="~@/assets/savings.png" class="appTabsIcon">  
-            {{phrases.savings}}
+            <span class="navText">{{phrases.savings}}</span>
           </template>
           <savings-pane v-on:updateBookedYears="updateBookedYears"></savings-pane>
         </b-tab>
         <b-tab class="appTab">
           <template slot="title">
             <img src="~@/assets/inventory.png" class="appTabsIcon">  
-            {{phrases.inventory}}
+            <span class="navText">{{phrases.inventory}}</span>
           </template>
           <items-pane v-on:updateBookedYears="updateBookedYears"></items-pane>
         </b-tab>
         <b-tab class="appTab">
           <template slot="title">
             <img src="~@/assets/debt.png" class="appTabsIcon">  
-            {{phrases.debts}}
+            <span class="navText">{{phrases.debts}}</span>
           </template>
           <debts-pane v-on:updateBookedYears="updateBookedYears"></debts-pane>
         </b-tab>
         <b-tab class="appTab">
           <template slot="title">
             <img src="~@/assets/settings.png" class="appTabsIcon">  
-            {{phrases.settings}}
+            <span class="navText">{{phrases.settings}}</span>
           </template>
           <settings-pane v-on:updateDefaultPaymentSlip="updateDefaultPaymentSlip" v-on:updateDefaultReceipt="updateDefaultReceipt" v-on:updateZoomLevel="updateZoomLevel"></settings-pane>
         </b-tab>
         <b-tab class="appTab">
           <template slot="title">
             <img src="~@/assets/info.png" class="appTabsIcon">
-            {{phrases.info}}  
+            <span class="navText">{{phrases.info}}</span> 
           </template>
           <about-pane></about-pane>
         </b-tab>
@@ -273,11 +273,14 @@
     overflow: auto;
   }
   .appTabsIcon {
-    width: auto;
-    margin-right: 5px;
+    width: 25px;
   }
   .invalidTabIcon {
     height: 25px;
     width: auto;
+  }
+
+  .navText {
+    font-size: 90%;
   }
 </style>

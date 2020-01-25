@@ -18,11 +18,9 @@
   background-color:#514A4A;
 }
 
-.tooltip .arrow {
-  bottom: 1px;
-}
 .tooltip .arrow::before {
   border-top-color:#514A4A;
+  border-bottom-color: #514A4A;
 }
 
 .invalidIcon {
@@ -86,8 +84,8 @@ h1 {
 }
 
 .nav-link {
-  padding-right: 5px !important;
-  padding-left: 5px !important;
+  padding-right:4px !important;
+  padding-left: 4px !important;
   padding-top:4px !important;
   padding-bottom:4px !important;
   color:#514A4A !important;
