@@ -1330,7 +1330,6 @@
       }
     }, filters: {
       asRomanNumber(num) {
-        console.log(num)
         return asRoman(num)
       }
     },

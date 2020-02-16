@@ -136,14 +136,14 @@ const printPageStyle = `
       position: relative;
       top: 737px;
       right: 1px;
-      transform: scale(0.73) rotate(270deg) translate(-276mm, 0);
+      transform: scale(0.71) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
     #total-outcome-page {
       position: relative;
       top: 736px;
       right: 1px;
-      transform: scale(0.73) rotate(270deg) translate(-276mm, 0);
+      transform: scale(0.71) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
     #shares-page {
@@ -190,7 +190,7 @@ const printTotalReportStyle = `
       position: relative;
       top:738px;
       right: 1px;
-      transform: scale(0.73) rotate(270deg) translate(-276mm, 0);
+      transform: scale(0.71) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
     #total-outcome-page {
@@ -198,7 +198,7 @@ const printTotalReportStyle = `
       position: relative;
       top:738px;
       right: 1px;
-      transform: scale(0.73) rotate(270deg) translate(-276mm, 0);
+      transform: scale(0.71) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
     #shares-page {
@@ -271,7 +271,7 @@ const printAnnualReportStyle = `
       position: relative;
       top: 1110px;
       right: 1px;
-      transform: scale(1.1) rotate(270deg) translate(-276mm, 0);
+      transform: scale(1.08) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
     #total-outcome-page {
@@ -279,7 +279,7 @@ const printAnnualReportStyle = `
       position: relative;
       top: 1109px;
       right: 1px;
-      transform: scale(1.1) rotate(270deg) translate(-276mm, 0);
+      transform: scale(1.08) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
     #shares-page {
