@@ -75,7 +75,7 @@
         <b-tab class="appTab">
           <template slot="title">
             <img src="~@/assets/info.png" class="appTabsIcon">
-            <span class="navText">{{phrases.info}}</span> 
+            <span class="navText">{{phrases.info}}</span>
           </template>
           <about-pane></about-pane>
         </b-tab>
@@ -132,7 +132,7 @@
         arePaymentSlipsValid: true,
         areReceiptsValid: true,
         errorText: "",
-        zoomLevel: Big(1.3)
+        zoomLevel: Big(1.2)
       }
     },
     created () {
@@ -226,13 +226,13 @@
         })
       },
       increaseZoomLevel () {
-        if(!this.zoomLevel.gte(1.8)) {
+        if(!this.zoomLevel.gte(1.7)) {
           this.zoomLevel = this.zoomLevel.plus(0.1)
           webFrame.setZoomFactor(parseFloat(this.zoomLevel))
         }
       },
       decreaseZoomLevel () {
-        if(!this.zoomLevel.lte(0.8)) {
+        if(!this.zoomLevel.lte(0.7)) {
           this.zoomLevel = this.zoomLevel.minus(0.1)
           webFrame.setZoomFactor(parseFloat(this.zoomLevel))
         }
@@ -272,6 +272,9 @@
     display: block;
     overflow: auto;
   }
+  .appTab.focus-visible {
+    box-shadow: none !important;
+  }
   .appTabsIcon {
     width: 25px;
   }
@@ -279,7 +282,6 @@
     height: 25px;
     width: auto;
   }
-
   .navText {
     font-size: 90%;
   }

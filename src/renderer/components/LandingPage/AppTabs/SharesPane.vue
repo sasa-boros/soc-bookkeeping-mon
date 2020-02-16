@@ -24,7 +24,7 @@
     </b-row>
 
     <div class="tableDiv">
-      <b-table show-empty hover small id="shares-table" class="mt-3"
+      <b-table show-empty hover small id="shares-table" class="mt-3" fixed
               stacked="md"
               bordered
               :items="items"
@@ -47,15 +47,15 @@
               v-on:head-clicked="unsort"
       >
         <template v-slot:head(select)="row">
-          <span>
-            <b-form-checkbox v-on:change="toggleCheckAll" v-model="checkAll">
+          <span v-on:mouseleave="hideTooltip()">
+            <b-form-checkbox v-b-tooltip.hover.top.window="{title: phrases.selectAll}" v-on:change="toggleCheckAll" v-model="checkAll">
             </b-form-checkbox>
           </span>
         </template>
         <template v-slot:cell(preview)="row">
           <b-button-group>
-            <b-button id="updateShareBtn" v-on:mouseleave="hideTooltip('updateShareBtn')" v-b-tooltip.hover.top.window="{title: phrases.seeDetails}" @click.stop="openUpdateShareModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:8px;">
-              <img src="~@/assets/see-more.png">                                           
+            <b-button id="updateShareBtn" v-on:mouseleave="hideTooltip('updateShareBtn')" v-b-tooltip.hover.top.window="{title: phrases.seeDetails}" @click.stop="openUpdateShareModal(row.item)" variant="link" class="btn-xs">
+              <img src="~@/assets/see-more.png" class="rowImg">                                           
             </b-button>
           </b-button-group>                
         </template>
@@ -72,8 +72,8 @@
         <template v-slot:cell(year)="row">{{ row.item.year }}</template>
         <template v-slot:cell(delete)="row">
           <b-button-group>
-            <b-button id="deleteShareBtn" v-on:mouseleave="hideTooltip('deleteShareBtn')" v-b-tooltip.hover.top.window="{title: phrases.deleteShare}" @click.stop="openDeleteShareModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:8px;">
-              <img src="~@/assets/delete.png">                                           
+            <b-button id="deleteShareBtn" v-on:mouseleave="hideTooltip('deleteShareBtn')" v-b-tooltip.hover.top.window="{title: phrases.deleteShare}" @click.stop="openDeleteShareModal(row.item)" variant="link" class="btn-xs">
+              <img src="~@/assets/delete.png" class="rowImg">                                           
             </b-button>     
           </b-button-group>                
         </template>
@@ -185,14 +185,14 @@
       },
       fields () {
         return [
-          { key: 'select', label: '', thStyle: {outline: 'none'} },
-          { key: 'preview', label: '', thStyle: {outline: 'none'}  },
+          { key: 'select', label: '', thStyle: {outline: 'none', width: '30px'} },
+          { key: 'preview', label: '', thStyle: {outline: 'none', width: '70px'}  },
           { key: 'series', label: this.phrases.series, class: 'text-center', sortable: true, thStyle: {'outline': 'none', 'user-select': 'none'} },
           { key: 'ordinal', label: this.phrases.ordinal, class: 'text-center', sortable: true, thStyle: {'outline': 'none', 'user-select': 'none'} },
           { key: 'name', label: this.phrases.name, class: 'text-center', thStyle: {'outline': 'none', 'user-select': 'none'} },
           { key: 'nominalValue', label: this.phrases.nominalValue, class: 'text-center', sortable: true, thStyle: {'outline': 'none', 'user-select': 'none'} },
           { key: 'year', label: this.phrases.year, class: 'text-center', sortable: true, thStyle: {'outline': 'none', 'user-select': 'none'} },
-          { key: 'delete', label: '', thStyle: {outline: 'none'} },
+          { key: 'delete', label: '', thStyle: {outline: 'none', width: '70px'} },
         ]
       }
     },

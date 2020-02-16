@@ -68,6 +68,7 @@
     "autonumeric": "^4.5.10",
     "big.js": "^5.2.2",
     "bootstrap-vue": "^2.1.0",
+    "electron-context-menu": "^0.16.0",
     "focus-visible": "^5.0.2",
     "lodash": "^4.17.15",
     "mousetrap": "^1.6.3",

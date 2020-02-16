@@ -10,19 +10,21 @@ const AutoNumeric = require('autonumeric')
 const amountNumberOptions = {
   decimalCharacter : ',',
   digitGroupSeparator : '.',
-  maximumValue: 999999999,
+  maximumValue: 99999999,
   minimumValue: 0,
   decimalPlacesShownOnFocus: 2,
-  modifyValueOnWheel: false
+  modifyValueOnWheel: false,
+  watchExternalChanges: true
 }
 
 const largeAmountNumberOptions = {
   decimalCharacter : ',',
   digitGroupSeparator : '.',
-  maximumValue: 999999999999,
+  maximumValue: 999999999,
   minimumValue: 0,
   decimalPlacesShownOnFocus: 2,
-  modifyValueOnWheel: false
+  modifyValueOnWheel: false,
+  watchExternalChanges: true
 }
 
 const partitionPositionNumberOptions = {
@@ -39,7 +41,6 @@ function asRoman(num) {
   if (num <= 0) {
     return num
   }
-  
   var digits = String(+num).split(""),
   key = ["","C","CC","CCC","CD","D","DC","DCC","DCCC","CM",
   "","X","XX","XXX","XL","L","LX","LXX","LXXX","XC",
@@ -266,7 +267,7 @@ function mapAnnualReportDataToAnnualReportDataForm (annualReportData, incomeCode
       let totalIncomePerCodePredicted = annualReportData.totalIncomePerCodePredicted.find(tipcp => {
         return tipcp.incomeCode.partition == incomeCode.partition && tipcp.incomeCode.position == incomeCode.position
       })
-      annualReportDataForm.totalIncomePerCodePredicted.push({incomeCode: incomeCode, income: totalIncomePerCodePredicted ? asFormatedString(totalIncomePerCodePredicted.income, amountNumberOptions) : null})
+      annualReportDataForm.totalIncomePerCodePredicted.push({incomeCode: incomeCode, income: totalIncomePerCodePredicted ? asFormatedString(totalIncomePerCodePredicted.income, largeAmountNumberOptions) : null})
     } else {
       annualReportDataForm.totalIncomePerCodePredicted.push({incomeCode: incomeCode, income: null})
     }
@@ -277,7 +278,7 @@ function mapAnnualReportDataToAnnualReportDataForm (annualReportData, incomeCode
       let totalOutcomePerCodeAllowed = annualReportData.totalOutcomePerCodeAllowed.find(topca => {
         return topca.outcomeCode.partition == outcomeCode.partition && topca.outcomeCode.position == outcomeCode.position
       })
-      annualReportDataForm.totalOutcomePerCodeAllowed.push({outcomeCode: outcomeCode, outcome: totalOutcomePerCodeAllowed ? asFormatedString(totalOutcomePerCodeAllowed.outcome, amountNumberOptions) : null })
+      annualReportDataForm.totalOutcomePerCodeAllowed.push({outcomeCode: outcomeCode, outcome: totalOutcomePerCodeAllowed ? asFormatedString(totalOutcomePerCodeAllowed.outcome, largeAmountNumberOptions) : null })
     } else {
       annualReportDataForm.totalOutcomePerCodeAllowed.push({outcomeCode: outcomeCode, outcome: null })
     }
@@ -291,11 +292,11 @@ function mapAnnualReportDataFormToAnnualReportData (annualReportDataForm, year) 
   annualReportData._id = annualReportDataForm._id
   annualReportData.totalIncomePerCodePredicted = []
   annualReportDataForm.totalIncomePerCodePredicted.forEach(tipcp => {
-    annualReportData.totalIncomePerCodePredicted.push({incomeCode: tipcp.incomeCode, income: asFloat(tipcp.income, amountNumberOptions)})
+    annualReportData.totalIncomePerCodePredicted.push({incomeCode: tipcp.incomeCode, income: asFloat(tipcp.income, largeAmountNumberOptions)})
   })
   annualReportData.totalOutcomePerCodeAllowed = []
   annualReportDataForm.totalOutcomePerCodeAllowed.forEach(topca => {
-    annualReportData.totalOutcomePerCodeAllowed.push({outcomeCode: topca.outcomeCode, outcome: asFloat(topca.outcome, amountNumberOptions)})
+    annualReportData.totalOutcomePerCodeAllowed.push({outcomeCode: topca.outcomeCode, outcome: asFloat(topca.outcome, largeAmountNumberOptions)})
   })
   annualReportData.transferFromPreviousYear = asFloat(annualReportDataForm.transferFromPreviousYear, largeAmountNumberOptions)
   annualReportData.shareValueDepreciatedDuringYear = asFloat(annualReportDataForm.shareValueDepreciatedDuringYear, largeAmountNumberOptions)
@@ -327,6 +328,7 @@ function mapCodeToCodeForm (code) {
   codeForm.partition = asFormatedString(code.partition, partitionPositionNumberOptions)
   codeForm.position = asFormatedString(code.position, partitionPositionNumberOptions)
   codeForm.description = code.description
+  codeForm.tax = code.tax
   return codeForm
 }
 
@@ -336,6 +338,7 @@ function mapCodeFormToCode (codeForm) {
   code.partition = asInt(codeForm.partition, partitionPositionNumberOptions)
   code.position = asInt(codeForm.position, partitionPositionNumberOptions)
   code.description = codeForm.description
+  code.tax = codeForm.tax
   return code
 }
 
@@ -470,21 +473,12 @@ function mapPaymentSlipToPaymentSlipForm (paymentSlip) {
   paymentSlipForm.annualReportPage = paymentSlip.annualReportPage;
   paymentSlipForm.date = paymentSlip.date;
   // ensures reactivity
-  paymentSlipForm.firstPartition = null;
-  paymentSlipForm.firstPosition = null;
-  paymentSlipForm.firstIncome = null;
-  paymentSlipForm.secondPartition = null;
-  paymentSlipForm.secondPosition = null;
-  paymentSlipForm.secondIncome = null;
-  paymentSlipForm.thirdPartition = null;
-  paymentSlipForm.thirdPosition = null;
-  paymentSlipForm.thirdIncome = null;
-  paymentSlipForm.fourthPartition = null;
-  paymentSlipForm.fourthPosition = null;
-  paymentSlipForm.fourthIncome = null;
-  paymentSlipForm.fifthPartition = null;
-  paymentSlipForm.fifthPosition = null;
-  paymentSlipForm.fifthIncome = null;
+  for (let i = 0; i < partPosNumber.length; i++) {
+    paymentSlipForm[partPosNumber[i] + 'Partition'] = null;
+    paymentSlipForm[partPosNumber[i] + 'Position'] = null;
+    paymentSlipForm[partPosNumber[i] + 'Income'] = null;
+    paymentSlipForm[partPosNumber[i] + 'CodeValid'] = null
+  }
   if (paymentSlip.incomePerCode) {
     for (let i = 0; i < paymentSlip.incomePerCode.length; i++) {
       paymentSlipForm[partPosNumber[i] + 'Partition'] = paymentSlip.incomePerCode[i].incomeCode.partition;
@@ -516,35 +510,13 @@ function mapPaymentSlipFormToPaymentSlip(paymentSlipForm, incomeCodes, nullAsZer
   paymentSlip.reason = paymentSlipForm.reason;
   paymentSlip.payed = paymentSlipForm.payed;
   paymentSlip.incomePerCode = [];
-  const firstIncomeCode = incomeCodes.find(incomeCode => {
-    return incomeCode.partition == paymentSlipForm.firstPartition && incomeCode.position == paymentSlipForm.firstPosition;
-  })
-  const secondIncomeCode = incomeCodes.find(incomeCode => {
-    return incomeCode.partition == paymentSlipForm.secondPartition && incomeCode.position == paymentSlipForm.secondPosition;
-  })
-  const thirdIncomeCode = incomeCodes.find(incomeCode => {
-    return incomeCode.partition == paymentSlipForm.thirdPartition && incomeCode.position == paymentSlipForm.thirdPosition;
-  })
-  const fourthIncomeCode = incomeCodes.find(incomeCode => {
-    return incomeCode.partition == paymentSlipForm.fourthPartition && incomeCode.position == paymentSlipForm.fourthPosition;
-  })
-  const fifthIncomeCode = incomeCodes.find(incomeCode => {
-    return incomeCode.partition == paymentSlipForm.fifthPartition && incomeCode.position == paymentSlipForm.fifthPosition;
-  })
-  if (firstIncomeCode) {
-    paymentSlip.incomePerCode.push({incomeCode: firstIncomeCode, income: asFloat(paymentSlipForm.firstIncome, amountNumberOptions, nullAsZero)});
-  }
-  if (secondIncomeCode) {
-    paymentSlip.incomePerCode.push({incomeCode: secondIncomeCode, income: asFloat(paymentSlipForm.secondIncome, amountNumberOptions, nullAsZero)});
-  }
-  if (thirdIncomeCode) {
-    paymentSlip.incomePerCode.push({incomeCode: thirdIncomeCode, income: asFloat(paymentSlipForm.thirdIncome, amountNumberOptions, nullAsZero)});
-  }
-  if (fourthIncomeCode) {
-    paymentSlip.incomePerCode.push({incomeCode: fourthIncomeCode, income: asFloat(paymentSlipForm.fourthIncome, amountNumberOptions, nullAsZero)});
-  }
-  if (fifthIncomeCode) {
-    paymentSlip.incomePerCode.push({incomeCode: fifthIncomeCode, income: asFloat(paymentSlipForm.fifthIncome, amountNumberOptions, nullAsZero)});
+  for (let i = 0; i < partPosNumber.length; i++) {
+    let ic = incomeCodes.find(incomeCode => {
+      return incomeCode.partition == paymentSlipForm[partPosNumber[i] + 'Partition'] && incomeCode.position == paymentSlipForm[partPosNumber[i] + 'Position'];
+    })
+    if (ic) {
+      paymentSlip.incomePerCode.push({incomeCode: ic, income: asFloat(paymentSlipForm[partPosNumber[i] + 'Income'], amountNumberOptions, nullAsZero)});
+    }
   }
   return paymentSlip;
 }
@@ -560,21 +532,12 @@ function mapReceiptToReceiptForm (receipt) {
     receiptForm.date = receipt.date;
     receiptForm.isValid = receipt.isValid;
     // ensures reactivity
-    receiptForm.firstPartition = null;
-    receiptForm.firstPosition = null;
-    receiptForm.firstOutcome = null;
-    receiptForm.secondPartition = null;
-    receiptForm.secondPosition = null;
-    receiptForm.secondOutcome = null;
-    receiptForm.thirdPartition = null;
-    receiptForm.thirdPosition = null;
-    receiptForm.thirdOutcome = null;
-    receiptForm.fourthPartition = null;
-    receiptForm.fourthPosition = null;
-    receiptForm.fourthOutcome = null;
-    receiptForm.fifthPartition = null;
-    receiptForm.fifthPosition = null;
-    receiptForm.fifthOutcome = null;
+    for (let i = 0; i < partPosNumber.length; i++) {
+      receiptForm[partPosNumber[i] + 'Partition'] = null;
+      receiptForm[partPosNumber[i] + 'Position'] = null;
+      receiptForm[partPosNumber[i] + 'Outcome'] = null;
+      receiptForm[partPosNumber[i] + 'CodeValid'] = null
+    }
     if (receipt.outcomePerCode) {
       for (let i = 0; i < receipt.outcomePerCode.length; i++) {
         receiptForm[partPosNumber[i] + 'Partition'] = receipt.outcomePerCode[i].outcomeCode.partition;
@@ -608,35 +571,13 @@ function mapReceiptFormToReceipt (receiptForm, outcomeCodes, nullAsZero) {
     receipt.townPayed = receiptForm.townPayed;
     receipt.received = receiptForm.received;
     receipt.outcomePerCode = [];
-    const firstOutcomeCode = outcomeCodes.find(outcomeCode => {
-      return outcomeCode.partition == receiptForm.firstPartition && outcomeCode.position == receiptForm.firstPosition;
-    })
-    const secondOutcomeCode = outcomeCodes.find(outcomeCode => {
-      return outcomeCode.partition == receiptForm.secondPartition && outcomeCode.position == receiptForm.secondPosition;
-    })
-    const thirdOutcomeCode = outcomeCodes.find(outcomeCode => {
-      return outcomeCode.partition == receiptForm.thirdPartition && outcomeCode.position == receiptForm.thirdPosition;
-    })
-    const fourthOutcomeCode = outcomeCodes.find(outcomeCode => {
-      return outcomeCode.partition == receiptForm.fourthPartition && outcomeCode.position == receiptForm.fourthPosition;
-    })
-    const fifthOutcomeCode = outcomeCodes.find(outcomeCode => {
-      return outcomeCode.partition == receiptForm.fifthPartition && outcomeCode.position == receiptForm.fifthPosition;
-    })
-    if (firstOutcomeCode) {
-      receipt.outcomePerCode.push({outcomeCode: firstOutcomeCode, outcome: asFloat(receiptForm.firstOutcome, amountNumberOptions, nullAsZero)});
-    }
-    if (secondOutcomeCode) {
-      receipt.outcomePerCode.push({outcomeCode: secondOutcomeCode, outcome: asFloat(receiptForm.secondOutcome, amountNumberOptions, nullAsZero)});
-    }
-    if (thirdOutcomeCode) {
-      receipt.outcomePerCode.push({outcomeCode: thirdOutcomeCode, outcome: asFloat(receiptForm.thirdOutcome, amountNumberOptions, nullAsZero)});
-    }
-    if (fourthOutcomeCode) {
-      receipt.outcomePerCode.push({outcomeCode: fourthOutcomeCode, outcome: asFloat(receiptForm.fourthOutcome, amountNumberOptions, nullAsZero)});
-    }
-    if (fifthOutcomeCode) {
-      receipt.outcomePerCode.push({outcomeCode: fifthOutcomeCode, outcome: asFloat(receiptForm.fifthOutcome, amountNumberOptions, nullAsZero)});
+    for (let i = 0; i < partPosNumber.length; i++) {
+      let oc = outcomeCodes.find(outcomeCode => {
+        return outcomeCode.partition == receiptForm[partPosNumber[i] + 'Partition'] && outcomeCode.position == receiptForm[partPosNumber[i] + 'Position'];
+      })
+      if (oc) {
+        receipt.outcomePerCode.push({outcomeCode: oc, outcome: asFloat(receiptForm[partPosNumber[i] + 'Outcome'], amountNumberOptions, nullAsZero)});
+      }
     }
     return receipt;
 }
@@ -660,6 +601,11 @@ function saveAs (pathToFile, fileName, callback) {
   }
 }
 
+function open (filters) {
+  const userChosenPath = dialog.showOpenDialog(currentWindow, { filters: filters })
+  return userChosenPath
+}
+
 function copy(pathToFile, userChosenPath, callback) {
   var readStream = fs.createReadStream(pathToFile);
   var writeStream = fs.createWriteStream(userChosenPath);
@@ -672,11 +618,6 @@ function copy(pathToFile, userChosenPath, callback) {
   });
 
   readStream.pipe(writeStream);
-}
-
-function open (filters) {
-  const userChosenPath = dialog.showOpenDialog(currentWindow, { filters: filters })
-  return userChosenPath
 }
 
 function reloadApp () {

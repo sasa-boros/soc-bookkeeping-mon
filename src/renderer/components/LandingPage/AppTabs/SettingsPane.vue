@@ -14,7 +14,7 @@
         </b-btn>
       </b-col>
     </b-row>
-        <b-row>
+    <b-row>
       <b-col cols=3>
         <span class="buttonLeveledText">{{ phrases.exportBackup }}:</span> 
       </b-col>
@@ -35,6 +35,8 @@
       </b-col>
     </b-row>
     <hr>
+    <br>
+    
     <!--<b-row>
       <b-col cols=4>
         {{ phrases.setDefaultPaymentSlip }}:
@@ -72,18 +74,14 @@
     <code-pane v-on:updateDefaultPaymentSlip="updateDefaultPaymentSlip" v-on:updateDefaultReceipt="updateDefaultReceipt"></code-pane>
 
     <!-- Default slip modal -->
-    <!--
-    <b-modal no-close-on-backdrop hide-footer hide-header size="a5" id="default-payment-slip-modal">
+    <!--<b-modal no-close-on-backdrop hide-footer hide-header size="a5" id="default-payment-slip-modal">
       <payment-slip-preview parentModal="default-payment-slip-modal" :defaultPaymentSlipPreview='true' v-on:updateDefaultPaymentSlip="updateDefaultPaymentSlip"></payment-slip-preview>
-    </b-modal>
-    -->
+    </b-modal>-->
 
     <!-- Default receipt modal -->
-    <!--
-    <b-modal no-close-on-backdrop hide-footer hide-header size="a5" id="default-receipt-modal">
+    <!--<b-modal no-close-on-backdrop hide-footer hide-header size="a5" id="default-receipt-modal">
       <receipt-preview parentModal="default-receipt-modal" :defaultReceiptPreview='true' v-on:updateDefaultReceipt="updateDefaultReceipt"></receipt-preview>
-    </b-modal>
-    -->
+    </b-modal>-->
 
     <b-modal no-close-on-backdrop id="import-backup-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('importBackupModal')">
       <message-confirm-dialog ref="importBackupModal" parentModal="import-backup-modal" type="confirm" :text="phrases.areYouSureToImportBackup" :subText="phrases.importWillCauseDataLoss" :cancelOkText="phrases.cancel" :confirmText="phrases.ok" v-on:confirmed="importBackupConfirmed"></message-confirm-dialog>
@@ -120,6 +118,7 @@
     <b-tooltip boundary='window' target="importBackupButton" triggers="hover" placement="top" ref="importBackupButtonTooltip" v-on:hide.prevent>
       {{phrases.importCopy}}
     </b-tooltip>
+
   </b-container>
 </template>
 
@@ -161,7 +160,7 @@
         },
         churchMunicipality: null,
         churchTown: null,
-        zoomLevel: Big(1.3),
+        zoomLevel: Big(1.2),
         commonDataSaveTimeout: null,
         alreadyPressed: false,
         disableCommonSaveBtn: true,
@@ -178,7 +177,7 @@
         if(!this.zoomLevel) {
           return null;
         }
-        var formatedZoomLevel = this.zoomLevel.times(100).minus(30)
+        var formatedZoomLevel = this.zoomLevel.times(100).minus(20)
         return formatedZoomLevel.toString() + ' %'
       }
     },
@@ -223,10 +222,6 @@
       focusModalCloseButton (modalRef) {
         this.$refs[modalRef].$refs.closeButton.focus()
       },
-      openErrorModal(error) {
-        this.errorText = error
-        this.$root.$emit('bv::show::modal', 'settings-pane-error-modal')
-      },
       loadAnnualReportCommon () {
         const self = this
         annualReportController.getAnnualReportCommonData().then((res) => {
@@ -259,7 +254,7 @@
         const self = this
         settingsController.getSettings().then(function (res) {
           if (!res.err) {
-            self.zoomLevel = Big(res.data && res.data.zoomLevel ? res.data.zoomLevel : 1.3)
+            self.zoomLevel = Big(res.data && res.data.zoomLevel ? res.data.zoomLevel : 1.2)
             self.$emit('updateZoomLevel', parseFloat(self.zoomLevel))
           } else {
             self.openErrorModal(res.err)
@@ -296,13 +291,13 @@
         this.$root.$emit('bv::show::modal', 'default-receipt-modal')
       },
       increaseZoomLevel () {
-        if(!this.zoomLevel.gte(1.8)) {
+        if(!this.zoomLevel.gte(1.7)) {
           this.zoomLevel = this.zoomLevel.plus(0.1)
           this.updateZoomLevel()
         }
       },
       decreaseZoomLevel () {
-        if(!this.zoomLevel.lte(0.8)) {
+        if(!this.zoomLevel.lte(0.7)) {
           this.zoomLevel = this.zoomLevel.minus(0.1)
           this.updateZoomLevel()
         }
@@ -316,6 +311,10 @@
             self.openErrorModal(res.err)
           }
         })
+      },
+      openErrorModal(error) {
+        this.errorText = error
+        this.$root.$emit('bv::show::modal', 'settings-pane-error-modal')
       },
       hideTooltip (elementId) {
         if (elementId) {
@@ -342,8 +341,8 @@
   }
 
   #churchMunicipalityInput {
-    width: 440px;
-    max-width: 440px;
+    width: 400px;
+    max-width: 400px;
     border-style: none;
     display:inline;
   }
@@ -376,7 +375,7 @@
     letter-spacing: 95%;
   }
 
- .buttonLeveledText {
+  .buttonLeveledText {
     position: relative;
     top:13px;
   }

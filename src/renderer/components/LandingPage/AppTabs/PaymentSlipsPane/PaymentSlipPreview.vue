@@ -13,13 +13,13 @@
                                                                                                                                            Уплатио,
                          Примио благајник,                                                <b-form-input id="payedInput" :disabled="defaultPaymentSlipPreview" v-on:keypress="limitInputPerSize" ref="payedInput" v-model="form.payed" class="input-small" type="text"></b-form-input> 
 <br/><b-form-input disabled class="input-small" id="receivedInput" type="text"></b-form-input>                        Књижити у корист буџета за     <b-form-input disabled id="yearInput" ref="yearInput" class="input-small" v-model="year"></b-form-input> год.
-у <b-form-input id="townReceivedInput" v-on:keypress="limitInputPerSize" ref="townReceivedInput" v-model="form.townReceived" class="input-small" type="text"></b-form-input>&nbsp;          <span class="partText">Парт. </span><b-form-input id="firstPartInput" :disabled="defaultPaymentSlipPreview" type="text" v-model="formatedFirstPart" v-bind:class="{ 'is-invalid': !disableFirstPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableFirstPartTooltip ? null : hideTooltip('firstPartPosSelect')"><b-dropdown id="firstPartPosSelect" :disabled="defaultPaymentSlipPreview" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedFirstPartPos(option.value)" v-for="(option, index) in firstPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span> поз. <span v-on:mouseleave="disableFirstPosTooltip ? null : hideTooltip('firstPosInputWrapper')" id="firstPosInputWrapper"><b-form-input id="firstPosInput" v-model="form.firstPosition" v-bind:class="{ 'is-invalid': !disableFirstPosTooltip}" class="input-small" disabled/></span> дин. <span v-on:mouseleave="disableFirstIncomeTooltip ? null : hideTooltip('firstIncomeInputWrapper')" id="firstIncomeInputWrapper"><b-form-input id="firstIncomeInput" v-model="form.firstIncome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableFirstIncomeTooltip }" :disabled="missingFirstPart" type="text"></b-form-input></span>
-<span v-on:mouseleave="disableDateTooltip ? null : hideTooltip('dateInput')"><datepicker id="dateInput" ref="dateInput" v-model="form.date" :language="calendarLanguages.srCYRL" :disabled="defaultPaymentSlipPreview" :input-class="{ 'is-invalid-date': shouldValidate && missingDate, 'disabledDatepicker': defaultPaymentSlipPreview, 'paymentSlipDatepickerInput': true}" wrapper-class="paymentSlipDatepickerWrapper" calendar-class="paymentSlipDatepickerCalendar"></datepicker> год. </span>&nbsp;                                                            <span class="partText">”&nbsp;&nbsp;&nbsp;</span><b-form-input id="secondPartInput" :disabled="defaultPaymentSlipPreview" type="text" v-model="formatedSecondPart" v-bind:class="{ 'is-invalid': !disableSecondPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableSecondPartTooltip ? null : hideTooltip('secondPartPosSelect')"><b-dropdown id="secondPartPosSelect" :disabled="defaultPaymentSlipPreview" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedSecondPartPos(option.value)" v-for="(option, index) in secondPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableSecondPosTooltip ? null : hideTooltip('secondPosInputWrapper')" id="secondPosInputWrapper"><b-form-input id="secondPosInput" v-model="form.secondPosition" v-bind:class="{ 'is-invalid': !disableSecondPosTooltip }" class="input-small" disabled/></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableSecondIncomeTooltip ? null : hideTooltip('secondIncomeInputWrapper')" id="secondIncomeInputWrapper"><b-form-input v-model="form.secondIncome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableSecondIncomeTooltip }" id="secondIncomeInput" :disabled="missingSecondPart" type="text"></b-form-input></span>
-&nbsp;                                                                                                <span class="partText">”&nbsp;&nbsp;&nbsp;</span><b-form-input id="thirdPartInput" :disabled="defaultPaymentSlipPreview" type="text" v-model="formatedThirdPart" v-bind:class="{ 'is-invalid': !disableThirdPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableThirdPartTooltip ? null : hideTooltip('thirdPartPosSelect')"><b-dropdown id="thirdPartPosSelect" :disabled="defaultPaymentSlipPreview" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedThirdPartPos(option.value)" v-for="(option, index) in thirdPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableThirdPosTooltip ? null : hideTooltip('thirdPosInputWrapper')" id="thirdPosInputWrapper"><b-form-input id="thirdPosInput" v-model="form.thirdPosition" v-bind:class="{ 'is-invalid': !disableThirdPosTooltip }" class="input-small" disabled/></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableThirdIncomeTooltip ? null : hideTooltip('thirdIncomeInputWrapper')" id="thirdIncomeInputWrapper"><b-form-input v-model="form.thirdIncome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableThirdIncomeTooltip }" id="thirdIncomeInput" :disabled="missingThirdPart" type="text"></b-form-input></span>
-&nbsp;                                                                                                <span class="partText">”&nbsp;&nbsp;&nbsp;</span><b-form-input id="fourthPartInput" :disabled="defaultPaymentSlipPreview" type="text" v-model="formatedFourthPart" v-bind:class="{ 'is-invalid': !disableFourthPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableFourthPartTooltip ? null : hideTooltip('fourthPartPosSelect')"><b-dropdown id="fourthPartPosSelect" :disabled="defaultPaymentSlipPreview" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedFourthPartPos(option.value)" v-for="(option, index) in fourthPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableFourthPosTooltip ? null : hideTooltip('fourthPosInputWrapper')" id="fourthPosInputWrapper"><b-form-input id="fourthPosInput" v-model="form.fourthPosition" v-bind:class="{ 'is-invalid': !disableFourthPosTooltip }" class="input-small" disabled/></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableFourthIncomeTooltip ? null : hideTooltip('fourthIncomeInputWrapper')" id="fourthIncomeInputWrapper"><b-form-input v-model="form.fourthIncome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableFourthIncomeTooltip }" id="fourthIncomeInput" :disabled="missingFourthPart" type="text"></b-form-input></span>
-&nbsp;                                                                                                <span class="partText">”&nbsp;&nbsp;&nbsp;</span><b-form-input id="fifthPartInput" :disabled="defaultPaymentSlipPreview" type="text" v-model="formatedFifthPart" v-bind:class="{ 'is-invalid': !disableFifthPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableFifthPartTooltip ? null : hideTooltip('fifthPartPosSelect')"><b-dropdown id="fifthPartPosSelect" :disabled="defaultPaymentSlipPreview" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedFifthPartPos(option.value)" v-for="(option, index) in fifthPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableFifthPosTooltip ? null : hideTooltip('fifthPosInputWrapper')" id="fifthPosInputWrapper"><b-form-input id="fifthPosInput" v-model="form.fifthPosition" v-bind:class="{ 'is-invalid': !disableFifthPosTooltip }" class="input-small" disabled/></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableFifthIncomeTooltip ? null : hideTooltip('fifthIncomeInputWrapper')" id="fifthIncomeInputWrapper"><b-form-input v-model="form.fifthIncome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableFifthIncomeTooltip }" id="fifthIncomeInput" :disabled="missingFifthPart" type="text"></b-form-input></span>
+у <b-form-input id="townReceivedInput" v-on:keypress="limitInputPerSize" ref="townReceivedInput" v-model="form.townReceived" class="input-small" type="text"></b-form-input>&nbsp;          <span class="partText">Парт. </span><b-form-input id="firstPartInput" :disabled="defaultPaymentSlipPreview" type="text" v-model="formatedFirstPart" v-bind:class="{ 'is-invalid': !disableFirstPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableFirstPartTooltip ? null : hideTooltip('firstPartPosSelect')"><b-dropdown id="firstPartPosSelect" :disabled="defaultPaymentSlipPreview" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedFirstPartPos(option.value)" v-for="(option, index) in firstPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span> поз. <span v-on:mouseleave="disableFirstPosTooltip ? null : hideTooltip('firstPosInputWrapper')" id="firstPosInputWrapper"><b-form-input id="firstPosInput" v-model="form.firstPosition" v-bind:class="{ 'is-invalid': !disableFirstPosTooltip}" class="input-small" disabled/></span> дин. <span v-on:mouseleave="disableFirstIncomeTooltip ? null : hideTooltip('firstIncomeInputWrapper')" id="firstIncomeInputWrapper"><b-form-input v-on:cut="updateAfterCut" id="firstIncomeInput" v-model="form.firstIncome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableFirstIncomeTooltip }" :disabled="missingFirstPart" type="text"></b-form-input></span>
+<span v-on:mouseleave="disableDateTooltip ? null : hideTooltip('dateInput')"><datepicker id="dateInput" ref="dateInput" v-model="form.date" :language="calendarLanguages.srCYRL" :disabled="defaultPaymentSlipPreview" :input-class="{ 'is-invalid-date': shouldValidate && missingDate, 'disabledDatepicker': defaultPaymentSlipPreview, 'paymentSlipDatepickerInput': true}" wrapper-class="paymentSlipDatepickerWrapper" calendar-class="paymentSlipDatepickerCalendar"></datepicker> год. </span>&nbsp;                                                            <span class="partText">”&nbsp;&nbsp;&nbsp;</span><b-form-input id="secondPartInput" :disabled="defaultPaymentSlipPreview" type="text" v-model="formatedSecondPart" v-bind:class="{ 'is-invalid': !disableSecondPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableSecondPartTooltip ? null : hideTooltip('secondPartPosSelect')"><b-dropdown id="secondPartPosSelect" :disabled="defaultPaymentSlipPreview" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedSecondPartPos(option.value)" v-for="(option, index) in secondPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableSecondPosTooltip ? null : hideTooltip('secondPosInputWrapper')" id="secondPosInputWrapper"><b-form-input id="secondPosInput" v-model="form.secondPosition" v-bind:class="{ 'is-invalid': !disableSecondPosTooltip }" class="input-small" disabled/></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableSecondIncomeTooltip ? null : hideTooltip('secondIncomeInputWrapper')" id="secondIncomeInputWrapper"><b-form-input v-on:cut="updateAfterCut" v-model="form.secondIncome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableSecondIncomeTooltip }" id="secondIncomeInput" :disabled="missingSecondPart" type="text"></b-form-input></span>
+&nbsp;                                                                                                <span class="partText">”&nbsp;&nbsp;&nbsp;</span><b-form-input id="thirdPartInput" :disabled="defaultPaymentSlipPreview" type="text" v-model="formatedThirdPart" v-bind:class="{ 'is-invalid': !disableThirdPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableThirdPartTooltip ? null : hideTooltip('thirdPartPosSelect')"><b-dropdown id="thirdPartPosSelect" :disabled="defaultPaymentSlipPreview" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedThirdPartPos(option.value)" v-for="(option, index) in thirdPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableThirdPosTooltip ? null : hideTooltip('thirdPosInputWrapper')" id="thirdPosInputWrapper"><b-form-input id="thirdPosInput" v-model="form.thirdPosition" v-bind:class="{ 'is-invalid': !disableThirdPosTooltip }" class="input-small" disabled/></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableThirdIncomeTooltip ? null : hideTooltip('thirdIncomeInputWrapper')" id="thirdIncomeInputWrapper"><b-form-input v-on:cut="updateAfterCut" v-model="form.thirdIncome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableThirdIncomeTooltip }" id="thirdIncomeInput" :disabled="missingThirdPart" type="text"></b-form-input></span>
+&nbsp;                                                                                                <span class="partText">”&nbsp;&nbsp;&nbsp;</span><b-form-input id="fourthPartInput" :disabled="defaultPaymentSlipPreview" type="text" v-model="formatedFourthPart" v-bind:class="{ 'is-invalid': !disableFourthPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableFourthPartTooltip ? null : hideTooltip('fourthPartPosSelect')"><b-dropdown id="fourthPartPosSelect" :disabled="defaultPaymentSlipPreview" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedFourthPartPos(option.value)" v-for="(option, index) in fourthPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableFourthPosTooltip ? null : hideTooltip('fourthPosInputWrapper')" id="fourthPosInputWrapper"><b-form-input id="fourthPosInput" v-model="form.fourthPosition" v-bind:class="{ 'is-invalid': !disableFourthPosTooltip }" class="input-small" disabled/></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableFourthIncomeTooltip ? null : hideTooltip('fourthIncomeInputWrapper')" id="fourthIncomeInputWrapper"><b-form-input v-on:cut="updateAfterCut" v-model="form.fourthIncome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableFourthIncomeTooltip }" id="fourthIncomeInput" :disabled="missingFourthPart" type="text"></b-form-input></span>
+&nbsp;                                                                                                <span class="partText">”&nbsp;&nbsp;&nbsp;</span><b-form-input id="fifthPartInput" :disabled="defaultPaymentSlipPreview" type="text" v-model="formatedFifthPart" v-bind:class="{ 'is-invalid': !disableFifthPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableFifthPartTooltip ? null : hideTooltip('fifthPartPosSelect')"><b-dropdown id="fifthPartPosSelect" :disabled="defaultPaymentSlipPreview" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedFifthPartPos(option.value)" v-for="(option, index) in fifthPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableFifthPosTooltip ? null : hideTooltip('fifthPosInputWrapper')" id="fifthPosInputWrapper"><b-form-input id="fifthPosInput" v-model="form.fifthPosition" v-bind:class="{ 'is-invalid': !disableFifthPosTooltip }" class="input-small" disabled/></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableFifthIncomeTooltip ? null : hideTooltip('fifthIncomeInputWrapper')" id="fifthIncomeInputWrapper"><b-form-input v-on:cut="updateAfterCut" v-model="form.fifthIncome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableFifthIncomeTooltip }" id="fifthIncomeInput" :disabled="missingFifthPart" type="text"></b-form-input></span>
                                                                                                                                               Свега дин. <span id="totalIncomeInputWrapper"><b-form-input id="totalIncomeInput" disabled v-model="form.income" class="input-small numberInput"></b-form-input></span>
-                                                                                                                                  НАРЕДБОДАВАЦ
+                                                                                                                                   НАРЕДБОДАВАЦ
 Књижено у Дневник благајне                                                                             Настојатељ манастира,
 страна <span v-on:mouseleave="hideTooltip('annualReportPageInputWrapper')" id="annualReportPageInputWrapper"><b-form-input disabled v-model="form.annualReportPage" class="input-small" id="annualReportPageInput" type="text"></b-form-input></span> бр. <span v-on:mouseleave="hideTooltip('ordinalInputWrapper')" id="ordinalInputWrapper"><b-form-input disabled v-model="form.ordinal" class="input-small" id="ordinalInput" type="text"></b-form-input></span>&nbsp;                                                         <b-form-input disabled class="input-small" id="municipalityPresidentInput" type="text"></b-form-input>
       
@@ -220,7 +220,13 @@
         formatedThirdPart: null,
         formatedFourthPart: null,
         formatedFifthPart: null,
-        commonData: null
+        commonData: null,
+        selectedFirstIncomeCode: null,
+        selectedSecondIncomeCode: null,
+        selectedThirdIncomeCode: null,
+        selectedFourthIncomeCode: null,
+        selectedFifthIncomeCode: null,
+        initialPartPosOptions: null
       }
     },
     created () {
@@ -242,6 +248,8 @@
       incomeCodeController.getIncomeCodes().then(function (res) {
         if (!res.err) {
           self.incomeCodes = res.data ? res.data : []
+          self.initialPartPosOptions = self.getInitialPartPosOptions()
+          self.determineSelectedCodes()
         } else {
           self.openErrorModal(res.err)
         }
@@ -671,182 +679,117 @@
         }
       },
       firstPartPosOptions: function() {
-        var options = this.getInitialPartPosOptions()
-        if(this.form.secondPartition || this.form.secondPartition == 0) {
-          for (let i=0; i<options.length; i++) {
-            if (options[i].value == (this.form.secondPartition + '/' + this.form.secondPosition)) {
-              options.splice(i, 1)
-              break
-            }
+        if (!this.initialPartPosOptions) {
+          return
+        }
+        var options = this.initialPartPosOptions.slice()
+        var indexesToRemove = []
+        for (let i=0; i<options.length; i++) {
+          let option = options[i]
+          if (!option.value) {
+            continue
+          }
+          if ((option.value.partition == this.form.secondPartition && option.value.position == this.form.secondPosition)
+          ||  (option.value.partition == this.form.thirdPartition && option.value.position == this.form.thirdPosition)
+          ||  (option.value.partition == this.form.fourthPartition && option.value.position == this.form.fourthPosition)
+          ||  (option.value.partition == this.form.fifthPartition && option.value.position == this.form.fifthPosition)) {
+            indexesToRemove.push(i)
           }
         }
-        if(this.form.thirdPartition || this.form.thirdPartition == 0) {
-          for (let i=0; i<options.length; i++) {
-            if (options[i].value == (this.form.thirdPartition + '/' + this.form.thirdPosition)) {
-              options.splice(i, 1)
-              break
-            }
-          }
-        }
-        if(this.form.fourthPartition || this.form.fourthPartition == 0) {
-          for (let i=0; i<options.length; i++) {
-            if (options[i].value == (this.form.fourthPartition + '/' + this.form.fourthPosition)) {
-              options.splice(i, 1)
-              break
-            }
-          }
-        }
-        if(this.form.fifthPartition || this.form.fifthPartition == 0) {
-          for (let i=0; i<options.length; i++) {
-            if (options[i].value == (this.form.fifthPartition + '/' + this.form.fifthPosition)) {
-              options.splice(i, 1)
-              break
-            }
-          }
+        for (let i = indexesToRemove.length -1; i >= 0; i--) {
+          options.splice(indexesToRemove[i], 1)
         }
         return options
       },
       secondPartPosOptions: function() {
-        var options = this.getInitialPartPosOptions()
-        if(this.form.firstPartition || this.form.firstPartition == 0) {
-          for (let i=0; i<options.length; i++) {
-            if (options[i].value == (this.form.firstPartition + '/' + this.form.firstPosition)) {
-              options.splice(i, 1)
-              break
-            }
+        if (!this.initialPartPosOptions) {
+          return
+        }
+        var options = this.initialPartPosOptions.slice()
+        var indexesToRemove = []
+        for (let i=0; i<options.length; i++) {
+          let option = options[i]
+          if (!option.value) {
+            continue
+          }
+          if ((option.value.partition == this.form.firstPartition && option.value.position == this.form.firstPosition)
+          ||  (option.value.partition == this.form.thirdPartition && option.value.position == this.form.thirdPosition)
+          ||  (option.value.partition == this.form.fourthPartition && option.value.position == this.form.fourthPosition)
+          ||  (option.value.partition == this.form.fifthPartition && option.value.position == this.form.fifthPosition)) {
+            indexesToRemove.push(i)
           }
         }
-        if(this.form.thirdPartition || this.form.thirdPartition == 0) {
-          for (let i=0; i<options.length; i++) {
-            if (options[i].value == (this.form.thirdPartition + '/' + this.form.thirdPosition)) {
-              options.splice(i, 1)
-              break
-            }
-          }
-        }
-        if(this.form.fourthPartition || this.form.fourthPartition == 0) {
-          for (let i=0; i<options.length; i++) {
-            if (options[i].value == (this.form.fourthPartition + '/' + this.form.fourthPosition)) {
-              options.splice(i, 1)
-              break
-            }
-          }
-        }
-        if(this.form.fifthPartition || this.form.fifthPartition == 0) {
-          for (let i=0; i<options.length; i++) {
-            if (options[i].value == (this.form.fifthPartition + '/' + this.form.fifthPosition)) {
-              options.splice(i, 1)
-              break
-            }
-          }
+        for (let i = indexesToRemove.length -1; i >= 0; i--) {
+          options.splice(indexesToRemove[i], 1)
         }
         return options
       },
       thirdPartPosOptions: function() {
-        var options = this.getInitialPartPosOptions()
-        if(this.form.firstPartition || this.form.firstPartition == 0) {
-          for (let i=0; i<options.length; i++) {
-            if (options[i].value == (this.form.firstPartition + '/' + this.form.firstPosition)) {
-              options.splice(i, 1)
-              break
-            }
+        if (!this.initialPartPosOptions) {
+          return
+        }
+        var options = this.initialPartPosOptions.slice()
+        var indexesToRemove = []
+        for (let i=0; i<options.length; i++) {
+          let option = options[i]
+          if (!option.value) {
+            continue
+          }
+          if ((option.value.partition == this.form.firstPartition && option.value.position == this.form.firstPosition)
+          ||  (option.value.partition == this.form.secondPartition && option.value.position == this.form.secondPosition)
+          ||  (option.value.partition == this.form.fourthPartition && option.value.position == this.form.fourthPosition)
+          ||  (option.value.partition == this.form.fifthPartition && option.value.position == this.form.fifthPosition)) {
+            indexesToRemove.push(i)
           }
         }
-        if(this.form.secondPartition || this.form.secondPartition == 0) {
-          for (let i=0; i<options.length; i++) {
-            if (options[i].value == (this.form.secondPartition + '/' + this.form.secondPosition)) {
-              options.splice(i, 1)
-              break
-            }
-          }
-        }
-        if(this.form.fourthPartition || this.form.fourthPartition == 0) {
-          for (let i=0; i<options.length; i++) {
-            if (options[i].value == (this.form.fourthPartition + '/' + this.form.fourthPosition)) {
-              options.splice(i, 1)
-              break
-            }
-          }
-        }
-        if(this.form.fifthPartition || this.form.fifthPartition == 0) {
-          for (let i=0; i<options.length; i++) {
-            if (options[i].value == (this.form.fifthPartition + '/' + this.form.fifthPosition)) {
-              options.splice(i, 1)
-              break
-            }
-          }
+        for (let i = indexesToRemove.length -1; i >= 0; i--) {
+          options.splice(indexesToRemove[i], 1)
         }
         return options
       },
       fourthPartPosOptions: function() {
-        var options = this.getInitialPartPosOptions()
-        if(this.form.firstPartition || this.form.firstPartition == 0) {
-          for (let i=0; i<options.length; i++) {
-            if (options[i].value == (this.form.firstPartition + '/' + this.form.firstPosition)) {
-              options.splice(i, 1)
-              break
-            }
+        if (!this.initialPartPosOptions) {
+          return
+        }
+        var options = this.initialPartPosOptions.slice()
+        var indexesToRemove = []
+        for (let i=0; i<options.length; i++) {
+          let option = options[i]
+          if (!option.value) {
+            continue
+          }
+          if ((option.value.partition == this.form.firstPartition && option.value.position == this.form.firstPosition)
+          ||  (option.value.partition == this.form.secondPartition && option.value.position == this.form.secondPosition)
+          ||  (option.value.partition == this.form.thirdPartition && option.value.position == this.form.thirdPosition)
+          ||  (option.value.partition == this.form.fifthPartition && option.value.position == this.form.fifthPosition)) {
+            indexesToRemove.push(i)
           }
         }
-        if(this.form.secondPartition || this.form.secondPartition == 0) {
-          for (let i=0; i<options.length; i++) {
-            if (options[i].value == (this.form.secondPartition + '/' + this.form.secondPosition)) {
-              options.splice(i, 1)
-              break
-            }
-          }
-        }
-        if(this.form.thirdPartition || this.form.thirdPartition == 0) {
-          for (let i=0; i<options.length; i++) {
-            if (options[i].value == (this.form.thirdPartition + '/' + this.form.thirdPosition)) {
-              options.splice(i, 1)
-              break
-            }
-          }
-        }
-        if(this.form.fifthPartition || this.form.fifthPartition == 0) {
-          for (let i=0; i<options.length; i++) {
-            if (options[i].value == (this.form.fifthPartition + '/' + this.form.fifthPosition)) {
-              options.splice(i, 1)
-              break
-            }
-          }
+        for (let i = indexesToRemove.length -1; i >= 0; i--) {
+          options.splice(indexesToRemove[i], 1)
         }
         return options
       },
       fifthPartPosOptions: function() {
-        var options = this.getInitialPartPosOptions()
-        if(this.form.firstPartition || this.form.firstPartition == 0) {
-          for (let i=0; i<options.length; i++) {
-            if (options[i].value == (this.form.firstPartition + '/' + this.form.firstPosition)) {
-              options.splice(i, 1)
-              break
-            }
+        if (!this.initialPartPosOptions) {
+          return
+        }
+        var options = this.initialPartPosOptions.slice()
+        var indexesToRemove = []
+        for (let i=0; i<options.length; i++) {
+          let option = options[i]
+          if (!option.value) {
+            continue
+          }
+          if ((option.value.partition == this.form.firstPartition && option.value.position == this.form.firstPosition)
+          ||  (option.value.partition == this.form.secondPartition && option.value.position == this.form.secondPosition)
+          ||  (option.value.partition == this.form.thirdPartition && option.value.position == this.form.thirdPosition)
+          ||  (option.value.partition == this.form.fourthPartition && option.value.position == this.form.fourthPosition)) {
+            indexesToRemove.push(i)
           }
         }
-        if(this.form.secondPartition || this.form.secondPartition == 0) {
-          for (let i=0; i<options.length; i++) {
-            if (options[i].value == (this.form.secondPartition + '/' + this.form.secondPosition)) {
-              options.splice(i, 1)
-              break
-            }
-          }
-        }
-        if(this.form.thirdPartition || this.form.thirdPartition == 0) {
-          for (let i=0; i<options.length; i++) {
-            if (options[i].value == (this.form.thirdPartition + '/' + this.form.thirdPosition)) {
-              options.splice(i, 1)
-              break
-            }
-          }
-        }
-        if(this.form.fourthPartition || this.form.fourthPartition == 0) {
-          for (let i=0; i<options.length; i++) {
-            if (options[i].value == (this.form.fourthPartition + '/' + this.form.fourthPosition)) {
-              options.splice(i, 1)
-              break
-            }
-          }
+        for (let i = indexesToRemove.length -1; i >= 0; i--) {
+          options.splice(indexesToRemove[i], 1)
         }
         return options
       },
@@ -944,6 +887,35 @@
       }
     },
     methods: {
+      updateAfterCut (e) {
+        if (e && e.target && e.target.id) {
+          setTimeout(() => {
+            const updatedDocEl = document.getElementById(e.target.id);
+            const el = AutoNumeric.getAutoNumericElement('#' + e.target.id)
+            if (el && updatedDocEl) {
+              el.set(updatedDocEl.value)
+            }
+          }, 100)
+        }
+      },
+      determineSelectedCodes () {
+        if (this.incomeCodes) {
+          for (let i=0; i<this.incomeCodes.length; i++) {
+            const incomeCode = this.incomeCodes[i]
+            if (this.form.firstPartition == incomeCode.partition && this.form.firstPosition == incomeCode.position) {
+              this.selectedFirstIncomeCode = incomeCode
+            } else if (this.form.secondPartition == incomeCode.partition && this.form.secondPosition == incomeCode.position) {
+              this.selectedSecondIncomeCode = incomeCode
+            } else if (this.form.thirdPartition == incomeCode.partition && this.form.thirdPosition == incomeCode.position) {
+              this.selectedThirdIncomeCode = incomeCode
+            } else if (this.form.fourthPartition == incomeCode.partition && this.form.fourthPosition == incomeCode.position) {
+              this.selectedFourthIncomeCode = incomeCode
+            } else if (this.form.fifthPartition == incomeCode.partition && this.form.fifthPosition == incomeCode.position) {
+              this.selectedFifthIncomeCode = incomeCode
+            }
+          }
+        }
+      },
       calculateTotalIncome () {
         const firstIncome = this.missingFirstIncome ? Big(0.0) : Big(asFloat(this.form.firstIncome, amountNumberOptions))
         const secondIncome = this.missingSecondIncome ? Big(0.0) : Big(asFloat(this.form.secondIncome, amountNumberOptions))
@@ -1040,88 +1012,73 @@
         var options = []
         options.push({html: '&nbsp;', value: null})
         this.incomeCodes.forEach(ic => {
-          options.push({html: '<span class="partPosOptionText">' + asRoman(ic.partition) + '/' + ic.position + '</span><span class="descriptionOptionText">' + (ic.description ? ic.description : '&nbsp;') + '</span>', value: ic.partition + '/' + ic.position})
+          options.push({html: '<span class="partPosOptionText">' + asRoman(ic.partition) + '/' + ic.position + '</span><span class="descriptionOptionText">' + (ic.description ? ic.description : '&nbsp;') + '</span>', value: ic})
         })
         return options
       },
-      setSelectedFirstPartPos (selectedPartPos) {
-        if (selectedPartPos) {
-          const partPos = selectedPartPos.split('/')
-          this.form.firstPartition = partPos[0]
-          this.form.firstPosition = partPos[1]
+      setSelectedFirstPartPos (selectedCode) {
+        this.selectedFirstIncomeCode = selectedCode
+        if (selectedCode) {
+          this.form.firstPartition = selectedCode.partition
+          this.form.firstPosition = selectedCode.position
           this.form.firstCodeValid = true
         } else {
           this.form.firstPartition = null
           this.form.firstPosition = null
           this.form.firstIncome = null
           this.form.firstCodeValid = true
-          if (this.firstIncomeInputAutonumeric) {
-            this.firstIncomeInputAutonumeric.clear()
-          }
         }
       },
-      setSelectedSecondPartPos (selectedPartPos) {
-        if (selectedPartPos) {
-          const partPos = selectedPartPos.split('/')
-          this.form.secondPartition = partPos[0]
-          this.form.secondPosition = partPos[1]
+      setSelectedSecondPartPos (selectedCode) {
+        this.selectedSecondIncomeCode = selectedCode
+        if (selectedCode) {
+          this.form.secondPartition = selectedCode.partition
+          this.form.secondPosition = selectedCode.position
           this.form.secondCodeValid = true
         } else {
           this.form.secondPartition = null
           this.form.secondPosition = null
           this.form.secondIncome = null
           this.form.secondCodeValid = true
-          if (this.secondIncomeInputAutonumeric) {
-            this.secondIncomeInputAutonumeric.clear()
-          }
         }
       },
-      setSelectedThirdPartPos (selectedPartPos) {
-        if (selectedPartPos) {
-          const partPos = selectedPartPos.split('/')
-          this.form.thirdPartition = partPos[0]
-          this.form.thirdPosition = partPos[1]
+      setSelectedThirdPartPos (selectedCode) {
+        this.selectedThirdIncomeCode = selectedCode
+        if (selectedCode) {
+          this.form.thirdPartition = selectedCode.partition
+          this.form.thirdPosition = selectedCode.position
           this.form.thirdCodeValid = true
         } else {
           this.form.thirdPartition = null
           this.form.thirdPosition = null
           this.form.thirdIncome = null
           this.form.thirdCodeValid = true
-          if (this.thirdIncomeInputAutonumeric) {
-            this.thirdIncomeInputAutonumeric.clear()
-          }
         }
       },
-      setSelectedFourthPartPos (selectedPartPos) {
-        if (selectedPartPos) {
-          const partPos = selectedPartPos.split('/')
-          this.form.fourthPartition = partPos[0]
-          this.form.fourthPosition = partPos[1]
+      setSelectedFourthPartPos (selectedCode) {
+        this.selectedFourthIncomeCode = selectedCode
+        if (selectedCode) {
+          this.form.fourthPartition = selectedCode.partition
+          this.form.fourthPosition = selectedCode.position
           this.form.fourthCodeValid = true
         } else {
           this.form.fourthPartition = null
           this.form.fourthPosition = null
           this.form.fourthIncome = null
           this.form.fourthCodeValid = true
-          if (this.fourthIncomeInputAutonumeric) {
-            this.fourthIncomeInputAutonumeric.clear()
-          }
         }
       },
-      setSelectedFifthPartPos (selectedPartPos) {
-        if (selectedPartPos) {
-          const partPos = selectedPartPos.split('/')
-          this.form.fifthPartition = partPos[0]
-          this.form.fifthPosition = partPos[1]
+      setSelectedFifthPartPos (selectedCode) {
+        this.selectedFifthIncomeCode = selectedCode
+        if (selectedCode) {
+          this.form.fifthPartition = selectedCode.partition
+          this.form.fifthPosition = selectedCode.position
           this.form.fifthCodeValid = true
         } else {
           this.form.fifthPartition = null
           this.form.fifthPosition = null
           this.form.fifthIncome = null
           this.form.fifthCodeValid = true
-          if (this.fifthIncomeInputAutonumeric) {
-            this.fifthIncomeInputAutonumeric.clear()
-          }
         }
       },
       limitInputPerSize(evt) {
@@ -1223,6 +1180,11 @@
         }
       },
       clearForm () {
+        this.selectedFirstIncomeCode = null
+        this.selectedSecondIncomeCode = null
+        this.selectedThirdIncomeCode = null
+        this.selectedFourthIncomeCode = null
+        this.selectedFifthIncomeCode = null
         this.form.ordinal = null;
         this.form.annualReportPage = null;
         this.form.date = null;
@@ -1230,22 +1192,18 @@
         this.form.firstPosition = null;
         this.form.firstIncome = null;
         this.form.firstCodeValid = null;
-        this.firstIncomeInputAutonumeric.clear()
         this.form.secondPartition = null;
         this.form.secondPosition = null;
         this.form.secondIncome = null;
         this.form.secondCodeValid = null;
-        this.secondIncomeInputAutonumeric.clear()
         this.form.thirdPartition = null;
         this.form.thirdPosition = null;
         this.form.thirdIncome = null;
         this.form.thirdCodeValid = null;
-        this.thirdIncomeInputAutonumeric.clear()
         this.form.fourthPartition = null;
         this.form.fourthPosition = null;
         this.form.fourthIncome = null;
         this.form.fourthCodeValid = null;
-        this.fourthIncomeInputAutonumeric.clear()
         this.form.fifthPartition = null;
         this.form.fifthPosition = null;
         this.form.fifthIncome = null;
@@ -1401,10 +1359,10 @@
     width: 290px;
   }
   #receivedInput {
-    width: 290px;
+    width: 289px;
   }
   #townReceivedInput {
-    width: 279px;
+    width: 278px;
   }
   #yearInput {
     width:70px;
@@ -1655,9 +1613,9 @@
       left:0px;
     }
     #payment-slip-preview-container {
-      top:150px;
-      left:200px;
-      transform: scale(1.5);
+      top:285px;
+      left:390px;
+      transform: scale(2.1);
     }
     .ignoreInPrint {
       visibility:hidden !important;

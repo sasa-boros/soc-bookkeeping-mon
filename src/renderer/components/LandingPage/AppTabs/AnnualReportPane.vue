@@ -1,13 +1,20 @@
 <template>
   <b-container fluid>
-      <b-row class="text-center">
+      <b-form ref="annualReportDataForm" @submit="createAnnualReportData" novalidate no-validation>
+      <b-row class="text-center" v-show="year">
         <b-col>
-          Дневник благајне за годину&nbsp;
+          Дневник благајне за годину:&nbsp;
           <b-form-select v-model="year" id="yearSelect" ref="yearSelect" :options="yearOptions" size="sm" class="my-0"/>
         </b-col> 
+        <b-col>
+            <b-button id="annualReportDataSaveBtn" ref="annualReportDataSaveBtn" :disabled="disableAnnualReportDataSaveBtn" v-on:mouseleave="hideTooltip('annualReportDataSaveBtn')" type="submit" variant="light" class="btn-lg text-center">
+              <img src="~@/assets/save.png">
+            </b-button>
+            <b-button id="annualReportBtn" ref="annualReportBtn" v-on:mouseleave="hideTooltip('annualReportBtn')" v-on:click="createAnnualReport" :disabled="!disableAnnualReportDataSaveBtn" variant="light" class="btn-lg">
+              <img src="~@/assets/annual-report.png">
+            </b-button>
+          </b-col> 
       </b-row>
-      <div v-if="form">
-      <b-form ref="annualReportDataForm" @submit="createAnnualReportData" novalidate no-validation>
         <hr>
         <br>
         <b-row>
@@ -15,7 +22,7 @@
             Пренос готовине из претходне године (рез. фонд):
           </b-col>
           <b-col>
-            <b-form-input id="transferFromPreviousYearInput" type="text" v-model="form.transferFromPreviousYear"/>
+            <b-form-input v-on:cut="updateAfterCut" id="transferFromPreviousYearInput" type="text" v-model="form.transferFromPreviousYear"/>
           </b-col>
         </b-row>
         <br>
@@ -24,16 +31,7 @@
             Хартије од вредности - у току године отуђено (амортизовано):
           </b-col>
           <b-col>
-            <b-form-input id="shareValueDepreciatedDuringYearInput" type="text" v-model="form.shareValueDepreciatedDuringYear"/>
-          </b-col>
-        </b-row>
-        <br>
-        <b-row>
-          <b-col cols="5">
-            Некретнине: земљиште - површина:
-          </b-col>
-          <b-col>
-            <b-form-input id="realEstateLandSurfaceInput" type="text" v-model="form.realEstateLandSurface" v-on:keypress="limitInputPerSize"/>
+            <b-form-input v-on:cut="updateAfterCut" id="shareValueDepreciatedDuringYearInput" type="text" v-model="form.shareValueDepreciatedDuringYear"/>
           </b-col>
         </b-row>
         <br>
@@ -42,10 +40,28 @@
             Некретнине: земљиште - вредност:
           </b-col>
           <b-col>
-            <b-form-input id="realEstateLandValueInput" type="text" v-model="form.realEstateLandValue"/>
+            <b-form-input v-on:cut="updateAfterCut" id="realEstateLandValueInput" type="text" v-model="form.realEstateLandValue"/>
           </b-col>
         </b-row>
         <br>
+        <b-row>
+          <b-col cols="5">
+            Некретнине: зграде - вредност:
+          </b-col>
+          <b-col>
+          <b-form-input v-on:cut="updateAfterCut" id="realEstateBuildingsValueInput" type="text" v-model="form.realEstateBuildingsValue"/>
+          </b-col>
+        </b-row>
+         <br>
+        <b-row>
+          <b-col cols="5">
+            Некретнине: земљиште - површина:
+          </b-col>
+          <b-col>
+            <b-form-input id="realEstateLandSurfaceInput" type="text" v-model="form.realEstateLandSurface" v-on:keypress="limitInputPerSize"/>
+          </b-col>
+        </b-row>
+         <br>
         <b-row>
           <b-col cols="5">
             Некретнине: зграде - површина:
@@ -55,48 +71,30 @@
           </b-col>
         </b-row>
         <br>
-        <b-row>
-          <b-col cols="5">
-            Некретнине: зграде - вредност:
-          </b-col>
-          <b-col>
-          <b-form-input id="realEstateBuildingsValueInput" type="text" v-model="form.realEstateBuildingsValue"/>
-          </b-col>
-        </b-row>
         <br>
         <b-row>
           <b-col>
             <div class="predictedAllowedDivWrapper" style="padding-right:30px">
-              Буџетом предвиђено:
+              Буџетом предвиђено - приходи:
               <br>
               <br>
               <div class="predictedAllowedDiv" v-for="(ipcp, index) in form.totalIncomePerCodePredicted" v-bind:key="'ic' + index">
-                <div class="predictedAllowedLabelDiv">{{ asRomanNumber(ipcp.incomeCode.partition) + "/" + ipcp.incomeCode.position + "\n" + (ipcp.incomeCode.description ? ipcp.incomeCode.description : '')}}</div>
-                <b-form-input :id="'ic' + index" type="text" v-model="ipcp.income" class="codeAmountInput"/>
+                <div class="predictedAllowedLabelDiv">{{ asRomanNumber(ipcp.incomeCode.partition) + "/" + ipcp.incomeCode.position + "\n\n" + (ipcp.incomeCode.description ? ipcp.incomeCode.description : '')}}</div>
+                <b-form-input v-on:cut="updateAfterCut" :id="'ic' + index" type="text" v-model="ipcp.income" class="codeAmountInput"/>
               </div>
             </div>
             <div class="predictedAllowedDivWrapper">
-              Буџетом одобрено:
+              Буџетом предвиђено - расходи:
               <br>
               <br>
               <div class="predictedAllowedDiv" v-for="(opcp, index) in form.totalOutcomePerCodeAllowed" v-bind:key="'oc' + index">
-                <div class="predictedAllowedLabelDiv">{{ asRomanNumber(opcp.outcomeCode.partition) + "/" + opcp.outcomeCode.position + "\n" + (opcp.outcomeCode.description ? opcp.outcomeCode.description : '')}}</div>
-                <b-form-input :id="'oc' + index" type="text" v-model="opcp.outcome" class="codeAmountInput"/>
+                <div class="predictedAllowedLabelDiv">{{ asRomanNumber(opcp.outcomeCode.partition) + "/" + opcp.outcomeCode.position + "\n\n" + (opcp.outcomeCode.description ? opcp.outcomeCode.description : '')}}</div>
+                <b-form-input v-on:cut="updateAfterCut" :id="'oc' + index" type="text" v-model="opcp.outcome" class="codeAmountInput"/>
               </div>
             </div>
           </b-col>
         </b-row>
         <br>             
-        <b-row class="text-right">
-          <b-col>
-            <b-button id="annualReportDataSaveBtn" ref="annualReportDataSaveBtn" :disabled="disableAnnualReportDataSaveBtn" v-on:mouseleave="hideTooltip('annualReportDataSaveBtn')" type="submit" variant="light" class="btn-lg text-center">
-              <img src="~@/assets/save.png">
-            </b-button>
-            <b-button id="annualReportBtn" ref="annualReportBtn" v-on:mouseleave="hideTooltip('annualReportBtn')" type="submit" v-on:click="createAnnualReport" :disabled="!disableAnnualReportDataSaveBtn" variant="light" class="btn-lg">
-              <img src="~@/assets/annual-report.png">
-            </b-button>
-          </b-col> 
-        </b-row>
       </b-form>
       <!-- Annual report preview modal -->
       <b-modal no-close-on-backdrop hide-footer hide-header id="annual-report-preview-modal" size="ar">
@@ -118,7 +116,6 @@
       <b-modal no-close-on-backdrop id="annual-report-pane-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('annualReportPaneErrorModal')">
         <message-confirm-dialog ref="annualReportPaneErrorModal" parentModal="annual-report-pane-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
       </b-modal>
-    </div>
   </b-container>
 </template>
 
@@ -136,7 +133,7 @@
   const { ipcRenderer } = require('electron')
   const AutoNumeric = require('autonumeric')
   const Mousetrap = require('mousetrap')
-  const { amountNumberOptions, largeAmountNumberOptions, asRoman, mapAnnualReportDataToAnnualReportDataForm, mapAnnualReportDataFormToAnnualReportData } = require('../../../utils/utils')
+  const { largeAmountNumberOptions, asRoman, mapAnnualReportDataToAnnualReportDataForm, mapAnnualReportDataFormToAnnualReportData } = require('../../../utils/utils')
 
   export default {
     data () {
@@ -149,17 +146,15 @@
         },
         year: null,
         churchMunicipality: null,
-        form: null,
+        form: {
+          totalIncomePerCodePredicted: [],
+          totalOutcomePerCodePredicted: []
+        },
         annualReportPages: [],
         errorText: "",
         alreadyPressed: false,
-        transferFromPreviousYearInputAutonumeric: null,
-        shareValueDepreciatedDuringYearInputAutonumeric: null,
-        realEstateLandValueInputAutonumeric: null,
-        realEstateBuildingsValueInputAutonumeric: null,
         formUnwatch: null,
-        disableAnnualReportDataSaveBtn: true,
-        autonumerisedInputs: []
+        disableAnnualReportDataSaveBtn: true
       }
     },
     created () {
@@ -170,31 +165,32 @@
       this.$watch('year', () => {
         self.loadAnnualReportDataForm()
       })
+      if (this.yearOptions && this.yearOptions.length > 0) {
+        this.year = this.yearOptions[0]
+      } else {
+        this.year = new Date().getFullYear()
+      }
+      
     },
     computed: {
       ...mapState(
         {
-          yearOptions: function (state) {
-            const bookedYears = state.CommonValues.bookedYears
-            const currentYear = new Date().getFullYear()
-            if (bookedYears && bookedYears.length > 0) {
-              const currentYearBooked = bookedYears.find(by => {
-                return by == currentYear
-              })
-              if (currentYearBooked) {
-                this.year = currentYear
-              } else {
-                this.year = bookedYears[0]
-              }  
-            } else {
-              this.year = null
-            }
-            return bookedYears
-          }
+          yearOptions: state => state.CommonValues.bookedYears
         }
       )
     },
     methods: {
+      updateAfterCut (e) {
+        if (e && e.target && e.target.id) {
+          setTimeout(() => {
+            const updatedDocEl = document.getElementById(e.target.id);
+            const el = AutoNumeric.getAutoNumericElement('#' + e.target.id)
+            if (el && updatedDocEl) {
+              el.set(updatedDocEl.value)
+            }
+          }, 100)
+        }
+      },
       asRomanNumber(num) {
         return asRoman(num)
       },
@@ -210,36 +206,40 @@
       async loadAnnualReportDataForm () {
         const self = this
         this.disableAnnualReportDataSaveBtn = true
-        if (this.year) {
-          const annualReportData = JSON.parse(JSON.stringify(await this.loadAnnualReportData()))
-          const incomeCodes = await this.loadIncomeCodes()
-          const outcomeCodes = await this.loadOutcomeCodes()
           if (this.formUnwatch) {
             this.formUnwatch()
           }
+          const annualReportData = JSON.parse(JSON.stringify(await this.loadAnnualReportData()))
+          const incomeCodes = await this.loadIncomeCodes()
+          const outcomeCodes = await this.loadOutcomeCodes()
           this.form = mapAnnualReportDataToAnnualReportDataForm(annualReportData, incomeCodes, outcomeCodes)
+          self.formUnwatch = self.$watch('form', () => {
+            self.disableAnnualReportDataSaveBtn = false
+          }, {deep: true})
           this.$nextTick(() => {
-            for (let i=0; i<self.autonumerisedInputs.length; i++) {
-              self.autonumerisedInputs[i].remove()
+            if (AutoNumeric.getAutoNumericElement('#transferFromPreviousYearInput') === null) {
+              new AutoNumeric('#transferFromPreviousYearInput', largeAmountNumberOptions)
             }
-            self.autonumerisedInputs = []
-            self.autonumerisedInputs.push(new AutoNumeric('#transferFromPreviousYearInput', largeAmountNumberOptions))
-            self.autonumerisedInputs.push(new AutoNumeric('#shareValueDepreciatedDuringYearInput', largeAmountNumberOptions))
-            self.autonumerisedInputs.push(new AutoNumeric('#realEstateLandValueInput', largeAmountNumberOptions))
-            self.autonumerisedInputs.push(new AutoNumeric('#realEstateBuildingsValueInput', largeAmountNumberOptions))
+            if (AutoNumeric.getAutoNumericElement('#shareValueDepreciatedDuringYearInput') === null) {
+              new AutoNumeric('#shareValueDepreciatedDuringYearInput', largeAmountNumberOptions)
+            }
+            if (AutoNumeric.getAutoNumericElement('#realEstateLandValueInput') === null) {
+              new AutoNumeric('#realEstateLandValueInput', largeAmountNumberOptions)
+            }
+            if (AutoNumeric.getAutoNumericElement('#realEstateBuildingsValueInput') === null) {
+              new AutoNumeric('#realEstateBuildingsValueInput', largeAmountNumberOptions)
+            }
             for (let i=0; i<self.form.totalIncomePerCodePredicted.length; i++) {
-              self.autonumerisedInputs.push(new AutoNumeric('#ic' + i, amountNumberOptions))
+              if (AutoNumeric.getAutoNumericElement('#ic' + i) === null) {
+                new AutoNumeric('#ic' + i, largeAmountNumberOptions)
+              }
             }
             for (let i=0; i<self.form.totalOutcomePerCodeAllowed.length; i++) {
-              self.autonumerisedInputs.push(new AutoNumeric('#oc' + i, amountNumberOptions))
+              if (AutoNumeric.getAutoNumericElement('#oc' + i) === null) {
+                new AutoNumeric('#oc' + i, largeAmountNumberOptions)
+              }
             }
-            self.formUnwatch = self.$watch('form', () => {
-              self.disableAnnualReportDataSaveBtn = false
-            }, {deep: true})
           })
-        } else {
-          this.form = null
-        }
       },
       async loadAnnualReportData() {
         const self = this
@@ -337,10 +337,10 @@
 
 <style>
   .modal .modal-ar {
-    max-width: 1213px;
-    width: 1213px;
-    max-height:894px;
-    height:894px;
+    max-width: 1280px;
+    width: 1280px;
+    max-height:985px;
+    height:985px;
     overflow: hidden;
   }
 </style>
@@ -358,46 +358,39 @@ input {
   border-radius: 0 !important;
 }
 
-#churchMunicipalityInput {
-  width: 320px;
-  max-width: 320px;
-  border-style: none;
-  display:inline;
-}
-
 #transferFromPreviousYearInput {
-  width: 140px;
-  max-width: 140px;
+  width: 110px;
+  max-width: 110px;
   border-style: none;
 }
 
 #shareValueDepreciatedDuringYearInput {
-  width: 140px;
-  max-width: 140px;
+  width: 110px;
+  max-width: 110px;
   border-style: none;
 }
 
 #realEstateBuildingsValueInput {
-  width: 140px;
-  max-width: 140px;
+  width: 110px;
+  max-width: 110px;
   border-style: none;
 }
 
 #realEstateBuildingsSurfaceInput {
-  width: 140px;
-  max-width: 140px;
+  width: 200px;
+  max-width: 200px;
   border-style: none;
 }
 
 #realEstateLandValueInput {
-  width: 140px;
-  max-width: 140px;
+  width: 110px;
+  max-width: 110px;
   border-style: none;
 }
 
 #realEstateLandSurfaceInput {
-  width: 140px;
-  max-width: 140px;
+  width: 200px;
+  max-width: 200px;
   border-style: none;
 }
 
@@ -413,11 +406,10 @@ input {
 }
 
 .predictedAllowedLabelDiv {
-  width: 105px; 
-  max-width: 105px;
-  height: 135px; 
-  max-height: 135px;
-  text-overflow: ellipsis;
+  width: 110px; 
+  max-width: 110px;
+  height: 145px; 
+  max-height: 145px;
   white-space:pre-wrap; 
   word-wrap:break-word;
   hyphens:auto;
@@ -432,15 +424,9 @@ input {
   0 .5pt 0 0 #514A4A inset;
 }
 
-.amountInput {
-  width: 105px;
-  max-width: 105px;
-  border-style: none;
-}
-
 .codeAmountInput {
-  width: 105px;
-  max-width: 100=5px;
+  width: 110px;
+  max-width: 110px;
   border-style: none;
   box-shadow: 
   .5pt 0 0 0 #514A4A, 

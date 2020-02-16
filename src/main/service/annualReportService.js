@@ -326,21 +326,29 @@ async function getAnnualReportPages (annualReport) {
   
   populateHeadline(annualReport, annualReportPages)
   populateManualPage(annualReport, annualReportPages)
-
-  var i = 0
-  while (i < annualReport.incomePages.length || i < annualReport.outcomePages.length) {
-    if (i < annualReport.incomePages.length) {
-      populateIncomePage(annualReport, annualReport.incomePages[i], annualReportPages, 0, i + 1)
-    }
-    if (i < annualReport.outcomePages.length) {
-      populateOutcomePage(annualReport, annualReport.outcomePages[i], annualReportPages, 0, i + 1)
-    }
-    i++
+  for (let i=0; i<12; i++) {
+      var pagesNeeded = Math.ceil(Math.max(annualReport.incomePages[i].paymentSlips.length/27, annualReport.outcomePages[i].receipts.length/27, 1))
+      for (let j=0; j<pagesNeeded; j++) {
+        var last = false
+        if (j == pagesNeeded-1) {
+          last = true
+        }
+        populateIncomePage(annualReport, annualReport.incomePages[i], annualReportPages, j*27, i + 1, last)
+        populateOutcomePage(annualReport, annualReport.outcomePages[i], annualReportPages, j*27, i + 1, last)
+      }
   }
   populateTotalIncomePage(annualReport, annualReportPages)
   populateTotalOutcomePage(annualReport, annualReportPages)
-  populateSharesPage(annualReport, annualReportPages, 0, 0)
-  populateTotalPage(annualReport, annualReportPages, 0, 0)
+  var pagesNeeded = Math.ceil(Math.max(annualReport.sharesPage.shares.length/8, annualReport.sharesPage.savings.length/6,
+    annualReport.totalPage.items.length/5, annualReport.totalPage.debts.length/11, 1))
+  for (let i=0; i<pagesNeeded; i++) {
+    var last = false
+    if (i == pagesNeeded-1) {
+      last = true
+    }
+    populateSharesPage(annualReport, annualReportPages, i*8, i*6, last)
+    populateTotalPage(annualReport, annualReportPages, i*5, i*11, last)
+  }
   populateTotalHeadline(annualReport, annualReportPages)
 
   console.log(`Returning annual report ${annualReportPages.length} pages`)
@@ -364,7 +372,7 @@ function populateManualPage(annualReport, annualReportPages) {
   annualReportPages.push(manualPageTemplate);
 }
 
-function populateIncomePage (annualReport, incomePage, annualReportPages, paymentSlipStartIndex, pageNum) {
+function populateIncomePage (annualReport, incomePage, annualReportPages, paymentSlipStartIndex, pageNum, isLast) {
   var incomePageContext = {};
   incomePageContext.pageNum = pageNum
   incomePageContext.page = incomePage.ordinal;
@@ -382,9 +390,7 @@ function populateIncomePage (annualReport, incomePage, annualReportPages, paymen
   var row = 14;
   for (let i = paymentSlipStartIndex; i < incomePage.paymentSlips.length; i++) {
     if (row >= 41) {
-      annualReportPages.push(Mustache.render(incomePageTemplate, incomePageContext));
-      populateIncomePage(annualReport, incomePage, annualReportPages, i)
-      return
+      break;
     }
     const paymentSlip = incomePage.paymentSlips[i]
     // payment slip ordinal/date(day)/reason
@@ -395,16 +401,20 @@ function populateIncomePage (annualReport, incomePage, annualReportPages, paymen
     // payment slip income per code
     paymentSlip.incomePerCode.forEach(ipc => {
       let incomeCodeText = ipc.incomeCode.partition + '/' + ipc.incomeCode.position;
-      incomePageContext[colsPerIncomeCodes[incomeCodeText] + row] = formatAmount(ipc.income);
+      incomePageContext[colsPerIncomeCodes[incomeCodeText] + row] = formatAmount(ipc.income, true);
     });
     // payment slip total income
     incomePageContext['S'+row] = formatAmount(paymentSlip.income)
     row++;
   }
+  if (!isLast) {
+    annualReportPages.push(Mustache.render(incomePageTemplate, incomePageContext))
+    return
+  }
   // total per income code
   incomePage.totalIncomePerCode.forEach(tipc => {
     let incomeCodeText = tipc.incomeCode.partition + '/' + tipc.incomeCode.position;
-    incomePageContext[colsPerIncomeCodes[incomeCodeText] + 41] = formatAmount(tipc.income);
+    incomePageContext[colsPerIncomeCodes[incomeCodeText] + 41] = formatAmount(tipc.income, true);
   });
   // total incomes per page
   incomePageContext['S41'] = formatAmount(incomePage.totalIncome);
@@ -414,7 +424,7 @@ function populateIncomePage (annualReport, incomePage, annualReportPages, paymen
   annualReportPages.push(Mustache.render(incomePageTemplate, incomePageContext));
 }
 
-function populateOutcomePage (annualReport, outcomePage, annualReportPages, receiptStartIndex, pageNum) {
+function populateOutcomePage (annualReport, outcomePage, annualReportPages, receiptStartIndex, pageNum, isLast) {
   var outcomePageContext = {};
   outcomePageContext.pageNum = pageNum
   outcomePageContext.page = outcomePage.ordinal;
@@ -435,9 +445,7 @@ function populateOutcomePage (annualReport, outcomePage, annualReportPages, rece
   var row = 14;
   for (let i = receiptStartIndex; i < outcomePage.receipts.length; i++) {
     if (row >= 41) {
-      annualReportPages.push(Mustache.render(outcomePageTemplate, outcomePageContext));
-      populateOutcomePage(annualReport, outcomePage, annualReportPages, i)
-      return
+      break
     }
     const receipt = outcomePage.receipts[i]
      // receipt ordinal/date(day)/reason
@@ -448,16 +456,20 @@ function populateOutcomePage (annualReport, outcomePage, annualReportPages, rece
     // receipt outcome per code
     receipt.outcomePerCode.forEach(opc => {
       let outcomeCodeText = opc.outcomeCode.partition + '/' + opc.outcomeCode.position;
-      outcomePageContext[colsPerOutcomeCodes[outcomeCodeText] + row] = formatAmount(opc.outcome);
+      outcomePageContext[colsPerOutcomeCodes[outcomeCodeText] + row] = formatAmount(opc.outcome, true, 9999999);
     });
     // receipt total outcome
     outcomePageContext['T'+row] = formatAmount(receipt.outcome)
     row++;
   }
+  if (!isLast) {
+    annualReportPages.push(Mustache.render(outcomePageTemplate, outcomePageContext));
+    return
+  }
   // total per outcome code
   outcomePage.totalOutcomePerCode.forEach(topc => {
     let outcomeCodeText = topc.outcomeCode.partition + '/' + topc.outcomeCode.position;
-    outcomePageContext[colsPerOutcomeCodes[outcomeCodeText] + 41] = formatAmount(topc.outcome);
+    outcomePageContext[colsPerOutcomeCodes[outcomeCodeText] + 41] = formatAmount(topc.outcome, true, 9999999);
   });
   // total outcomes per page
   outcomePageContext['T41'] = formatAmount(outcomePage.totalOutcome);
@@ -545,44 +557,36 @@ function populateTotalOutcomePage(annualReport, annualReportPages) {
   annualReportPages.push(Mustache.render(totalOutcomePageTemplate, totalOutcomePageContext));
 }
 
-function populateSharesPage(annualReport, annualReportPages, sharesStartIndex, savingsStartIndex) {
+function populateSharesPage(annualReport, annualReportPages, sharesStartIndex, savingsStartIndex, isLast) {
   const sharesPageContext = {}
   sharesPageContext.pageNum = 14
-  var newSharesStartIndex, newSavingsStartIndex
-  if (sharesStartIndex || sharesStartIndex == 0) {
-    let row = 7
-    for (let i=sharesStartIndex; i<annualReport.sharesPage.shares.length; i++) {
-      if (row >= 15) {
-        newSharesStartIndex = i
-        break
-      }
-      const share = annualReport.sharesPage.shares[i]
-      sharesPageContext['A'+row] = share.series
-      sharesPageContext['B'+row] = share.ordinal
-      sharesPageContext['C'+row] = share.name
-      sharesPageContext['D'+row] = formatAmount(share.nominalValue)
-      row++
+  var row = 7
+  for (let i=sharesStartIndex; i<annualReport.sharesPage.shares.length; i++) {
+    if (row >= 15) {
+      break
     }
+    const share = annualReport.sharesPage.shares[i]
+    sharesPageContext['A'+row] = share.series
+    sharesPageContext['B'+row] = share.ordinal
+    sharesPageContext['C'+row] = share.name
+    sharesPageContext['D'+row] = formatAmount(share.nominalValue)
+    row++
   }
-  if (savingsStartIndex || savingsStartIndex == 0) {
-    let row = 7
-    for (let i=savingsStartIndex; i<annualReport.sharesPage.savings.length; i++) {
-      if (row >= 13) {
-        newSavingsStartIndex = i
-        break
-      }
-      const saving = annualReport.sharesPage.savings[i]
-      sharesPageContext['E'+row] = saving.account
-      sharesPageContext['F'+row] = saving.savingEntity
-      sharesPageContext['G'+row] = formatAmount(saving.amount)
-      sharesPageContext['H'+row] = formatAmount(saving.amountDeposited)
-      sharesPageContext['I'+row] = formatAmount(saving.amountWithdrawn)
-      row++
+  var row = 7
+  for (let i=savingsStartIndex; i<annualReport.sharesPage.savings.length; i++) {
+    if (row >= 13) {
+      break
     }
+    const saving = annualReport.sharesPage.savings[i]
+    sharesPageContext['E'+row] = saving.account
+    sharesPageContext['F'+row] = saving.savingEntity
+    sharesPageContext['G'+row] = formatAmount(saving.amount)
+    sharesPageContext['H'+row] = formatAmount(saving.amountDeposited)
+    sharesPageContext['I'+row] = formatAmount(saving.amountWithdrawn)
+    row++
   }
-  if(newSharesStartIndex || newSavingsStartIndex) {
+  if(!isLast) {
     annualReportPages.push(Mustache.render(sharesPageTemplate, sharesPageContext))
-    populateSharesPage(annualReport, annualReportPages, newSharesStartIndex, newSavingsStartIndex)
     return
   }
   sharesPageContext['D15'] = formatAmount(annualReport.sharesPage.totalNominalValue)
@@ -597,7 +601,7 @@ function populateSharesPage(annualReport, annualReportPages, sharesStartIndex, s
   annualReportPages.push(Mustache.render(sharesPageTemplate, sharesPageContext))
 }
 
-function populateTotalPage(annualReport, annualReportPages, itemsStartIndex, debtsStartIndex) {
+function populateTotalPage(annualReport, annualReportPages, itemsStartIndex, debtsStartIndex, isLast) {
   const totalPageContext = {}
   totalPageContext.pageNum = 14
   if (!annualReport.year) {
@@ -606,7 +610,7 @@ function populateTotalPage(annualReport, annualReportPages, itemsStartIndex, deb
     totalPageContext.year = annualReport.year
   }
   totalPageContext.church = annualReport.churchMunicipality
-  if (itemsStartIndex == 0 && debtsStartIndex == 0) {
+  if (itemsStartIndex == 0 &&  debtsStartIndex == 0) {
     totalPageContext['E5'] = formatAmount(annualReport.totalOutcomePage.transferToNextYear)
     totalPageContext['E6'] = formatAmount(annualReport.sharesPage.savingAmountOnYearEnd)
     totalPageContext['E7'] = formatAmount(annualReport.sharesPage.nominalValueOnYearEnd)
@@ -615,36 +619,28 @@ function populateTotalPage(annualReport, annualReportPages, itemsStartIndex, deb
     totalPageContext['E9'] = formatAmount(annualReport.totalPage.realEstateLandValue)
     totalPageContext['C9'] = annualReport.totalPage.realEstateLandSurface
   }
-  var newItemsStartIndex, newDebtsStartIndex
-  if (itemsStartIndex || itemsStartIndex == 0) {
-    let row = 11
-    for (let i=itemsStartIndex; i<annualReport.totalPage.items.length; i++) {
-      if (row >= 16) {
-        newItemsStartIndex = i
-        break
-      }
-      const item = annualReport.totalPage.items[i]
-      totalPageContext['A'+row] = item.name
-      totalPageContext['E'+row] = formatAmount(item.value)
-      row++
+  var row = 11
+  for (let i=itemsStartIndex; i<annualReport.totalPage.items.length; i++) {
+    if (row >= 16) {
+      break
     }
+    const item = annualReport.totalPage.items[i]
+    totalPageContext['A'+row] = item.name
+    totalPageContext['E'+row] = formatAmount(item.value)
+    row++
   }
-  if (debtsStartIndex || debtsStartIndex == 0) {
-    let row = 5
-    for (let i=debtsStartIndex; i<annualReport.totalPage.debts.length; i++) {
-      if (row >= 16) {
-        newDebtsStartIndex = i
-        break
-      }
-      const debt = annualReport.totalPage.debts[i]
-      totalPageContext['F'+row] = debt.description
-      totalPageContext['G'+row] = formatAmount(debt.amount)
-      row++
+  var row = 5
+  for (let i=debtsStartIndex; i<annualReport.totalPage.debts.length; i++) {
+    if (row >= 16) {
+      break
     }
+    const debt = annualReport.totalPage.debts[i]
+    totalPageContext['F'+row] = debt.description
+    totalPageContext['G'+row] = formatAmount(debt.amount)
+    row++
   }
-  if(newItemsStartIndex || newDebtsStartIndex) {
+  if(!isLast) {
     annualReportPages.push(Mustache.render(totalPageTemplate, totalPageContext))
-    populateTotalPage(annualReport, annualReportPages, newItemsStartIndex, newDebtsStartIndex)
     return
   }
   totalPageContext['E16'] = formatAmount(annualReport.totalPage.totalPropertyValue)
@@ -663,8 +659,8 @@ function populateTotalHeadline(annualReport, annualReportPages) {
   } else {
     headlineContext.year = annualReport.year;
   }
-  headlineContext.church = annualReport.churchMunicipality
   headlineContext.pageNum = 15
+  headlineContext.church = annualReport.churchMunicipality
 
   annualReportPages.push(Mustache.render(totalHeadlineTemplate, headlineContext));
 }
@@ -674,9 +670,18 @@ const amountNumberOptions = {
   digitGroupSeparator : '.'
 }
 
-function formatAmount (n) {
+const largeAmountNumberOptions = {
+  decimalCharacter : ',',
+  digitGroupSeparator : '.',
+  decimalPlaces:'0'
+}
+
+function formatAmount (n, cutOfLargeNumberDecimals, max) {
   if(!n) {
     return null
+  }
+  if (cutOfLargeNumberDecimals && n >= (max ? max : 99999999)) {
+    return AutoNumeric.format(n.toString(), largeAmountNumberOptions)
   }
   return AutoNumeric.format(n.toString(), amountNumberOptions)
 }

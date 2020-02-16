@@ -48,7 +48,7 @@
         </b-col>
         <b-col>
           <b-form-group>
-            <b-form-input id="amountInput" type="text" v-model="form.amount" v-on:mouseleave="disableAmountTooltip ? null : hideTooltip('amountInput')" v-bind:class="{ 'is-invalid': shouldValidate && missingAmount }"/>
+            <b-form-input v-on:cut="updateAfterCut" id="amountInput" type="text" v-model="form.amount" v-on:mouseleave="disableAmountTooltip ? null : hideTooltip('amountInput')" v-bind:class="{ 'is-invalid': shouldValidate && missingAmount }"/>
           </b-form-group>
         </b-col>
       </b-row>
@@ -58,7 +58,7 @@
         </b-col>
         <b-col>
           <b-form-group>
-            <b-form-input id="amountDepositedInput" type="text" v-model="form.amountDeposited" v-on:mouseleave="disableAmountDepositedTooltip ? null : hideTooltip('amountDepositedInput')" v-bind:class="{ 'is-invalid': shouldValidate && missingAmountDeposited }"/>
+            <b-form-input v-on:cut="updateAfterCut" id="amountDepositedInput" type="text" v-model="form.amountDeposited" v-on:mouseleave="disableAmountDepositedTooltip ? null : hideTooltip('amountDepositedInput')" v-bind:class="{ 'is-invalid': shouldValidate && missingAmountDeposited }"/>
           </b-form-group>
         </b-col>
       </b-row>
@@ -68,7 +68,7 @@
         </b-col>
         <b-col>
           <b-form-group>
-            <b-form-input id="amountWithdrawnInput" type="text" v-model="form.amountWithdrawn" v-on:mouseleave="disableAmountWithdrawnTooltip ? null : hideTooltip('amountWithdrawnInput')" v-bind:class="{ 'is-invalid': shouldValidate && missingAmountWithdrawn }"/>
+            <b-form-input v-on:cut="updateAfterCut" id="amountWithdrawnInput" type="text" v-model="form.amountWithdrawn" v-on:mouseleave="disableAmountWithdrawnTooltip ? null : hideTooltip('amountWithdrawnInput')" v-bind:class="{ 'is-invalid': shouldValidate && missingAmountWithdrawn }"/>
           </b-form-group>
         </b-col>
       </b-row>
@@ -296,6 +296,17 @@
       }
     },
     methods: {
+      updateAfterCut (e) {
+        if (e && e.target && e.target.id) {
+          setTimeout(() => {
+            const updatedDocEl = document.getElementById(e.target.id);
+            const el = AutoNumeric.getAutoNumericElement('#' + e.target.id)
+            if (el && updatedDocEl) {
+              el.set(updatedDocEl.value)
+            }
+          }, 100)
+        }
+      },
       focusModalCloseButton (modalRef) {
         this.$refs[modalRef].$refs.closeButton.focus()
       },
@@ -422,23 +433,23 @@
     border-radius: 0 !important;
   }
   #accountInput {
-    width: 170px;
+    width: 200px;
     border-style: none;
   }
   #savingEntityInput {
-    width: 315px;
+    width: 300px;
     border-style: none;
   }
   #amountInput {
-    width: 130px;
+    width: 110px;
     border-style: none;
   }
   #amountWithdrawnInput {
-    width: 130px;
+    width: 110px;
     border-style: none;
   }
   #amountDepositedInput {
-    width: 130px;
+    width: 110px;
     border-style: none;
   }
 </style>

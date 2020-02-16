@@ -18,9 +18,11 @@
     "Permission denied." : "Немате адекватна права писања за преузимање на изабрану локацију.",
     "Print": "Штампај",
     "Print page": "Штампај страницу",
+    "Print total report": "Штампај завршни рачун",
     "Print whole annual report": "Штампај дневник благајне",
     "Download": "Преузми",
     "Download page": "Преузми страницу",
+    "Download total report": "Преузми завршни рачун",
     "Download whole annual report": "Преузми дневник благајне",
     "Clear": "Ресетуј унос",
     "Delete": "Обриши",
@@ -150,8 +152,9 @@
     "Updated at": "Ажурирано",
 
     "for year" : "за годину",
-    "annual-report": "дневник-благајне",
     "page": "страница",
+    "total-report": "завршни-рачун",
+    "annual-report": "дневник-благајне",
     "payment-slip": "уплатница",
     "receipt": "признаница",
 

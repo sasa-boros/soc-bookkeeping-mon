@@ -49,6 +49,8 @@ async function getBookedYears () {
         })
     }
 
+    yearsSet.add(new Date().getFullYear())
+
     var years = Array.from(yearsSet).sort((a, b) => b - a)
 
     console.log(`Returning booked years: \n${JSON.stringify(years, null, 2)}`)

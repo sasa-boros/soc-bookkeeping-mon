@@ -9,6 +9,7 @@
                 <img src="~@/assets/download.png">
               </template>
               <b-dropdown-item class="dropdownOption" v-on:click="downloadAnnualReportPage">{{phrases.downloadPage}}</b-dropdown-item>
+              <b-dropdown-item class="dropdownOption" v-on:click="downloadTotalReport">{{phrases.downloadTotalReport}}</b-dropdown-item>
               <b-dropdown-item class="dropdownOption" v-on:click="downloadAnnualReport">{{phrases.downloadWholeAnnualReport}}</b-dropdown-item>
             </b-dropdown>
           </span>
@@ -18,6 +19,7 @@
                 <img src="~@/assets/print.png">
               </template>
               <b-dropdown-item v-on:click="printAnnualReportPage">{{phrases.printPage}}</b-dropdown-item>
+              <b-dropdown-item v-on:click="printTotalReport">{{phrases.printTotalReport}}</b-dropdown-item>
               <b-dropdown-item v-on:click="printAnnualReport">{{phrases.printWholeAnnualReport}}</b-dropdown-item>
             </b-dropdown>
           </span>
@@ -81,86 +83,6 @@ const { saveAs } = require('../../../../utils/utils')
 const Mousetrap = require('mousetrap');
 const AutoNumeric = require('autonumeric')
 
-const printStyle = `
-<style>
-@media screen {
-    #print-annual-report {
-      display: none;
-    }
-  }
-  @media print {
-    #app {
-      display:none;
-    }
-    #print-annual-report, #print-annual-report * {
-      visibility:visible;
-    }
-    #headline {
-      position: relative;
-      top: 283px;
-      left: 115px;
-      transform: rotate(270deg) translate(-276mm, 0);
-      transform-origin: 0 0;
-    }
-    #manual-page {
-      page-break-before: always;
-      position: relative;
-      top: 697px;
-      left: 65px;
-      transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
-      transform-origin: 0 0;
-    }
-    #income-page {
-      page-break-before: always;
-      position: relative;
-      top: 699px;
-      left: 98px;
-      transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
-      transform-origin: 0 0;
-    }
-    #outcome-page {
-      page-break-before: always;
-      position: relative;
-      top: 698px;
-      left: 99px;
-      transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
-      transform-origin: 0 0;
-    }
-    #total-income-page {
-      page-break-before: always;
-      position: relative;
-      top: 655px;
-      left: 63px;
-      transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
-      transform-origin: 0 0;
-    }
-    #total-outcome-page {
-      page-break-before: always;
-      position: relative;
-      top: 651px;
-      left: 63px;
-      transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
-      transform-origin: 0 0;
-    }
-    #shares-page {
-      page-break-before: always;
-      position: relative;
-      top: 660px;
-      left: 77px;
-      transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
-      transform-origin: 0 0;
-    }
-    #total-page {
-      page-break-before: always;
-      position: relative;
-      top: 465px;
-      left: 70px;
-      transform: scale(0.9) rotate(270deg) translate(-276mm, 0);
-      transform-origin: 0 0;
-    }
-  }
-  </style>
-`
 const printPageStyle = `
 <style>
 @media screen {
@@ -177,152 +99,129 @@ const printPageStyle = `
     }
     #headline {
       position: relative;
-      top: 275px;
-      left: 113px;
-      transform: rotate(270deg) translate(-276mm, 0);
-      transform-origin: 0 0;
-    }
-    #manual-page {
-      position: relative;
-      top: 672px;
-      left: 65px;
-      transform: scale(0.78) rotate(270deg) translate(-276mm, 0);
-      transform-origin: 0 0;
-    }
-    #income-page {
-      position: relative;
-      top: 675px;
-      left: 98px;
-      transform: scale(0.77) rotate(270deg) translate(-276mm, 0);
-      transform-origin: 0 0;
-    }
-    #outcome-page {
-      position: relative;
-      top: 673px;
-      left: 98px;
-      transform: scale(0.77) rotate(270deg) translate(-276mm, 0);
-      transform-origin: 0 0;
-    }
-    #total-income-page {
-      position: relative;
-      top: 632px;
-      left: 63px;
-      transform: scale(0.77) rotate(270deg) translate(-276mm, 0);
-      transform-origin: 0 0;
-    }
-    #total-outcome-page {
-      position: relative;
-      top: 628px;
-      left: 63px;
-      transform: scale(0.77) rotate(270deg) translate(-276mm, 0);
-      transform-origin: 0 0;
-    }
-    #shares-page {
-      position: relative;
-      top: 638px;
-      left: 77px;
-      transform: scale(0.77) rotate(270deg) translate(-276mm, 0);
-      transform-origin: 0 0;
-    }
-    #total-page {
-      position: relative;
-      top: 440px;
-      left: 70px;
-      transform: scale(0.9) rotate(270deg) translate(-276mm, 0);
+      top: 303px;
+      left: 147px;
+      transform: scale(0.87) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
     #total-headline {
       position: relative;
-      top: 275px;
-      left: 113px;
-      transform: rotate(270deg) translate(-276mm, 0);
-      transform-origin: 0 0;
-    }
-  }
-  </style>
-`
-const downloadStyle = `
-<style>
-@media screen {
-    #print-annual-report {
-      display: none;
-    }
-  }
-  @media print {
-    #app {
-      display:none;
-    }
-    #print-annual-report, #print-annual-report * {
-      visibility:visible;
-    }
-    #headline {
-      position: relative;
-      top: 283px;
-      left: 115px;
-      transform: rotate(270deg) translate(-276mm, 0);
+      top: 303px;
+      left: 147px;
+      transform: scale(0.87) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
     #manual-page {
-      page-break-before: always;
       position: relative;
-      top: 697px;
-      left: 65px;
-      transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
+      top: 677px;
+      right: 5px;
+      transform: scale(0.73) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
     #income-page {
-      page-break-before: always;
       position: relative;
-      top: 699px;
-      left: 98px;
-      transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
+      top: 1091px;
+      left: 48px;
+      transform: scale(1.1) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
     #outcome-page {
-      page-break-before: always;
       position: relative;
-      top: 698px;
-      left: 99px;
-      transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
+      top: 1095px;
+      left: 48px;
+      transform: scale(1.1) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
     #total-income-page {
-      page-break-before: always;
       position: relative;
-      top: 655px;
-      left: 63px;
-      transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
+      top: 737px;
+      right: 1px;
+      transform: scale(0.73) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
     #total-outcome-page {
-      page-break-before: always;
       position: relative;
-      top: 651px;
-      left: 63px;
-      transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
+      top: 736px;
+      right: 1px;
+      transform: scale(0.73) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
     #shares-page {
-      page-break-before: always;
       position: relative;
-      top: 660px;
-      left: 77px;
-      transform: scale(0.8) rotate(270deg) translate(-276mm, 0);
+      top: 667px;
+      left: 18px;
+      transform: scale(0.73) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
     #total-page {
-      page-break-before: always;
       position: relative;
-      top: 465px;
-      left: 70px;
-      transform: scale(0.9) rotate(270deg) translate(-276mm, 0);
+      top: 555px;
+      left: 28px;
+      transform: scale(0.73) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
   }
   </style>
 `
 
-const downloadPageStyle = `
+const printTotalReportStyle = `
+<style>
+@media screen {
+    #print-annual-report {
+      display: none;
+    }
+  }
+  @media print {
+    #app {
+      display:none;
+    }
+    #print-annual-report, #print-annual-report * {
+      visibility:visible;
+    }
+    #total-headline {
+      position: relative;
+      top: 288px;
+      left: 137px;
+      transform: scale(0.9) rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0;
+    }
+    #total-income-page {
+      page-break-before: always;
+      position: relative;
+      top:738px;
+      right: 1px;
+      transform: scale(0.73) rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0;
+    }
+    #total-outcome-page {
+      page-break-before: always;
+      position: relative;
+      top:738px;
+      right: 1px;
+      transform: scale(0.73) rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0;
+    }
+    #shares-page {
+      page-break-before: always;
+      position: relative;
+      top: 670px;
+      left: 10px;
+      transform: scale(0.73) rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0;
+    }
+    #total-page {
+      page-break-before: always;
+      position: relative;
+      top: 555px;
+      left: 26px;
+      transform: scale(0.73) rotate(270deg) translate(-276mm, 0);
+      transform-origin: 0 0;
+    }
+  }
+  </style>
+`
+
+const printAnnualReportStyle = `
 <style>
 @media screen {
     #print-annual-report {
@@ -338,65 +237,65 @@ const downloadPageStyle = `
     }
     #headline {
       position: relative;
-      top: 275px;
-      left: 113px;
-      transform: rotate(270deg) translate(-276mm, 0);
+      top: 800px;
+      left: 230px;
+      transform: scale(1.3) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
     #manual-page {
+      page-break-before: always;
       position: relative;
-      top: 672px;
-      left: 65px;
-      transform: scale(0.78) rotate(270deg) translate(-276mm, 0);
+      top: 1014px;
+      right: 5px;
+      transform: scale(1.1) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
     #income-page {
+      page-break-before: always;
       position: relative;
-      top: 675px;
-      left: 98px;
-      transform: scale(0.77) rotate(270deg) translate(-276mm, 0);
+      top: 1096px;
+      left: 48px;
+      transform: scale(1.1) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
     #outcome-page {
+      page-break-before: always;
       position: relative;
-      top: 673px;
-      left: 98px;
-      transform: scale(0.77) rotate(270deg) translate(-276mm, 0);
+      top: 1095px;
+      left: 48px;
+      transform: scale(1.1) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
     #total-income-page {
+      page-break-before: always;
       position: relative;
-      top: 632px;
-      left: 63px;
-      transform: scale(0.77) rotate(270deg) translate(-276mm, 0);
+      top: 1110px;
+      right: 1px;
+      transform: scale(1.1) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
     #total-outcome-page {
+      page-break-before: always;
       position: relative;
-      top: 628px;
-      left: 63px;
-      transform: scale(0.77) rotate(270deg) translate(-276mm, 0);
+      top: 1109px;
+      right: 1px;
+      transform: scale(1.1) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
     #shares-page {
+      page-break-before: always;
       position: relative;
-      top: 638px;
-      left: 77px;
-      transform: scale(0.77) rotate(270deg) translate(-276mm, 0);
+      top: 1005px;
+      left: 18px;
+      transform: scale(1.1) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
     #total-page {
+      page-break-before: always;
       position: relative;
-      top: 440px;
-      left: 70px;
-      transform: scale(0.9) rotate(270deg) translate(-276mm, 0);
-      transform-origin: 0 0;
-    }
-    #total-headline {
-      position: relative;
-      top: 275px;
-      left: 113px;
-      transform: rotate(270deg) translate(-276mm, 0);
+      top: 854px;
+      left: 38px;
+      transform: scale(1.1) rotate(270deg) translate(-276mm, 0);
       transform-origin: 0 0;
     }
   }
@@ -419,13 +318,16 @@ export default {
       phrases: {
         download: i18n.getTranslation('Download'),
         downloadPage: i18n.getTranslation('Download page'),
+        downloadTotalReport: i18n.getTranslation('Download total report'),
         downloadWholeAnnualReport: i18n.getTranslation('Download whole annual report'),
         print: i18n.getTranslation('Print'),
         printPage: i18n.getTranslation('Print page'),
+        printTotalReport: i18n.getTranslation('Print total report'),
         printWholeAnnualReport: i18n.getTranslation('Print whole annual report'),
         previousPage: i18n.getTranslation('Previous page'),
         nextPage: i18n.getTranslation('Next page'),
         ok: i18n.getTranslation('Ok'),
+        totalReportFileName: i18n.getTranslation('total-report'),
         annualReportFileName: i18n.getTranslation('annual-report'),
         page: i18n.getTranslation('page'),
         saveError: i18n.getTranslation('Failed saving error')
@@ -433,21 +335,19 @@ export default {
       currentPage: 1,
       annualReportPagesNums: null,
       errorText: "",
-      printSection: null,
       printPageSections: [],
-      downloadSection: null,
-      downloadPageSections: [],
+      printTotalReportSection: null,
+      printAnnualReportSection: null,
       alreadyPressed: false
     }
   },
   created () {
-    this.printSection = this.preparePrintSection(printStyle, null)
-    this.downloadSection = this.preparePrintSection(downloadStyle, null)
     const self = this
     this.annualReportPages.forEach((annualReportPage, index) => {
-      self.printPageSections.push(self.preparePrintSection(printPageStyle, index))
-      self.downloadPageSections.push(self.preparePrintSection(downloadPageStyle, index))
+      self.printPageSections.push(self.preparePagePrintSection(printPageStyle, index))
     })
+    this.printTotalReportSection = this.prepareTotalReportPrintSection(printTotalReportStyle, null)
+    this.printAnnualReportSection = this.prepareAnnualReportPrintSection(printAnnualReportStyle, null)
     this.findAnnualReportPagesNums()
   },
   mounted () {
@@ -553,19 +453,6 @@ export default {
         this.currentPage++;
       }
     },
-    printAnnualReport () {
-      if (this.alreadyPressed) {
-        return
-      }
-      document.body.appendChild(this.printSection)
-      try {
-        this.alreadyPressed = true
-        window.print()
-      } finally {
-        this.alreadyPressed = false
-        document.body.removeChild(this.printSection)
-      }
-    },
     printAnnualReportPage () {
       if (this.alreadyPressed) {
         return
@@ -579,27 +466,30 @@ export default {
         document.body.removeChild(this.printPageSections[this.currentPage-1])
       }
     },
-    async downloadAnnualReport () {
+    printTotalReport () {
       if (this.alreadyPressed) {
         return
       }
-      document.body.appendChild(this.downloadSection)
+      document.body.appendChild(this.printTotalReportSection)
       try {
         this.alreadyPressed = true
-        const res = await annualReportController.createAnnualReportPdf()
-        if (!res.err) {
-            const self = this
-            saveAs('/annual-report.pdf', this.phrases.annualReportFileName + (this.year ? '-' + this.year : '' ) + '.pdf', err => {
-              if (err) {
-                self.openErrorModal(self.phrases.saveError)
-              }
-            })
-          } else {
-            this.openErrorModal(res.err)       
-          }
+        window.print()
       } finally {
         this.alreadyPressed = false
-        document.body.removeChild(this.downloadSection)
+        document.body.removeChild(this.printTotalReportSection)
+      }
+    },
+    printAnnualReport () {
+      if (this.alreadyPressed) {
+        return
+      }
+      document.body.appendChild(this.printAnnualReportSection)
+      try {
+        this.alreadyPressed = true
+        window.print()
+      } finally {
+        this.alreadyPressed = false
+        document.body.removeChild(this.printAnnualReportSection)
       }
     },
     async downloadAnnualReportPage () {
@@ -607,7 +497,7 @@ export default {
         return
       }
       this.hideTooltip('')
-      document.body.appendChild(this.downloadPageSections[this.currentPage-1])
+      document.body.appendChild(this.printPageSections[this.currentPage-1])
       try {
         this.alreadyPressed = true
         const res = await annualReportController.createAnnualReportPdf()
@@ -623,10 +513,56 @@ export default {
           }
       } finally {
         this.alreadyPressed = false
-        document.body.removeChild(this.downloadPageSections[this.currentPage-1])
+        document.body.removeChild(this.printPageSections[this.currentPage-1])
       }
     },
-    preparePrintSection (style, pageIndex) {
+    async downloadTotalReport () {
+      if (this.alreadyPressed) {
+        return
+      }
+      document.body.appendChild(this.printTotalReportSection)
+      try {
+        this.alreadyPressed = true
+        const res = await annualReportController.createAnnualReportPdf()
+        if (!res.err) {
+            const self = this
+            saveAs('/annual-report.pdf', this.phrases.totalReportFileName + (this.year ? '-' + this.year : '' ) + '.pdf', err => {
+              if (err) {
+                self.openErrorModal(self.phrases.saveError)
+              }
+            })
+          } else {
+            this.openErrorModal(res.err)       
+          }
+      } finally {
+        this.alreadyPressed = false
+        document.body.removeChild(this.printTotalReportSection)
+      }
+    },
+    async downloadAnnualReport () {
+      if (this.alreadyPressed) {
+        return
+      }
+      document.body.appendChild(this.printAnnualReportSection)
+      try {
+        this.alreadyPressed = true
+        const res = await annualReportController.createAnnualReportPdf()
+        if (!res.err) {
+            const self = this
+            saveAs('/annual-report.pdf', this.phrases.annualReportFileName + (this.year ? '-' + this.year : '' ) + '.pdf', err => {
+              if (err) {
+                self.openErrorModal(self.phrases.saveError)
+              }
+            })
+          } else {
+            this.openErrorModal(res.err)       
+          }
+      } finally {
+        this.alreadyPressed = false
+        document.body.removeChild(this.printAnnualReportSection)
+      }
+    },
+    preparePagePrintSection (style, pageIndex) {
       var section = document.createElement('div')
       section.id = 'print-annual-report'
       section.innerHTML = style
@@ -634,15 +570,42 @@ export default {
         var page = document.createElement('div')
         page.innerHTML = this.annualReportPages[pageIndex]
         section.appendChild(page)
-      } else {
-        for (let i = 0; i < this.annualReportPages.length - 1; i++) {
-          let annualReportPage = this.annualReportPages[i]
-          let page = document.createElement('div')
+      }
+      return section
+    },
+    prepareTotalReportPrintSection (style) {
+      var section = document.createElement('div')
+      section.id = 'print-annual-report'
+      section.innerHTML = style
+      var page = document.createElement('div')
+      page.innerHTML = this.annualReportPages[this.annualReportPages.length-1]
+      section.appendChild(page)
+      for (let i = 0; i < this.annualReportPages.length - 1; i++) {
+        let annualReportPage = this.annualReportPages[i]
+        if (annualReportPage.startsWith('<style accesskey="13">') || annualReportPage.startsWith('<style accesskey="14">')) {
+          var page = document.createElement('div')
           page.innerHTML = annualReportPage
           section.appendChild(page)
         }
       }
-  
+      return section
+    },
+    prepareAnnualReportPrintSection (style) {
+      var section = document.createElement('div')
+      section.id = 'print-annual-report'
+      section.innerHTML = style
+      for (let i = 0; i < this.annualReportPages.length - 1; i++) {
+        if (i == 1) {
+          // empty page
+          let page = document.createElement('div')
+          page.innerHTML = '<div style="page-break-before: always;">&nbsp;</div>'
+          section.appendChild(page)
+        }
+        let annualReportPage = this.annualReportPages[i]
+        let page = document.createElement('div')
+        page.innerHTML = annualReportPage
+        section.appendChild(page)
+      }
       return section
     },
     openErrorModal(error) {
@@ -693,63 +656,63 @@ input {
 .headline >>> #headline {
 	transform: scale(0.6);
 	position:relative;
-  bottom:110px;
-  left:190px;
+  bottom:50px;
+  left:223px;
 }
 
 .manualPage >>> #manual-page {
 	transform: scale(0.6);
 	position:relative;
-  bottom:235px;
-  right:345px;
+  bottom:276px;
+  right:310px;
 }
 
 .incomePage >>> #income-page {
 	transform: scale(0.6);
 	position:relative;
-	bottom: 219px;
-	right: 347px;
+	bottom: 271px;
+	right: 385px;
 }
 .outcomePage >>> #outcome-page {
 	transform: scale(0.6);
 	position:relative;
-	bottom: 224px;
-	right: 349px;
+	bottom: 276px;
+	right: 383px;
 }
 
 .totalIncomePage >>> #total-income-page {
   transform: scale(0.6);
 	position:relative;
-	bottom: 184px;
-	right: 295px;
+	bottom: 235px;
+	right: 394px;
 }
 
 .totalOutcomePage >>> #total-outcome-page {
   transform: scale(0.6);
 	position:relative;
-	bottom: 233px;
-	right: 293px;
+	bottom: 291px;
+	right: 395px;
 }
 
 .sharesPage >>> #shares-page {
   transform: scale(0.6);
   position:relative;
-  bottom: 191px;
-  right: 301px;
+  bottom: 235px;
+  right: 297px;
 }
 
 .totalPage >>> #total-page {
 	transform: scale(0.6);
 	position:relative;
-	bottom: 195px;
-	right: 103px;
+	bottom: 226px;
+	right: 143px;
 }
 
 .totalHeadline >>> #total-headline {
 	transform: scale(0.6);
 	position:relative;
-  bottom:110px;
-  left:190px;
+  bottom:50px;
+  left:223px;
 }
 
 i {

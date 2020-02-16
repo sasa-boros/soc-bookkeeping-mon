@@ -18,7 +18,7 @@
         </b-col>
         <b-col>
           <b-form-group>
-            <b-form-input id="partitionInput" v-on:mouseleave="disablePartitionTooltip ? null : hideTooltip('partitionInput')" type="text" v-model="form.partition" class="partPosInput" v-bind:class="{ 'is-invalid': shouldValidate && (missingPartition || notUnique) }" :autofocus="!isUpdate"/>
+            <b-form-input v-on:cut="updateAfterCut" id="partitionInput" v-on:mouseleave="disablePartitionTooltip ? null : hideTooltip('partitionInput')" type="text" v-model="form.partition" class="partPosInput" v-bind:class="{ 'is-invalid': shouldValidate && (missingPartition || notUnique) }" :autofocus="!isUpdate"/>
           </b-form-group>
         </b-col>
       </b-row>
@@ -28,7 +28,7 @@
         </b-col>
         <b-col>
           <b-form-group>
-            <b-form-input id="positionInput" v-on:mouseleave="disablePositionTooltip ? null : hideTooltip('positionInput')" type="text" v-model="form.position" class="partPosInput" v-bind:class="{ 'is-invalid': shouldValidate && (missingPosition || notUnique) }"/>
+            <b-form-input v-on:cut="updateAfterCut" id="positionInput" v-on:mouseleave="disablePositionTooltip ? null : hideTooltip('positionInput')" type="text" v-model="form.position" class="partPosInput" v-bind:class="{ 'is-invalid': shouldValidate && (missingPosition || notUnique) }"/>
           </b-form-group>
         </b-col>
       </b-row>
@@ -38,7 +38,7 @@
         </b-col>
         <b-col>
           <b-form-group>
-            <b-form-input id="descriptionInput" type="text" v-model="form.description" class="descriptionInput" v-on:keypress="limitInputPerSize"/>
+            <b-form-input :disabled="isTaxCode" id="descriptionInput" type="text" v-model="form.description" class="descriptionInput" v-on:keypress="limitInputPerSize"/>
           </b-form-group>
         </b-col>
       </b-row>
@@ -120,13 +120,15 @@ export default {
       partitionInputAutonumeric: null,
       positionInputAutonumeric: null,
       alreadySubmited: false,
-      tooltipTimeouts: []
+      tooltipTimeouts: [],
+      isTaxCode: false
     }
   },
   created () {
     if (this.isUpdate) {
       this.form = mapCodeToCodeForm(JSON.parse(JSON.stringify(this.outcomeCode)))
     }
+    this.determineIfItsTaxCode()
   },
   mounted () {
     this.partitionInputAutonumeric = new AutoNumeric('#partitionInput', partitionPositionNumberOptions)
@@ -190,6 +192,22 @@ export default {
     }
   },
   methods: {
+    updateAfterCut (e) {
+      if (e && e.target && e.target.id) {
+        setTimeout(() => {
+          const updatedDocEl = document.getElementById(e.target.id);
+          const el = AutoNumeric.getAutoNumericElement('#' + e.target.id)
+          if (el && updatedDocEl) {
+            el.set(updatedDocEl.value)
+          }
+        }, 100)
+      }
+    },
+    determineIfItsTaxCode () {
+       if (this.outcomeCode && this.outcomeCode.tax) {
+            this.isTaxCode = true
+        }
+    },
     focusModalCloseButton (modalRef) {
       this.$refs[modalRef].$refs.closeButton.focus()
     },
@@ -263,7 +281,10 @@ export default {
       this.partitionInputAutonumeric.clear()
       this.form.position = null;
       this.positionInputAutonumeric.clear()
-      this.form.description = null;
+      if (!this.isTaxCode) {
+        this.form.description = null;
+      }
+      this.form.isTaxed = null;
     },
     showInvalidTooltips () {
       if (this.missingPartition || this.notUnique) {
@@ -317,8 +338,8 @@ input {
   border-style: none;
 }
 .descriptionInput {
-  width: 355px;
-  max-width: 355px;
+  width: 340px;
+  max-width: 340px;
   border-style: none;
 }
 </style>

@@ -10,9 +10,9 @@
 }
 
 .tooltip .tooltip-inner {
-  font-size: 80%;
+  font-size: 90%;
   line-height: 1;
-  margin: 1px;
+  padding:5px;
   font-family: "Times New Roman";
   letter-spacing: 95%;
   background-color:#514A4A;
@@ -75,7 +75,6 @@ h1 {
   background-color:  rgb(255, 255, 255);
   border: none;
 }
-
 .btn-light:disabled {
   background-color: rgb(153, 153, 153);
 }
@@ -84,13 +83,12 @@ h1 {
 }
 
 .nav-link {
-  padding-right:4px !important;
+  padding-right: 4px !important;
   padding-left: 4px !important;
   padding-top:4px !important;
   padding-bottom:4px !important;
   color:#514A4A !important;
 }
-
 td .btn-group {
   height:30px;
 }
@@ -100,7 +98,6 @@ th .custom-checkbox {
 td .custom-checkbox {
   height:30px;
 }
-
 .table tbody tr:hover {
   background-color:  rgb(208, 226, 247) !important;
 }
@@ -204,4 +201,9 @@ input[type]:focus:not(.is-invalid) {
 
 .dropdown-toggle::after {
   color:#514A4A;
+}
+
+.rowImg {
+  position:relative; 
+  bottom:8px;
 }

@@ -5,7 +5,7 @@
         <img src="~@/assets/add.png">
       </b-button>
      </b-button-group>
-    <b-table show-empty
+    <b-table show-empty fixed
               stacked="md"
               bordered
               class="mt-3"
@@ -21,8 +21,8 @@
               >
         <template v-slot:cell(preview)="row">
           <b-button-group>
-            <b-button id="updateIncomeCodeBtn" v-on:mouseleave="hideTooltip('updateIncomeCodeBtn')" v-b-tooltip.hover.top.window="{title: phrases.seeDetails}" v-on:click="openCreateIncomeCodeModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
-              <img src="~@/assets/see-more.png">                                           
+            <b-button id="updateIncomeCodeBtn" v-on:mouseleave="hideTooltip('updateIncomeCodeBtn')" v-b-tooltip.hover.top.window="{title: phrases.seeDetails}" v-on:click="openCreateIncomeCodeModal(row.item)" variant="link" class="btn-xs">
+              <img src="~@/assets/see-more.png" class="rowImg">                                           
             </b-button>
           </b-button-group>
         </template>
@@ -37,8 +37,8 @@
         </template>
         <template v-slot:cell(remove)="row">
            <b-button-group>
-              <b-button id="deleteIncomeCodeBtn" v-on:mouseleave="hideTooltip('deleteIncomeCodeBtn')" v-b-tooltip.hover.top.window="{title: phrases.deleteIncomeCode}" v-on:click="openDeleteIncomeCodeModal(row.item)" variant="link" class="btn-xs" style="position:relative; bottom:10px;">
-                  <img src="~@/assets/delete.png">
+              <b-button id="deleteIncomeCodeBtn" v-on:mouseleave="hideTooltip('deleteIncomeCodeBtn')" v-b-tooltip.hover.top.window="{title: phrases.deleteIncomeCode}" v-on:click="openDeleteIncomeCodeModal(row.item)" variant="link" class="btn-xs">
+                  <img src="~@/assets/delete.png" class="rowImg">
               </b-button>
            </b-button-group>
         </template>
@@ -86,7 +86,8 @@
         fields: [
           {
             key: 'preview',
-            label: ''
+            label: '',
+            thStyle: {outline: 'none', width: '70px'}
           },
           {
             key: 'partition',
@@ -105,7 +106,8 @@
           },
           {
             key: 'remove',
-            label: ''
+            label: '',
+            thStyle: {outline: 'none', width: '70px'}
           }
         ],
         incomeCodes: [],
