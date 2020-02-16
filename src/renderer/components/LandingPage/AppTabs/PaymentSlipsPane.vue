@@ -66,6 +66,7 @@
             </b-form-checkbox>
           </span>
         </template>
+        <template v-slot:cell(ordinal)="row">{{ row.item.ordinal }}</template>
         <template v-slot:cell(income)="row">{{ row.item.income | formatIncome }}</template>
         <template v-slot:cell(reason)="row">{{ row.item.reason }}</template>
         <template v-slot:cell(formatedDate)="row">{{ row.item.date | formatDate }}</template>
@@ -143,7 +144,8 @@
           invalidPaymentSlip: i18n.getTranslation('Invalid payment slip'),
           select: i18n.getTranslation('Select'),
           selectAll: i18n.getTranslation('Select all'),
-          ok: i18n.getTranslation('Ok')
+          ok: i18n.getTranslation('Ok'),
+          ordinal: i18n.getTranslation('Ordinal num')
         },
         paymentSlips: [],
         items: [],
@@ -198,6 +200,7 @@
         return [
           { key: 'select', label: '', thStyle: {outline: 'none', width: '30px'} },
           { key: 'preview', label: '', thStyle: {outline: 'none', width: '70px'}  },
+          { key: 'ordinal', label: this.phrases.ordinal, class: 'text-center', sortable:true, thStyle: {'outline': 'none', 'user-select': 'none'} },
           { key: 'income', label: this.phrases.income, class: 'text-center', sortable:true, thStyle: {'outline': 'none', 'user-select': 'none'} },
           { key: 'reason', label: this.phrases.reason, class: 'text-center', thStyle: {'outline': 'none', 'user-select': 'none'} },
           { key: 'formatedDate', label: this.phrases.forDate, class: 'text-center', sortable:true, thStyle: {'outline': 'none', 'user-select': 'none'} },
