@@ -9,7 +9,7 @@ function findAll () {
     })
 }
 
-function findAllForYear (year) {
+function findByYear (year) {
     return new Promise((resolve, reject) => { 
         db.debts.find({ 'year': year }).sort({ 'createdAt': 1 }).exec((err, docs) => {
             if (err) {
@@ -20,15 +20,27 @@ function findAllForYear (year) {
     })
 }
 
-function insert (doc) {
-    doc.createdAt = Date.now()
-    doc.updatedAt = Date.now()
+function insert (debt) {
+    debt.createdAt = Date.now()
+    debt.updatedAt = Date.now()
     return new Promise((resolve, reject) => { 
-        db.debts.insert(doc, (err, newDoc) => {
+        db.debts.insert(debt, (err, newDoc) => {
             if (err) {
                 reject(err)
             }
             resolve(newDoc)
+        })
+    })
+}
+
+function updateById (id, debt) {
+    debt.updatedAt = Date.now()
+    return new Promise((resolve, reject) => { 
+        db.debts.update({ _id: id }, debt, (err, numReplaced) => {
+            if (err) {
+                reject(err)
+            }
+            resolve(numReplaced)
         })
     })
 }
@@ -44,7 +56,7 @@ function removeById (id) {
     })
 }
 
-function removeManyByIds (ids) {
+function removeByIds (ids) {
     return new Promise((resolve, reject) => { 
         db.debts.remove({ _id: { $in : ids }}, {multi: true}, (err, numRemoved) => {
             if (err) {
@@ -55,23 +67,11 @@ function removeManyByIds (ids) {
     })
 }
 
-function updateById (id, doc) {
-    doc.updatedAt = Date.now()
-    return new Promise((resolve, reject) => { 
-        db.debts.update({ _id: id }, doc, (err, numReplaced) => {
-            if (err) {
-                reject(err)
-            }
-            resolve(numReplaced)
-        })
-    })
-}
-
 module.exports = {
     findAll: findAll,
-    findAllForYear: findAllForYear,
+    findByYear: findByYear,
     insert: insert,
+    updateById: updateById,
     removeById: removeById,
-    removeManyByIds: removeManyByIds,
-    updateById: updateById
+    removeByIds: removeByIds
 }

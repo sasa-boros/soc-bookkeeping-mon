@@ -1,76 +1,84 @@
 <template>
-  <b-container fluid id="annual-report-preview">
+  <b-container fluid id="annual-report-preview" ref="annualReportPreview">
     <br>
-      <b-row>
-        <b-col cols="3">
-          <span v-on:mouseleave="hideTooltip('annualReportDownloadDropdown')">
-            <b-dropdown id="annualReportDownloadDropdown" variant="link">
-              <template v-slot:button-content>
-                <img src="~@/assets/download.png">
-              </template>
-              <b-dropdown-item class="dropdownOption" v-on:click="downloadAnnualReportPage">{{phrases.downloadPage}}</b-dropdown-item>
-              <b-dropdown-item class="dropdownOption" v-on:click="downloadTotalReport">{{phrases.downloadTotalReport}}</b-dropdown-item>
-              <b-dropdown-item class="dropdownOption" v-on:click="downloadAnnualReport">{{phrases.downloadWholeAnnualReport}}</b-dropdown-item>
-            </b-dropdown>
-          </span>
-          <span v-on:mouseleave="hideTooltip('annualReportPrintDropdown')">
-            <b-dropdown id="annualReportPrintDropdown" variant="link">
-              <template v-slot:button-content>
-                <img src="~@/assets/print.png">
-              </template>
-              <b-dropdown-item v-on:click="printAnnualReportPage">{{phrases.printPage}}</b-dropdown-item>
-              <b-dropdown-item v-on:click="printTotalReport">{{phrases.printTotalReport}}</b-dropdown-item>
-              <b-dropdown-item v-on:click="printAnnualReport">{{phrases.printWholeAnnualReport}}</b-dropdown-item>
-            </b-dropdown>
-          </span>
-          &nbsp;
-        </b-col>
-        <b-col cols="2">
-          <div class="float-right pageCount">
-            {{currentPage}}/{{annualReportPages.length}}
-          </div>
-        </b-col>
-        <b-col cols="2" class="text-center">
-          <b-button id="decrementPageBtn" ref="decrementPageBtn" v-on:mouseleave="hideTooltip('decrementPageBtn')" variant="light" v-on:click='decrementPage'>
-            <i class="arrow left"></i>
-          </b-button>
-          <b-button id="incrementPageBtn" ref="incrementPageBtn" v-on:mouseleave="hideTooltip('incrementPageBtn')" variant="light" v-on:click='incrementPage'>
-            <i class="arrow right"></i>
-          </b-button>
-        </b-col>
-        <b-col>
-          <div style="text-align:center">Страна дневника:</div>
-          <span align="justify">
-            <b-button v-for="(value, arpn, index) in annualReportPagesNums" v-bind:key="value" v-on:click="setPage(value)" type="text" variant="light" class="btn-sm">
-              {{computePageIndex(index)}}
-            </b-button>
-          </span>
-          <b-button @click.stop="closeModal()" variant="link" id="modalCancelBtn" class="btn-xs float-right">
-            <img src="~@/assets/close.png">
-          </b-button>
-        </b-col>
-      </b-row>
-      <hr>
-      <b-row>
-        <div v-html="annualReportPages[currentPage-1]" id="page-display" class="headline manualPage incomePage outcomePage sharesPage totalIncomePage totalOutcomePage totalPage totalHeadline">
+    <b-row>
+      <b-col cols="3">
+        <span v-on:mouseleave="hideTooltip('annualReportDownloadDropdown')">
+          <b-dropdown id="annualReportDownloadDropdown" variant="link">
+            <template v-slot:button-content>
+              <img src="~@/assets/download.png">
+            </template>
+            <b-dropdown-item class="dropdownOption" v-on:click="downloadAnnualReportPage">{{phrases.downloadPage}}</b-dropdown-item>
+            <b-dropdown-item class="dropdownOption" v-on:click="downloadTotalReport">{{phrases.downloadTotalReport}}</b-dropdown-item>
+            <b-dropdown-item class="dropdownOption" v-on:click="downloadAnnualReport">{{phrases.downloadWholeAnnualReport}}</b-dropdown-item>
+          </b-dropdown>
+        </span>
+        <span v-on:mouseleave="hideTooltip('annualReportPrintDropdown')">
+          <b-dropdown id="annualReportPrintDropdown" variant="link">
+            <template v-slot:button-content>
+              <img src="~@/assets/print.png">
+            </template>
+            <b-dropdown-item v-on:click="printAnnualReportPage">{{phrases.printPage}}</b-dropdown-item>
+            <b-dropdown-item v-on:click="printTotalReport">{{phrases.printTotalReport}}</b-dropdown-item>
+            <b-dropdown-item v-on:click="printAnnualReport">{{phrases.printWholeAnnualReport}}</b-dropdown-item>
+          </b-dropdown>
+        </span>
+        &nbsp;
+      </b-col>
+      <b-col cols="2">
+        <div class="float-right pageCount">
+          {{currentPage}}/{{annualReportPages.length}}
         </div>
-      </b-row>
-      <b-tooltip boundary='window' ref="annualReportPrintDropdownTooltip" triggers="hover" target="annualReportPrintDropdown" v-on:hide.prevent>
-        {{phrases.print}}
-      </b-tooltip>
-      <b-tooltip boundary='window' ref="annualReportDownloadDropdownTooltip" triggers="hover" target="annualReportDownloadDropdown" v-on:hide.prevent>
-        {{phrases.download}}
-      </b-tooltip>
-      <b-tooltip boundary='window' ref="decrementPageBtnTooltip" triggers="hover" target="decrementPageBtn" v-on:hide.prevent>
-        {{phrases.previousPage}}
-      </b-tooltip>
-      <b-tooltip boundary='window' ref="incrementPageBtnTooltip" triggers="hover" target="incrementPageBtn" v-on:hide.prevent>
-        {{phrases.nextPage}}
-      </b-tooltip>
+      </b-col>
+      <b-col cols="2" class="text-center">
+        <b-button id="decrementPageBtn" ref="decrementPageBtn" v-on:mouseleave="hideTooltip('decrementPageBtn')" variant="light" v-on:click='decrementPage'>
+          <i class="arrow left"></i>
+        </b-button>
+        <b-button id="incrementPageBtn" ref="incrementPageBtn" v-on:mouseleave="hideTooltip('incrementPageBtn')" variant="light" v-on:click='incrementPage'>
+          <i class="arrow right"></i>
+        </b-button>
+      </b-col>
+      <b-col align="center">
+        <div>Страна дневника:</div>
+        <span>
+          <b-button v-for="(value, arpn, index) in annualReportPagesNums" v-bind:key="value" v-on:click="setPage(value)" type="text" variant="light" class="btn-sm">
+            {{computePageIndex(index)}}
+          </b-button>
+        </span>
+      </b-col>
+      <b-button @click.stop="closeModal()" variant="link" id="modalCancelBtn" ref="modalCancelBtn" class="btn-xs float-right">
+        <img src="~@/assets/close.png">
+      </b-button>
+    </b-row>
+    <hr>
+    <b-row>
+      <div v-html="annualReportPages[currentPage-1]" id="page-display" class="headline manualPage incomePage outcomePage sharesPage totalIncomePage totalOutcomePage totalPage totalHeadline">
+      </div>
+    </b-row>
       
-      <b-modal no-close-on-backdrop id="annual-report-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('annualReportErrorModal')">
-        <message-confirm-dialog ref="annualReportErrorModal" parentModal="annual-report-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
-      </b-modal>
+    <b-tooltip boundary='window' ref="annualReportPrintDropdownTooltip" triggers="hover" target="annualReportPrintDropdown" v-on:hide.prevent>
+      {{phrases.print}}
+    </b-tooltip>
+
+    <b-tooltip boundary='window' ref="annualReportDownloadDropdownTooltip" triggers="hover" target="annualReportDownloadDropdown" v-on:hide.prevent>
+      {{phrases.download}}
+    </b-tooltip>
+
+    <b-tooltip boundary='window' ref="decrementPageBtnTooltip" triggers="hover" target="decrementPageBtn" v-on:hide.prevent>
+      {{phrases.previousPage}}
+    </b-tooltip>
+
+    <b-tooltip boundary='window' ref="incrementPageBtnTooltip" triggers="hover" target="incrementPageBtn" v-on:hide.prevent>
+      {{phrases.nextPage}}
+    </b-tooltip>
+
+    <b-modal centered no-close-on-backdrop id="annual-report-warning-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('annualReportWarningModal')">
+      <message-confirm-dialog ref="annualReportWarningModal" parentModal="annual-report-warning-modal" type="warning" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
+    </b-modal>
+    
+    <b-modal no-close-on-backdrop id="annual-report-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('annualReportErrorModal')">
+      <message-confirm-dialog ref="annualReportErrorModal" parentModal="annual-report-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
+    </b-modal>
   </b-container>
 </template>
 
@@ -96,6 +104,9 @@ const printPageStyle = `
     }
     #print-annual-report, #print-annual-report * {
       visibility:visible;
+    }
+    @page {
+      margin-bottom: 0cm;
     }
     #headline {
       position: relative;
@@ -178,6 +189,9 @@ const printTotalReportStyle = `
     #print-annual-report, #print-annual-report * {
       visibility:visible;
     }
+    @page {
+      margin-bottom: 0cm;
+    }
     #total-headline {
       position: relative;
       top: 288px;
@@ -234,6 +248,9 @@ const printAnnualReportStyle = `
     }
     #print-annual-report, #print-annual-report * {
       visibility:visible;
+    }
+    @page {
+      margin-bottom: 0cm;
     }
     #headline {
       position: relative;
@@ -307,6 +324,9 @@ export default {
     year: {
       type: Number
     },
+    annualReport: {
+      type: Object,
+    },
     annualReportPages: {
       type: Array,
       default: []
@@ -351,6 +371,15 @@ export default {
     this.findAnnualReportPagesNums()
   },
   mounted () {
+    setTimeout(() => {
+      if (this.annualReport && this.annualReport.warnings && this.annualReport.warnings.length > 0) {
+        var warning = '';
+        this.annualReport.warnings.forEach(w => {
+          warning += (w + '\n')
+        })
+        this.openAnnualReportWarningModal(warning.substring(0, warning.length-1))
+      } 
+    }, 200)
     this.bindKeys()
   },
   beforeDestroy () {
@@ -413,19 +442,29 @@ export default {
     },
     bindKeys() {
       const self = this
+      Mousetrap.bind('esc', function(e) {
+        if (!document.getElementById('annual-report-warning-modal')) {
+          self.closeModal()
+        }
+        return false;
+      });
       Mousetrap.bind(['command+p', 'ctrl+p'], function(e) {
+        document.activeElement.blur()
         self.printAnnualReportPage()
         return false;
       });
       Mousetrap.bind(['command+d', 'ctrl+d'], function(e) {
+        document.activeElement.blur()
         self.downloadAnnualReportPage()
         return false;
       });
       Mousetrap.bind('left', function(e) {
+        document.activeElement.blur()
         self.decrementPage()
         return false;
       });
       Mousetrap.bind('right', function(e) {
+        document.activeElement.blur()
         self.incrementPage()
         return false;
       });
@@ -438,6 +477,7 @@ export default {
       Mousetrap.unbind(['command+d', 'ctrl+d']);
       Mousetrap.unbind('left');
       Mousetrap.unbind('right');
+      Mousetrap.unbind('esc');
     },
     decrementPage() {
       if(this.currentPage <= 1) {
@@ -608,6 +648,10 @@ export default {
       }
       return section
     },
+    openAnnualReportWarningModal(error) {
+      this.errorText = error
+      this.$root.$emit('bv::show::modal', 'annual-report-warning-modal')
+    },
     openErrorModal(error) {
       this.errorText = error
       this.$root.$emit('bv::show::modal', 'annual-report-error-modal')
@@ -620,7 +664,7 @@ export default {
       }
     },
     closeModal () {
-        this.$root.$emit('bv::hide::modal', this.parentModal)
+      this.$root.$emit('bv::hide::modal', this.parentModal)
     }
   },
   components: { MessageConfirmDialog }

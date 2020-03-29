@@ -13,6 +13,7 @@ class AnnualReport {
     this.totalOutcomePage = null
     this.sharesPage = null
     this.totalPage = null
+    this.warnings = []
   }
 }
 

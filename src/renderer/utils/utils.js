@@ -6,6 +6,7 @@ const app = elerem.app
 const dialog = elerem.dialog
 const currentWindow = elerem.getCurrentWindow()
 const AutoNumeric = require('autonumeric')
+import store from '@/store'
 
 const amountNumberOptions = {
   decimalCharacter : ',',
@@ -71,7 +72,7 @@ function asInt (formattedNumberAsString, numberOptions) {
 
 function asFormatedString (n, numberOptions) {
   if(n == null || n == undefined) {
-    return null
+    return ""
   }
   return AutoNumeric.format(n.toString(), numberOptions)
 }
@@ -244,12 +245,12 @@ function numberToSerbianDinars (n) {
 
 function mapAnnualReportDataToAnnualReportDataForm (annualReportData, incomeCodes, outcomeCodes) {
   const annualReportDataForm = {
-    transferFromPreviousYear: null,
-    shareValueDepreciatedDuringYear: null,
-    realEstateLandValue: null,
-    realEstateBuildingsValue: null,
-    realEstateLandSurface: null,
-    realEstateBuildingsSurface: null,
+    transferFromPreviousYear: "",
+    shareValueDepreciatedDuringYear: "",
+    realEstateLandValue: "",
+    realEstateBuildingsValue: "",
+    realEstateLandSurface: "",
+    realEstateBuildingsSurface: "",
     totalIncomePerCodePredicted: [],
     totalOutcomePerCodeAllowed: []
   }
@@ -258,38 +259,40 @@ function mapAnnualReportDataToAnnualReportDataForm (annualReportData, incomeCode
     annualReportDataForm.shareValueDepreciatedDuringYear = asFormatedString(annualReportData.shareValueDepreciatedDuringYear, largeAmountNumberOptions)
     annualReportDataForm.realEstateLandValue = asFormatedString(annualReportData.realEstateLandValue, largeAmountNumberOptions)
     annualReportDataForm.realEstateBuildingsValue = asFormatedString(annualReportData.realEstateBuildingsValue, largeAmountNumberOptions)
-    annualReportDataForm.realEstateLandSurface = annualReportData.realEstateLandSurface
-    annualReportDataForm.realEstateBuildingsSurface = annualReportData.realEstateBuildingsSurface
+    annualReportDataForm.realEstateLandSurface = annualReportData.realEstateLandSurface ? annualReportData.realEstateLandSurface : ""
+    annualReportDataForm.realEstateBuildingsSurface = annualReportData.realEstateBuildingsSurface ? annualReportData.realEstateBuildingsSurface : ""
   }
   for (let i=0; i < incomeCodes.length; i++) {
     const incomeCode = incomeCodes[i]
+    incomeCode._id = undefined
     if (annualReportData && annualReportData.totalIncomePerCodePredicted) {
       let totalIncomePerCodePredicted = annualReportData.totalIncomePerCodePredicted.find(tipcp => {
         return tipcp.incomeCode.partition == incomeCode.partition && tipcp.incomeCode.position == incomeCode.position
       })
-      annualReportDataForm.totalIncomePerCodePredicted.push({incomeCode: incomeCode, income: totalIncomePerCodePredicted ? asFormatedString(totalIncomePerCodePredicted.income, largeAmountNumberOptions) : null})
+      annualReportDataForm.totalIncomePerCodePredicted.push({incomeCode: incomeCode, income: totalIncomePerCodePredicted ? asFormatedString(totalIncomePerCodePredicted.income, largeAmountNumberOptions) : ""})
     } else {
-      annualReportDataForm.totalIncomePerCodePredicted.push({incomeCode: incomeCode, income: null})
+      annualReportDataForm.totalIncomePerCodePredicted.push({incomeCode: incomeCode, income: ""})
     }
   }
   for (let i=0; i < outcomeCodes.length; i++) {
     const outcomeCode = outcomeCodes[i]
+    outcomeCode._id = undefined
     if (annualReportData && annualReportData.totalOutcomePerCodeAllowed) {
       let totalOutcomePerCodeAllowed = annualReportData.totalOutcomePerCodeAllowed.find(topca => {
         return topca.outcomeCode.partition == outcomeCode.partition && topca.outcomeCode.position == outcomeCode.position
       })
-      annualReportDataForm.totalOutcomePerCodeAllowed.push({outcomeCode: outcomeCode, outcome: totalOutcomePerCodeAllowed ? asFormatedString(totalOutcomePerCodeAllowed.outcome, largeAmountNumberOptions) : null })
+      annualReportDataForm.totalOutcomePerCodeAllowed.push({outcomeCode: outcomeCode, outcome: totalOutcomePerCodeAllowed ? asFormatedString(totalOutcomePerCodeAllowed.outcome, largeAmountNumberOptions) : "" })
     } else {
-      annualReportDataForm.totalOutcomePerCodeAllowed.push({outcomeCode: outcomeCode, outcome: null })
+      annualReportDataForm.totalOutcomePerCodeAllowed.push({outcomeCode: outcomeCode, outcome: "" })
     }
   }
   return annualReportDataForm
 }
 
-function mapAnnualReportDataFormToAnnualReportData (annualReportDataForm, year) {
+function mapAnnualReportDataFormToAnnualReportData (annualReportDataForm) {
   var annualReportData = {}
-  annualReportData.year = year
   annualReportData._id = annualReportDataForm._id
+  annualReportData.year = store.state.CommonValues.bookingYear
   annualReportData.totalIncomePerCodePredicted = []
   annualReportDataForm.totalIncomePerCodePredicted.forEach(tipcp => {
     annualReportData.totalIncomePerCodePredicted.push({incomeCode: tipcp.incomeCode, income: asFloat(tipcp.income, largeAmountNumberOptions)})
@@ -335,6 +338,7 @@ function mapCodeToCodeForm (code) {
 function mapCodeFormToCode (codeForm) {
   const code = {}
   code._id = codeForm._id
+  code.year = store.state.CommonValues.bookingYear
   code.partition = asInt(codeForm.partition, partitionPositionNumberOptions)
   code.position = asInt(codeForm.position, partitionPositionNumberOptions)
   code.description = codeForm.description
@@ -347,12 +351,6 @@ function mapShareToShareForm (share) {
   shareForm._id = share._id
   shareForm.createdAt = share.createdAt;
   shareForm.updatedAt = share.updatedAt;
-  if (!share.year) {
-    shareForm.year = new Date()
-  } else {
-    shareForm.year = new Date()
-    shareForm.year.setFullYear(share.year)
-  }
   shareForm.series = share.series
   shareForm.ordinal = share.ordinal
   shareForm.name = share.name
@@ -360,12 +358,12 @@ function mapShareToShareForm (share) {
   return shareForm
 }
 
-function mapShareFormToShare (shareForm) {
+function mapShareFormToShare (shareForm, year) {
   const share = {}
   share._id = shareForm._id
+  share.year = store.state.CommonValues.bookingYear
   share.createdAt = shareForm.createdAt;
   share.updatedAt = shareForm.updatedAt;
-  share.year = shareForm.year.getUTCFullYear()
   share.series = shareForm.series
   share.ordinal = shareForm.ordinal
   share.name = shareForm.name
@@ -378,12 +376,6 @@ function mapSavingToSavingForm (saving) {
   savingForm._id = saving._id
   savingForm.createdAt = saving.createdAt;
   savingForm.updatedAt = saving.updatedAt;
-  if (!saving.year) {
-    savingForm.year = new Date()
-  } else {
-    savingForm.year = new Date()
-    savingForm.year.setFullYear(saving.year)
-  }
   savingForm.account = saving.account
   savingForm.savingEntity = saving.savingEntity
   savingForm.amount = asFormatedString(saving.amount, largeAmountNumberOptions)
@@ -395,9 +387,9 @@ function mapSavingToSavingForm (saving) {
 function mapSavingFormToSaving (savingForm) {
   const saving = {}
   saving._id = savingForm._id
+  saving.year = store.state.CommonValues.bookingYear
   saving.createdAt = savingForm.createdAt;
   saving.updatedAt = savingForm.updatedAt;
-  saving.year = savingForm.year.getUTCFullYear()
   saving.account = savingForm.account
   saving.savingEntity = savingForm.savingEntity
   saving.name = savingForm.name
@@ -412,12 +404,6 @@ function mapItemToItemForm (item) {
   itemForm._id = item._id
   itemForm.createdAt = item.createdAt;
   itemForm.updatedAt = item.updatedAt;
-  if (!item.year) {
-    itemForm.year = new Date()
-  } else {
-    itemForm.year = new Date()
-    itemForm.year.setFullYear(item.year)
-  }
   itemForm.name = item.name
   itemForm.value = asFormatedString(item.value, largeAmountNumberOptions)
   return itemForm
@@ -428,7 +414,7 @@ function mapItemFormToItem (itemForm) {
   item._id = itemForm._id
   item.createdAt = itemForm.createdAt;
   item.updatedAt = itemForm.updatedAt;
-  item.year = itemForm.year.getUTCFullYear()
+  item.year = store.state.CommonValues.bookingYear
   item.name = itemForm.name
   item.value = asFloat(itemForm.value, largeAmountNumberOptions)
   return item
@@ -439,12 +425,6 @@ function mapDebtToDebtForm (debt) {
   debtForm._id = debt._id
   debtForm.createdAt = debt.createdAt;
   debtForm.updatedAt = debt.updatedAt;
-  if (!debt.year) {
-    debtForm.year = new Date()
-  } else {
-    debtForm.year = new Date()
-    debtForm.year.setFullYear(debt.year)
-  }
   debtForm.description = debt.description
   debtForm.amount = asFormatedString(debt.amount, largeAmountNumberOptions)
   return debtForm
@@ -455,7 +435,7 @@ function mapDebtFormToDebt (debtForm) {
   debt._id = debtForm._id
   debt.createdAt = debtForm.createdAt;
   debt.updatedAt = debtForm.updatedAt;
-  debt.year = debtForm.year.getUTCFullYear()
+  debt.year = store.state.CommonValues.bookingYear
   debt.description = debtForm.description
   debt.amount = asFloat(debtForm.amount, largeAmountNumberOptions)
   return debt
@@ -504,6 +484,7 @@ function mapPaymentSlipFormToPaymentSlip(paymentSlipForm, incomeCodes, nullAsZer
   paymentSlip.updatedAt = paymentSlipForm.updatedAt;
   paymentSlip.isValid = paymentSlipForm.isValid;
   paymentSlip.date = paymentSlipForm.date;
+  paymentSlip.year = store.state.CommonValues.bookingYear
   paymentSlip.income = asFloat(paymentSlipForm.income, largeAmountNumberOptions, nullAsZero);
   paymentSlip.town = paymentSlipForm.town;
   paymentSlip.townReceived = paymentSlipForm.townReceived;
@@ -564,6 +545,7 @@ function mapReceiptFormToReceipt (receiptForm, outcomeCodes, nullAsZero) {
     receipt.updatedAt = receiptForm.updatedAt;
     receipt.isValid = receiptForm.isValid;
     receipt.date = receiptForm.date;
+    receipt.year = store.state.CommonValues.bookingYear
     receipt.outcome = asFloat(receiptForm.outcome, largeAmountNumberOptions, nullAsZero);
     receipt.churchMunicipality = receiptForm.churchMunicipality;
     receipt.town = receiptForm.town;

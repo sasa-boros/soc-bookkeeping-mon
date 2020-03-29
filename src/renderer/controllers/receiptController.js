@@ -1,17 +1,17 @@
 const { ipcRenderer } = require('electron')
 
-function areReceiptsValid () {
+function checkReceiptsValidity (bookingYear) {
   return new Promise(function (resolve) {
-    ipcRenderer.send('are-receipts-valid')
-    ipcRenderer.once('are-receipts-valid-reply', (event, res) => {
+    ipcRenderer.send('check-receipts-validity', bookingYear)
+    ipcRenderer.once('check-receipts-validity-reply', (event, res) => {
       resolve(res)
     })
   })
 }
 
-function getReceipts () {
+function getReceipts (bookingYear) {
   return new Promise(function (resolve) {
-    ipcRenderer.send('get-receipts')
+    ipcRenderer.send('get-receipts', bookingYear)
     ipcRenderer.once('get-receipts-reply', (event, res) => {
       resolve(res)
     })
@@ -36,18 +36,18 @@ function updateReceipt (receipt) {
   })
 }
 
-function deleteReceipt (receiptId) {
+function deleteReceipt (id, bookingYear) {
   return new Promise(function (resolve) {
-    ipcRenderer.send('delete-receipt', receiptId)
+    ipcRenderer.send('delete-receipt', id, bookingYear)
     ipcRenderer.once('delete-receipt-reply', (event, res) => {
       resolve(res)
     })
   })
 }
 
-function deleteReceipts (receiptsIds) {
+function deleteReceipts (ids, bookingYear) {
   return new Promise(function (resolve) {
-    ipcRenderer.send('delete-receipts', receiptsIds)
+    ipcRenderer.send('delete-receipts', ids, bookingYear)
     ipcRenderer.once('delete-receipts-reply', (event, res) => {
       resolve(res)
     })
@@ -64,7 +64,7 @@ function createReceiptPdf () {
 }
 
 module.exports = {
-  areReceiptsValid: areReceiptsValid,
+  checkReceiptsValidity: checkReceiptsValidity,
   getReceipts: getReceipts,
   createReceipt: createReceipt,
   updateReceipt: updateReceipt,

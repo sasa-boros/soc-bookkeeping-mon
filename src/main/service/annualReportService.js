@@ -5,6 +5,7 @@ const { TotalIncomePage } = require('../model/annualReport/totalIncomePage')
 const { TotalOutcomePage } = require('../model/annualReport/totalOutcomePage')
 const { SharesPage } = require('../model/annualReport/sharesPage')
 const { TotalPage } = require('../model/annualReport/totalPage')
+
 const annualReportCommonDao = require('../dao/annualReportCommonDao')
 const annualReportDao = require('../dao/annualReportDao')
 const incomeCodeDao = require('../dao/incomeCodeDao')
@@ -32,7 +33,6 @@ function asRoman(num) {
   if (num <= 0) {
     return num
   } 
-  
   var digits = String(+num).split(""),
   key = ["","C","CC","CCC","CD","D","DC","DCC","DCCC","CM",
   "","X","XX","XXX","XL","L","LX","LXX","LXXX","XC",
@@ -44,52 +44,52 @@ function asRoman(num) {
   return Array(+digits.join("") + 1).join("M") + roman_num;
 }
 
-async function getAnnualReportCommonData () {
-  console.log('Getting annual report common data')
+async function getAnnualReportCommon () {
+  console.log('Getting annual report common')
   const common = await annualReportCommonDao.findOne()
-  console.log(`Returning annual report common data: \n${JSON.stringify(common, null, 2)}`)
+  console.log(`Returning annual report common: \n${JSON.stringify(common, null, 2)}`)
   return common
+}
+
+async function createAnnualReportCommon (common) {
+  delete common._id
+  console.log(`Creating annual report common: \n${JSON.stringify(common, null, 2)}`)
+  await annualReportCommonDao.removeAll(common)
+  await annualReportCommonDao.insert(common)
+  console.log('Successfully created annual report common')
 }
 
 async function getAnnualReportData (year) {
   console.log(`Getting annual report data for year ${year}`)
-  const annualReportData = await annualReportDao.findOneForYear(year)
+  const annualReportData = await annualReportDao.findOneByYear(year)
   console.log(`Returning annual report data: \n${JSON.stringify(annualReportData, null, 2)}`)
   return annualReportData
-}
-
-async function createAnnualReportCommonData (common) {
-  delete common._id
-  console.log(`Creating annual report common data: \n${JSON.stringify(common, null, 2)}`)
-  await annualReportCommonDao.removeAll(common)
-  await annualReportCommonDao.insert(common)
-  console.log('Successfully created annual report common data')
 }
 
 async function createAnnualReportData (annualReportData) {
   delete annualReportData._id
   console.log(`Creating annual report data: \n${JSON.stringify(annualReportData, null, 2)}`)
-  await annualReportDao.removeOneForYear(annualReportData.year)
+  await annualReportDao.removeByYear(annualReportData.year)
   await annualReportDao.insert(annualReportData)
   console.log('Successfully created annual report data')
 }
 
 async function getAnnualReport (year) {
   console.log(`Getting annual report for year ${year}`)
-  const annualReportCommonData = await getAnnualReportCommonData()
-  const annualReportData = await getAnnualReportData(year)
-  const incomeCodes = await incomeCodeDao.findAll()
-  const outcomeCodes = await outcomeCodeDao.findAll()
-  const shares = await shareDao.findAllForYear(year)
-  const savings = await savingDao.findAllForYear(year)
-  const items = await itemDao.findAllForYear(year)
-  const debts = await debtDao.findAllForYear(year)
+  const annualReportCommon = await annualReportCommonDao.findOne()
+  const annualReportData = await annualReportDao.findOneByYear(year)
+  const incomeCodes = await incomeCodeDao.findByYear(year)
+  const outcomeCodes = await outcomeCodeDao.findByYear(year)
+  const shares = await shareDao.findByYear(year)
+  const savings = await savingDao.findByYear(year)
+  const items = await itemDao.findByYear(year)
+  const debts = await debtDao.findByYear(year)
   
   const annualReport = new AnnualReport()
   // common
   annualReport.year = year
-  annualReport.churchMunicipality = annualReportCommonData ? annualReportCommonData.churchMunicipality : null
-  annualReport.churchTown = annualReportCommonData ? annualReportCommonData.churchTown : null
+  annualReport.churchMunicipality = annualReportCommon ? annualReportCommon.churchMunicipality : null
+  annualReport.churchTown = annualReportCommon ? annualReportCommon.churchTown : null
   annualReport.incomeCodes = incomeCodes ? incomeCodes : []
   annualReport.outcomeCodes = outcomeCodes ? outcomeCodes : []
   // total income page
@@ -114,6 +114,7 @@ async function getAnnualReport (year) {
   })
   annualReport.sharesPage.shareValueDepreciatedDuringYear = annualReportData && annualReportData.shareValueDepreciatedDuringYear ? Big(annualReportData.shareValueDepreciatedDuringYear) : Big(0.0)
   annualReport.sharesPage.nominalValueOnYearEnd = annualReport.sharesPage.totalNominalValue.minus(annualReport.sharesPage.shareValueDepreciatedDuringYear)
+  
   annualReport.sharesPage.savings.forEach(s => {
     annualReport.sharesPage.totalSavingAmountAtYearStart = annualReport.sharesPage.totalSavingAmountAtYearStart.plus(s.amount ? Big(s.amount) : Big(0.0))
     annualReport.sharesPage.totalSavingAmountDeposited = annualReport.sharesPage.totalSavingAmountDeposited.plus(s.amountDeposited ? Big(s.amountDeposited) : Big(0.0))
@@ -128,7 +129,7 @@ async function getAnnualReport (year) {
   annualReport.totalPage.realEstateLandValue = annualReportData && annualReportData.realEstateLandValue ? Big(annualReportData.realEstateLandValue) : Big(0.0)
   annualReport.totalPage.realEstateLandSurface= annualReportData ? annualReportData.realEstateLandSurface : null
   annualReport.totalPage.realEstateBuildingsValue = annualReportData && annualReportData.realEstateBuildingsValue ? Big(annualReportData.realEstateBuildingsValue) : Big(0.0)
-  annualReport.totalPage.realEstateBuildingsSurface= annualReportData ? annualReportData.realEstateBuildingsSurface : null
+  annualReport.totalPage.realEstateBuildingsSurface = annualReportData ? annualReportData.realEstateBuildingsSurface : null
   annualReport.totalPage.items.forEach(i => {
     annualReport.totalPage.totalItemValue = annualReport.totalPage.totalItemValue.plus(i.value ? Big(i.value) : Big(0.0))
   })
@@ -163,14 +164,32 @@ async function getAnnualReport (year) {
     incomePage.total = incomePage.totalIncome.plus(incomePage.transferFromPreviousMonth)
     outcomePage.total = incomePage.total
     outcomePage.transferToNextMonth = outcomePage.total.minus(outcomePage.totalOutcome)
+    if (outcomePage.transferToNextMonth.lt(0.0)) {
+      annualReport.warnings.push("Постоји дефицит у месецу " + i18n.getTranslation(monthNames[i] + '.lokativ') + " (страна " +  (i+1) + ").")
+    }
 
     annualReport.incomePages.push(incomePage)
     annualReport.outcomePages.push(outcomePage)
   }
   annualReport.totalOutcomePage.netIncome = annualReport.totalIncomePage.totalIncome.minus(annualReport.totalOutcomePage.totalOutcome)
+  if (annualReport.totalOutcomePage.netIncome.lt(0.0)) {
+    annualReport.warnings.push("Чист приход на крају године (страна 13) има негативну вредност.")
+  }
   annualReport.totalOutcomePage.transferToNextYear = annualReport.totalOutcomePage.netIncome.plus(annualReport.totalOutcomePage.transferFromPreviousYear)
+  if (annualReport.totalOutcomePage.transferToNextYear.lt(0.0)) {
+    annualReport.warnings.push("Износ за пренос у наредну годину (страна 13) има негативну вредност.")
+  }
+  if (annualReport.sharesPage.nominalValueOnYearEnd.lt(0.0)) {
+    annualReport.warnings.push("Хартије од вредности (страна 14) имају негативну номиналну вредност на крају године.")
+  }
+  if (annualReport.sharesPage.savingAmountOnYearEnd.lt(0.0)) {
+    annualReport.warnings.push("Улози на штедњи (страна 14) имају негативну вредност на крају године.")
+  }
   annualReport.totalPage.totalPropertyValue = annualReport.totalOutcomePage.transferToNextYear.plus(annualReport.sharesPage.nominalValueOnYearEnd).plus(annualReport.sharesPage.savingAmountOnYearEnd).plus(annualReport.totalPage.realEstateLandValue).plus(annualReport.totalPage.realEstateBuildingsValue).plus(annualReport.totalPage.totalItemValue)
   annualReport.totalPage.propertyValue = annualReport.totalPage.totalPropertyValue.minus(annualReport.totalPage.totalDebt)
+  if (annualReport.totalPage.propertyValue.lt(0.0)) {
+    annualReport.warnings.push("Чиста имовина (страна 14) има негативну вредност.")
+  }
 
   transformBigsToNumbers(annualReport);
   console.log(`Returning annual report: \n${JSON.stringify(annualReport, null, 2)}`)
@@ -718,9 +737,9 @@ function pdfSettings () {
 }
 
 module.exports = {
-  getAnnualReportCommonData: getAnnualReportCommonData,
+  getAnnualReportCommon: getAnnualReportCommon,
+  createAnnualReportCommon: createAnnualReportCommon,
   getAnnualReportData: getAnnualReportData,
-  createAnnualReportCommonData: createAnnualReportCommonData,
   createAnnualReportData: createAnnualReportData,
   getAnnualReport: getAnnualReport,
   getAnnualReportPages: getAnnualReportPages,

@@ -1,25 +1,17 @@
 <template>
   <b-container fluid>
-    <br>
      <b-row>
       <b-col cols="6">
         <b-button-group class="float-left">
-          <b-btn id="addItemButton" v-on:mouseleave="hideTooltip('addItemButton')" v-b-tooltip.hover.top.window="{title: phrases.addItem}" @click.stop="openCreateItemModal" variant="light" class="btn-xs">
+          <b-btn v-on:focus="unfocusElementOnNonKeyboardEvent" id="addItemButton" v-on:mouseleave="hideTooltip('addItemButton')" v-b-tooltip.hover.top.window="{title: phrases.addItem}" @click.stop="openCreateItemModal" variant="light" class="btn-xs">
             <img src="~@/assets/add.png">               
           </b-btn>
         </b-button-group> 
         <b-button-group class="float-left">
-          <b-btn id="deleteSelectedBtn" v-on:mouseleave="hideTooltip('deleteSelectedBtn')" v-b-tooltip.hover.top.window="{title: phrases.deleteSelected}" @click.stop="openDeleteCheckedItemsModal()" :disabled="noRowChecked" variant="light" class="btn-xs">
+          <b-btn v-on:focus="unfocusElementOnNonKeyboardEvent" id="deleteSelectedBtn" v-on:mouseleave="hideTooltip('deleteSelectedBtn')" v-b-tooltip.hover.top.window="{title: phrases.deleteSelected}" @click.stop="openDeleteCheckedItemsModal()" :disabled="noRowChecked" variant="light" class="btn-xs">
             <img src="~@/assets/trash.png">               
           </b-btn>
         </b-button-group>
-      </b-col>
-      <b-col cols="6">
-        <b-form-group class="float-right">
-          <label :for="`yearSelect`">{{phrases.filterByYear}}: </label>
-          &nbsp;
-          <b-form-select v-model="yearToFilter" id="yearSelect" :options="yearOptions" size="sm" class="my-0"/>
-        </b-form-group>
       </b-col>
     </b-row>
 
@@ -32,7 +24,6 @@
               :fields="fields"
               :current-page="currentPage"
               :per-page="perPage"
-              :filter="filter"
               :sort-by.sync="sortBy"
               :sort-desc.sync="sortDesc"
               :sort-direction="sortDirection"
@@ -54,7 +45,7 @@
         </template>
         <template v-slot:cell(preview)="row">
           <b-button-group>
-            <b-button id="updateItemBtn" v-on:mouseleave="hideTooltip('updateItemBtn')" v-b-tooltip.hover.top.window="{title: phrases.seeDetails}" @click.stop="openUpdateItemModal(row.item)" variant="link" class="btn-xs">
+            <b-button v-on:focus="unfocusElementOnNonKeyboardEvent" id="updateItemBtn" v-on:mouseleave="hideTooltip('updateItemBtn')" v-b-tooltip.hover.top.window="{title: phrases.seeDetails}" @click.stop="openUpdateItemModal(row.item, row.index)" variant="link" class="btn-xs">
               <img src="~@/assets/see-more.png" class="rowImg">                                           
             </b-button>
           </b-button-group>                
@@ -67,10 +58,9 @@
         </template>
         <template v-slot:cell(name)="row">{{ row.item.name }}</template>
         <template v-slot:cell(value)="row">{{ row.item.value | formatValue }}</template>
-        <template v-slot:cell(year)="row">{{ row.item.year }}</template>
         <template v-slot:cell(delete)="row">
           <b-button-group>
-            <b-button id="deleteItemBtn" v-on:mouseleave="hideTooltip('deleteItemBtn')" v-b-tooltip.hover.top.window="{title: phrases.deleteItem}" @click.stop="openDeleteItemModal(row.item)" variant="link" class="btn-xs">
+            <b-button v-on:focus="unfocusElementOnNonKeyboardEvent" id="deleteItemBtn" v-on:mouseleave="hideTooltip('deleteItemBtn')" v-b-tooltip.hover.top.window="{title: phrases.deleteItem}" @click.stop="openDeleteItemModal(row.item)" variant="link" class="btn-xs">
               <img src="~@/assets/delete.png" class="rowImg">                                           
             </b-button>     
           </b-button-group>                
@@ -85,7 +75,7 @@
     </b-row>
 
     <b-modal no-close-on-backdrop hide-footer hide-header size="lg" id="create-item-modal">
-      <item-preview :item='selectedItem' :itemPreview='isPreview' parentModal="create-item-modal" v-on:updateItemsTable="update"></item-preview>
+      <item-preview :item='selectedItem' :itemPreview='isPreview' parentModal="create-item-modal" v-on:updateItemsTable="update(true)"></item-preview>
     </b-modal>
 
     <b-modal no-close-on-backdrop id="delete-item-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('deleteItemModal')">
@@ -107,11 +97,11 @@
   import store from '@/store'
   import { mapState } from 'vuex'
   import ItemPreview from './ItemsPane/ItemPreview'
-  import MessageConfirmDialog from '../../MessageConfirmDialog'
+  import MessageConfirmDialog from '../../../MessageConfirmDialog'
 
-  const itemController = require('../../../controllers/itemController')
-  const i18n = require('../../../../translations/i18n')
-  const { asFormatedString, largeAmountNumberOptions } = require('../../../utils/utils')
+  const itemController = require('../../../../controllers/itemController')
+  const i18n = require('../../../../../translations/i18n')
+  const { asFormatedString, largeAmountNumberOptions } = require('../../../../utils/utils')
 
   export default {
     data () {
@@ -121,7 +111,6 @@
           deleteItem: i18n.getTranslation('Delete item'),
           deleteSelected: i18n.getTranslation('Delete selected'),
           seeDetails: i18n.getTranslation('See details'),
-          filterByYear: i18n.getTranslation('Filter by year'),
           select: i18n.getTranslation('Select'),
           selectAll: i18n.getTranslation('Select all'),
           cancel: i18n.getTranslation('Cancel'),
@@ -130,22 +119,20 @@
           areYouSureToDeleteItem: i18n.getTranslation('Are you sure you want to delete item?'),
           areYouSureToDeleteCheckedItems: i18n.getTranslation('Are you sure you want to delete selected items?'),
           noRecordsToShow: i18n.getTranslation('There are no items to show'),
-          year: i18n.getTranslation('Year'),
           name: i18n.getTranslation('Name'),
           value: i18n.getTranslation('Value')
         },
         items: [],
         tableItems: [],
-        yearToFilter: '',
         currentPage: 1,
         perPage: 10,
         totalRows: null,
-        filter: null,
         deletedItems: null,
         checkedItems: [],
         itemsShownInTable: [],
         checkAll: false,
         selectedItem: null,
+        selectedItemIndex: null,
         isPreview: false,
         errorText: "",
         sortBy: null,
@@ -155,25 +142,15 @@
       }
     },
     created () {
-      this.loadItems()
+      const self = this
+      this.$watch('bookingYear', () => {
+        self.loadItems()
+      }, {immediate: true})
     },
     computed: {
       ...mapState(
         {
-          yearOptions: function (state) {
-            var yearOptions = JSON.parse(JSON.stringify(state.CommonValues.bookedYears))
-            yearOptions.unshift('')
-            var yearToFilter = this.yearToFilter
-            if (yearToFilter != '') {
-              var yearFiltered = yearOptions.find(yo => {
-                return yo == yearToFilter
-              })
-              if (!yearFiltered) {
-                this.yearToFilter = ''
-              }
-            }
-            return yearOptions
-          }
+          bookingYear: state => state.CommonValues.bookingYear
         }
       ),
       noRowChecked () {
@@ -185,12 +162,16 @@
           { key: 'preview', label: '', thStyle: {outline: 'none', width: '70px'}  },
           { key: 'name', label: this.phrases.name, class: 'text-center', thStyle: {'outline': 'none', 'user-select': 'none'} },
           { key: 'value', label: this.phrases.value, class: 'text-center', sortable: true, thStyle: {'outline': 'none', 'user-select': 'none'} },
-          { key: 'year', label: this.phrases.year, class: 'text-center', sortable: true, thStyle: {'outline': 'none', 'user-select': 'none'} },
           { key: 'delete', label: '', thStyle: {outline: 'none', width: '70px'} },
         ]
       }
     },
     methods: {
+      unfocusElementOnNonKeyboardEvent (e) {
+        if (!e.relatedTarget) {
+          e.target.blur()
+        }
+      },
       unsort (key, field, e) {
         e.stopPropagation()
         if (!field.sortable) {
@@ -211,23 +192,44 @@
       focusModalCloseButton (modalRef) {
         this.$refs[modalRef].$refs.closeButton.focus()
       },
-      update() {
-        this.loadItems()
-        this.$emit('updateBookedYears')
-        this.yearToFilter = ''
+      update(highlightChange) {
+        this.loadItems(highlightChange)
         this.clearChecked()
+        if (highlightChange) {
+          this.highlightChangedRow()
+        }
+      },
+      highlightChangedRow() {
+        var updatedRow;
+        if (this.selectedItem) {
+          updatedRow = document.querySelector('#items-table tbody tr[aria-rowindex="' + ((this.currentPage - 1 ) * 10 + this.selectedItemIndex + 1) + '"]')
+        } else {
+          updatedRow = document.querySelector('#items-table tbody tr[aria-rowindex="1"]')
+        }
+        if (updatedRow) {
+          const oldStyle = updatedRow.style
+          updatedRow.style.setProperty('box-shadow', '0 1px 1px rgba(128, 147, 168, 0.075) inset, 0 0 8px rgba(128, 147, 168, 0.6)')
+          setTimeout(() => {
+            updatedRow.style = oldStyle
+          }, 2000)
+        }
       },
       clearChecked () {
         this.checkAll = false
         this.checkedItems = []
       },
-      loadItems () {
+      loadItems (highlightChange) {
         const self = this
-        itemController.getItems().then((res) => {
+        itemController.getItems(this.bookingYear).then((res) => {
           if (!res.err) {
             self.items = res.data ? res.data : []
             self.tableItems = self.items
             self.totalRows = self.items.length
+            if (highlightChange) {
+              self.$nextTick(() => {
+                self.highlightChangedRow()
+              })
+            }
           } else {
             self.openErrorModal(res.err)
           }
@@ -237,13 +239,14 @@
         this.hideTooltip('addItemBtn')
         this.isPreview = false
         this.selectedItem = null
+        this.selectedItemIndex = null
         this.$root.$emit('bv::show::modal', 'create-item-modal')
       },
       toggleCheckAll () {
         this.checkedItems = this.checkAll ? [] : this.itemsShownInTable
       },
       rowDblClickHandler (record, index) {
-        this.openUpdateItemModal(record)
+        this.openUpdateItemModal(record, index)
       },
       openDeleteItemModal(item) {
         this.hideTooltip('deleteItemBtn')
@@ -278,9 +281,10 @@
           }
         })
       },
-      openUpdateItemModal (item) {
+      openUpdateItemModal (item, index) {
         this.hideTooltip('updateItemBtn')
         this.selectedItem = item
+        this.selectedItemIndex = index
         this.isPreview = true
         this.$root.$emit('bv::show::modal', 'create-item-modal')
       },
@@ -311,21 +315,6 @@
           /* Close delete-selected button tooltip before it gets disabled and stuck */
           this.$root.$emit('bv::hide::tooltip', 'deleteSelectedBtn')
         }
-      },
-      yearToFilter (newYearValue) {
-        if(newYearValue == '') {
-          this.tableItems = this.items;
-        } else {
-          this.tableItems = this.items.filter(value => {
-            if(value.year == newYearValue) {
-              return true;
-            }
-            return false;
-          })
-        }
-        this.totalRows = this.tableItems.length
-        this.currentPage = 1
-        this.checkedItems = []
       }
     },
     components: { ItemPreview, MessageConfirmDialog }
@@ -333,10 +322,6 @@
 </script>
 
 <style scoped>
-  #yearSelect{
-    width: 80px;
-    display: inline;
-  }
   .tableDiv {
     display: block;
     overflow: auto;

@@ -1,8 +1,8 @@
 const { ipcRenderer } = require('electron')
 
-function getOutcomeCodes () {
+function getOutcomeCodes (bookingYear) {
   return new Promise(function (resolve) {
-    ipcRenderer.send('get-outcome-codes')
+    ipcRenderer.send('get-outcome-codes', bookingYear)
     ipcRenderer.once('get-outcome-codes-reply', (event, res) => {
       resolve(res)
     })
@@ -36,9 +36,19 @@ function updateOutcomeCode (outcomeCode) {
   })
 }
 
+function importFromPreviousYear (bookingYear) {
+  return new Promise(function (resolve) {
+    ipcRenderer.send('import-outcome-codes', bookingYear)
+    ipcRenderer.once('import-outcome-codes-reply', (event, res) => {
+      resolve(res)
+    })
+  })
+}
+
 module.exports = {
   getOutcomeCodes: getOutcomeCodes,
   createOutcomeCode: createOutcomeCode,
   updateOutcomeCode: updateOutcomeCode,
-  deleteOutcomeCode: deleteOutcomeCode
+  deleteOutcomeCode: deleteOutcomeCode,
+  importFromPreviousYear: importFromPreviousYear
 }

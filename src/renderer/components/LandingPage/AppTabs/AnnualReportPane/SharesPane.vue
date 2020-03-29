@@ -1,25 +1,17 @@
 <template>
   <b-container fluid>
-    <br>
      <b-row>
       <b-col cols="6">
         <b-button-group class="float-left">
-          <b-btn id="addShareButton" v-on:mouseleave="hideTooltip('addShareButton')" v-b-tooltip.hover.top.window="{title: phrases.addShare}" @click.stop="openCreateShareModal" variant="light" class="btn-xs">
+          <b-btn v-on:focus="unfocusElementOnNonKeyboardEvent" id="addShareButton" v-on:mouseleave="hideTooltip('addShareButton')" v-b-tooltip.hover.top.window="{title: phrases.addShare}" @click.stop="openCreateShareModal" variant="light" class="btn-xs">
             <img src="~@/assets/add.png">               
           </b-btn>
         </b-button-group> 
         <b-button-group class="float-left">
-          <b-btn id="deleteSelectedBtn" v-on:mouseleave="hideTooltip('deleteSelectedBtn')" v-b-tooltip.hover.top.window="{title: phrases.deleteSelected}" @click.stop="openDeleteCheckedSharesModal()" :disabled="noRowChecked" variant="light" class="btn-xs">
+          <b-btn v-on:focus="unfocusElementOnNonKeyboardEvent" id="deleteSelectedBtn" v-on:mouseleave="hideTooltip('deleteSelectedBtn')" v-b-tooltip.hover.top.window="{title: phrases.deleteSelected}" @click.stop="openDeleteCheckedSharesModal()" :disabled="noRowChecked" variant="light" class="btn-xs">
             <img src="~@/assets/trash.png">               
           </b-btn>
         </b-button-group>
-      </b-col>
-      <b-col cols="6">
-        <b-form-group class="float-right">
-          <label :for="`yearSelect`">{{phrases.filterByYear}}: </label>
-          &nbsp;
-          <b-form-select v-model="yearToFilter" id="yearSelect" :options="yearOptions" size="sm" class="my-0"/>
-        </b-form-group>
       </b-col>
     </b-row>
 
@@ -32,7 +24,6 @@
               :fields="fields"
               :current-page="currentPage"
               :per-page="perPage"
-              :filter="filter"
               :sort-by.sync="sortBy"
               :sort-desc.sync="sortDesc"
               :sort-direction="sortDirection"
@@ -54,7 +45,7 @@
         </template>
         <template v-slot:cell(preview)="row">
           <b-button-group>
-            <b-button id="updateShareBtn" v-on:mouseleave="hideTooltip('updateShareBtn')" v-b-tooltip.hover.top.window="{title: phrases.seeDetails}" @click.stop="openUpdateShareModal(row.item)" variant="link" class="btn-xs">
+            <b-button v-on:focus="unfocusElementOnNonKeyboardEvent" id="updateShareBtn" v-on:mouseleave="hideTooltip('updateShareBtn')" v-b-tooltip.hover.top.window="{title: phrases.seeDetails}" @click.stop="openUpdateShareModal(row.item, row.index)" variant="link" class="btn-xs">
               <img src="~@/assets/see-more.png" class="rowImg">                                           
             </b-button>
           </b-button-group>                
@@ -69,10 +60,9 @@
         <template v-slot:cell(ordinal)="row">{{ row.item.ordinal }}</template>
         <template v-slot:cell(name)="row">{{ row.item.name }}</template>
         <template v-slot:cell(nominalValue)="row">{{ row.item.nominalValue | formatNominalValue }}</template>
-        <template v-slot:cell(year)="row">{{ row.item.year }}</template>
         <template v-slot:cell(delete)="row">
           <b-button-group>
-            <b-button id="deleteShareBtn" v-on:mouseleave="hideTooltip('deleteShareBtn')" v-b-tooltip.hover.top.window="{title: phrases.deleteShare}" @click.stop="openDeleteShareModal(row.item)" variant="link" class="btn-xs">
+            <b-button v-on:focus="unfocusElementOnNonKeyboardEvent" id="deleteShareBtn" v-on:mouseleave="hideTooltip('deleteShareBtn')" v-b-tooltip.hover.top.window="{title: phrases.deleteShare}" @click.stop="openDeleteShareModal(row.item)" variant="link" class="btn-xs">
               <img src="~@/assets/delete.png" class="rowImg">                                           
             </b-button>     
           </b-button-group>                
@@ -87,7 +77,7 @@
     </b-row>
 
     <b-modal no-close-on-backdrop hide-footer hide-header size="lg" id="create-share-modal">
-      <share-preview :share='selectedItem' :sharePreview='isPreview' parentModal="create-share-modal" v-on:updateSharesTable="update"></share-preview>
+      <share-preview :share='selectedItem' :sharePreview='isPreview' parentModal="create-share-modal" v-on:updateSharesTable="update(true)"></share-preview>
     </b-modal>
 
     <b-modal no-close-on-backdrop id="delete-share-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('deleteShareModal')">
@@ -109,11 +99,11 @@
   import store from '@/store'
   import { mapState } from 'vuex'
   import SharePreview from './SharesPane/SharePreview'
-  import MessageConfirmDialog from '../../MessageConfirmDialog'
+  import MessageConfirmDialog from '../../../MessageConfirmDialog'
 
-  const shareController = require('../../../controllers/shareController')
-  const i18n = require('../../../../translations/i18n')
-  const { asFormatedString, largeAmountNumberOptions } = require('../../../utils/utils')
+  const shareController = require('../../../../controllers/shareController')
+  const i18n = require('../../../../../translations/i18n')
+  const { asFormatedString, largeAmountNumberOptions } = require('../../../../utils/utils')
 
   export default {
     data () {
@@ -123,7 +113,6 @@
           deleteShare: i18n.getTranslation('Delete share'),
           deleteSelected: i18n.getTranslation('Delete selected'),
           seeDetails: i18n.getTranslation('See details'),
-          filterByYear: i18n.getTranslation('Filter by year'),
           select: i18n.getTranslation('Select'),
           selectAll: i18n.getTranslation('Select all'),
           cancel: i18n.getTranslation('Cancel'),
@@ -132,7 +121,6 @@
           areYouSureToDeleteShare: i18n.getTranslation('Are you sure you want to delete share?'),
           areYouSureToDeleteCheckedShares: i18n.getTranslation('Are you sure you want to delete selected shares?'),
           noRecordsToShow: i18n.getTranslation('There are no shares to show'),
-          year: i18n.getTranslation('Year'),
           series: i18n.getTranslation('Series'),
           ordinal: i18n.getTranslation('Ordinal'),
           name: i18n.getTranslation('Name'),
@@ -140,16 +128,15 @@
         },
         shares: [],
         items: [],
-        yearToFilter: '',
         currentPage: 1,
         perPage: 10,
         totalRows: null,
-        filter: null,
         deletedShares: null,
         checkedShares: [],
         itemsShownInTable: [],
         checkAll: false,
         selectedItem: null,
+        selectedItemIndex: null,
         isPreview: false,
         errorText: "",
         sortBy: null,
@@ -159,25 +146,15 @@
       }
     },
     created () {
-      this.loadShares()
+      const self = this
+      this.$watch('bookingYear', () => {
+        self.loadShares()
+      }, {immediate: true})
     },
     computed: {
       ...mapState(
         {
-          yearOptions: function (state) {
-            var yearOptions = JSON.parse(JSON.stringify(state.CommonValues.bookedYears))
-            yearOptions.unshift('')
-            var yearToFilter = this.yearToFilter
-            if (yearToFilter != '') {
-              var yearFiltered = yearOptions.find(yo => {
-                return yo == yearToFilter
-              })
-              if (!yearFiltered) {
-                this.yearToFilter = ''
-              }
-            }
-            return yearOptions
-          }
+          bookingYear: state => state.CommonValues.bookingYear
         }
       ),
       noRowChecked () {
@@ -191,12 +168,16 @@
           { key: 'ordinal', label: this.phrases.ordinal, class: 'text-center', sortable: true, thStyle: {'outline': 'none', 'user-select': 'none'} },
           { key: 'name', label: this.phrases.name, class: 'text-center', thStyle: {'outline': 'none', 'user-select': 'none'} },
           { key: 'nominalValue', label: this.phrases.nominalValue, class: 'text-center', sortable: true, thStyle: {'outline': 'none', 'user-select': 'none'} },
-          { key: 'year', label: this.phrases.year, class: 'text-center', sortable: true, thStyle: {'outline': 'none', 'user-select': 'none'} },
           { key: 'delete', label: '', thStyle: {outline: 'none', width: '70px'} },
         ]
       }
     },
     methods: {
+      unfocusElementOnNonKeyboardEvent (e) {
+        if (!e.relatedTarget) {
+          e.target.blur()
+        }
+      },
       unsort (key, field, e) {
         e.stopPropagation()
         if (!field.sortable) {
@@ -217,23 +198,44 @@
       focusModalCloseButton (modalRef) {
         this.$refs[modalRef].$refs.closeButton.focus()
       },
-      update() {
-        this.loadShares()
-        this.$emit('updateBookedYears')
-        this.yearToFilter = ''
+      update(highlightChange) {
+        this.loadShares(highlightChange)
         this.clearChecked()
+        if (highlightChange) {
+          this.highlightChangedRow()
+        }
+      },
+      highlightChangedRow() {
+        var updatedRow;
+        if (this.selectedItem) {
+          updatedRow = document.querySelector('#shares-table tbody tr[aria-rowindex="' + ((this.currentPage - 1 ) * 10 + this.selectedItemIndex + 1) + '"]')
+        } else {
+          updatedRow = document.querySelector('#shares-table tbody tr[aria-rowindex="1"]')
+        }
+        if (updatedRow) {
+          const oldStyle = updatedRow.style
+          updatedRow.style.setProperty('box-shadow', '0 1px 1px rgba(128, 147, 168, 0.075) inset, 0 0 8px rgba(128, 147, 168, 0.6)')
+          setTimeout(() => {
+            updatedRow.style = oldStyle
+          }, 2000)
+        }
       },
       clearChecked () {
         this.checkAll = false
         this.checkedShares = []
       },
-      loadShares () {
+      loadShares (highlightChange) {
         const self = this
-        shareController.getShares().then((res) => {
+        shareController.getShares(this.bookingYear).then((res) => {
           if (!res.err) {
             self.shares = res.data ? res.data : []
             self.items = self.shares
             self.totalRows = self.shares.length
+            if (highlightChange) {
+              self.$nextTick(() => {
+                self.highlightChangedRow()
+              })
+            }
           } else {
             self.openErrorModal(res.err)
           }
@@ -243,13 +245,14 @@
         this.hideTooltip('addShareBtn')
         this.isPreview = false
         this.selectedItem = null
+        this.selectedItemIndex = null
         this.$root.$emit('bv::show::modal', 'create-share-modal')
       },
       toggleCheckAll () {
         this.checkedShares = this.checkAll ? [] : this.itemsShownInTable
       },
       rowDblClickHandler (record, index) {
-        this.openUpdateShareModal(record)
+        this.openUpdateShareModal(record, index)
       },
       openDeleteShareModal(share) {
         this.hideTooltip('deleteShareBtn')
@@ -284,9 +287,10 @@
           }
         })
       },
-      openUpdateShareModal (item) {
+      openUpdateShareModal (item, index) {
         this.hideTooltip('updateShareBtn')
         this.selectedItem = item
+        this.selectedItemIndex = index
         this.isPreview = true
         this.$root.$emit('bv::show::modal', 'create-share-modal')
       },
@@ -318,31 +322,12 @@
           this.$root.$emit('bv::hide::tooltip', 'deleteSelectedBtn')
         }
       },
-      yearToFilter (newYearValue) {
-        if(newYearValue == '') {
-          this.items = this.shares;
-        } else {
-          this.items = this.shares.filter(value => {
-            if(value.year == newYearValue) {
-              return true;
-            }
-            return false;
-          })
-        }
-        this.totalRows = this.items.length
-        this.currentPage = 1
-        this.checkedShares = []
-      }
     },
     components: { SharePreview, MessageConfirmDialog }
   }
 </script>
 
 <style scoped>
-  #yearSelect{
-    width: 80px;
-    display: inline;
-  }
   .tableDiv {
     display: block;
     overflow: auto;

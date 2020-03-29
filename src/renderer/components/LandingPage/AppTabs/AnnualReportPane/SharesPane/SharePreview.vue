@@ -14,16 +14,6 @@
       <br>
       <b-row>
         <b-col cols="3">
-          <label for="yearInput">Година:</label>
-        </b-col>
-        <b-col>
-          <b-form-group>
-            <span v-on:mouseleave="disableYearTooltip ? null : hideTooltip('yearInput')"><datepicker id="yearInput" minimum-view="year" maximum-view="year" format="yyyy" v-model="form.year" v-bind:class="{ 'is-invalid': shouldValidate && missingYear }" :language="calendarLanguages.srCYRL" input-class="shareDatepickerInput" wrapper-class="shareDatepickerWrapper" calendar-class="shareDatepickerCalendar"></datepicker></span>
-          </b-form-group>
-        </b-col>
-      </b-row>
-      <b-row>
-        <b-col cols="3">
           <label for="seriesInput">Серија:</label>
         </b-col>
         <b-col>
@@ -76,10 +66,6 @@
       </b-row>
     </b-form>
 
-    <b-tooltip boundary='window' target="yearInput" triggers="hover" placement="top" ref="yearInputTooltip" :disabled.sync="disableYearTooltip" v-on:hide.prevent>
-      {{phrases.pickYear}}
-    </b-tooltip>
-
     <b-tooltip boundary='window' target="nameInput" triggers="hover" placement="top" ref="nameInputTooltip" :disabled.sync="disableNameTooltip" v-on:hide.prevent>
       {{phrases.enterName}}
     </b-tooltip>
@@ -105,12 +91,12 @@
 <script>
   import Datepicker from 'vuejs-datepicker'
   import { sr, srCYRL } from 'vuejs-datepicker/dist/locale'
-  import MessageConfirmDialog from '../../../MessageConfirmDialog'
+  import MessageConfirmDialog from '../../../../MessageConfirmDialog'
   
-  const shareController = require('../../../../controllers/shareController')
-  const { mapShareToShareForm, mapShareFormToShare, largeAmountNumberOptions } = require('../../../../utils/utils')
+  const shareController = require('../../../../../controllers/shareController')
+  const { mapShareToShareForm, mapShareFormToShare, largeAmountNumberOptions } = require('../../../../../utils/utils')
   
-  const i18n = require('../../../../../translations/i18n')
+  const i18n = require('../../../../../../translations/i18n')
   const AutoNumeric = require('autonumeric')
   const Mousetrap = require('mousetrap')
 
@@ -132,7 +118,6 @@
     data () {
       return {
         form: {
-          year: new Date(),
           series: null,
           ordinal: null,
           name: null,
@@ -144,7 +129,6 @@
           save: i18n.getTranslation('Save'),
           clear: i18n.getTranslation('Clear'),
           ok: i18n.getTranslation('Ok'),
-          pickYear: i18n.getTranslation('Pick a year'),
           enterName: i18n.getTranslation('Enter name'),
           enterValue: i18n.getTranslation('Enter value')
         },
@@ -171,17 +155,6 @@
       this.unbindKeys()
     },
     computed: {
-      disableYearTooltip: {
-        get: function () {
-          return !this.missingYear || !this.shouldValidate
-        },
-        set: function (newValue) {
-          /* If tooltip is going to get disabled, make sure it is closed before disabling it, because otherwise it will stay opened until enabled */
-          if (newValue) {
-            this.hideTooltip('yearInput')
-          }
-        }
-      },
       disableNameTooltip: {
         get: function () {
           return !this.missingName || !this.shouldValidate
@@ -204,9 +177,6 @@
           }
         }
       },
-      missingYear: function () {
-        return !this.form.year
-      },
       missingName: function () {
         return !this.form.name || this.form.name.trim() === ''
       },
@@ -214,8 +184,7 @@
         return !this.form.nominalValue || this.form.nominalValue.toString().trim() === ''
       },
       validForm: function () {
-        if (this.missingYear ||
-            this.missingName ||
+        if (this.missingName ||
             this.missingNominalValue) {
           return false
         }
@@ -265,9 +234,7 @@
         } 
       },
       showInvalidTooltips () {
-        if (this.missingYear) {
-          this.showTooltip('yearInput')
-        } else if (this.missingName) {
+        if (this.missingName) {
           this.showTooltip('nameInput')
         } else if (this.missingNominalValue) {
           this.showTooltip('nominalValueInput')
@@ -320,7 +287,6 @@
         }
       },
       clearForm () {
-        this.form.year = new Date()
         this.form.series = null
         this.form.ordinal = null
         this.form.name = null
@@ -411,11 +377,11 @@
   }
 
    .shareDatepickerCalendar span:hover  {
-    border: rgb(208, 226, 247) !important;
-    background-color:  rgb(208, 226, 247) !important;
+    border: #e7f3fc !important;
+    background-color:  #e7f3fc !important;
   }
   .shareDatepickerCalendar span.selected  {
-    border: rgb(208, 226, 247) !important;
-    background-color:  rgb(208, 226, 247) !important;
+    border: #e7f3fc !important;
+    background-color:  #e7f3fc !important;
   }
 </style>

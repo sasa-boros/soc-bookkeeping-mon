@@ -4,18 +4,15 @@ const incomeCodeService = require('./service/incomeCodeService')
 const outcomeCodeService = require('./service/outcomeCodeService')
 const paymentSlipService = require('./service/paymentSlipService')
 const receiptService = require('./service/receiptService')
-const defaultPaymentSlipService = require('./service/defaultPaymentSlipService')
-const defaultReceiptService = require('./service/defaultReceiptService')
 const shareService = require('./service/shareService')
 const savingService = require('./service/savingService')
 const itemService = require('./service/itemService')
 const debtService = require('./service/debtService')
 const settingsService = require('./service/settingsService')
-const commonService = require('./service/commonService')
 
-ipcMain.on('get-income-codes', async (event) => {
+ipcMain.on('get-income-codes', async (event, bookingYear) => {
   try {
-    reply(event, 'get-income-codes-reply', await incomeCodeService.getIncomeCodes())
+    reply(event, 'get-income-codes-reply', await incomeCodeService.getIncomeCodes(bookingYear))
   } catch (err) {
     replyError(event, 'get-income-codes-reply', err.message ? err.message : err)
   }
@@ -45,9 +42,17 @@ ipcMain.on('delete-income-code', async (event, incomeCodeId) => {
   }
 })
 
-ipcMain.on('get-outcome-codes', async (event) => {
+ipcMain.on('import-income-codes', async (event, bookingYear) => {
   try {
-    reply(event, 'get-outcome-codes-reply', await outcomeCodeService.getOutcomeCodes())
+    reply(event, 'import-income-codes-reply', await incomeCodeService.importIncomeCodesFromPreviousYear(bookingYear))
+  } catch (err) {
+    replyError(event, 'import-income-codes-reply', err.message ? err.message : err)
+  }
+})
+
+ipcMain.on('get-outcome-codes', async (event, bookingYear) => {
+  try {
+    reply(event, 'get-outcome-codes-reply', await outcomeCodeService.getOutcomeCodes(bookingYear))
   } catch (err) {
     replyError(event, 'get-outcome-codes-reply', err.message ? err.message : err)
   }
@@ -77,17 +82,25 @@ ipcMain.on('delete-outcome-code', async (event, outcomeCodeId) => {
   }
 })
 
-ipcMain.on('are-payment-slips-valid', async (event) => {
+ipcMain.on('import-outcome-codes', async (event, bookingYear) => {
   try {
-    reply(event, 'are-payment-slips-valid-reply', await paymentSlipService.arePaymentSlipsValid())
+    reply(event, 'import-outcome-codes-reply', await outcomeCodeService.importOutcomeCodesFromPreviousYear(bookingYear))
   } catch (err) {
-    replyError(event, 'are-payment-slips-valid-reply', err.message ? err.message : err)
+    replyError(event, 'import-outcome-codes-reply', err.message ? err.message : err)
   }
 })
 
-ipcMain.on('get-payment-slips', async (event) => {
+ipcMain.on('check-payment-slips-validity', async (event, bookingYear) => {
   try {
-    reply(event, 'get-payment-slips-reply', await paymentSlipService.getPaymentSlips())
+    reply(event, 'check-payment-slips-validity-reply', await paymentSlipService.checkPaymentSlipsValidity(bookingYear))
+  } catch (err) {
+    replyError(event, 'check-payment-slips-validity-reply', err.message ? err.message : err)
+  }
+})
+
+ipcMain.on('get-payment-slips', async (event, bookingYear) => {
+  try {
+    reply(event, 'get-payment-slips-reply', await paymentSlipService.getPaymentSlips(bookingYear))
   } catch (err) {
     replyError(event, 'get-payment-slips-reply', err.message ? err.message : err)
   }
@@ -101,17 +114,17 @@ ipcMain.on('create-payment-slip', async (event, paymentSlip) => {
   }
 })
 
-ipcMain.on('delete-payment-slip', async (event, paymentSlipId) => {
+ipcMain.on('delete-payment-slip', async (event, paymentSlipId, bookingYear) => {
   try {
-    reply(event, 'delete-payment-slip-reply', await paymentSlipService.deletePaymentSlip(paymentSlipId))
+    reply(event, 'delete-payment-slip-reply', await paymentSlipService.deletePaymentSlip(paymentSlipId, bookingYear))
   } catch (err) {
     replyError(event, 'delete-payment-slip-reply', err.message ? err.message : err)
   }
 })
 
-ipcMain.on('delete-payment-slips', async (event, paymentSlipsIds) => {
+ipcMain.on('delete-payment-slips', async (event, paymentSlipsIds, bookingYear) => {
   try {
-    reply(event, 'delete-payment-slips-reply', await paymentSlipService.deletePaymentSlips(paymentSlipsIds))
+    reply(event, 'delete-payment-slips-reply', await paymentSlipService.deletePaymentSlips(paymentSlipsIds, bookingYear))
   } catch (err) {
     replyError(event, 'delete-payment-slips-reply', err.message ? err.message : err)
   }
@@ -133,17 +146,17 @@ ipcMain.on('create-payment-slip-pdf', async (event) => {
   }
 })
 
-ipcMain.on('are-receipts-valid', async (event) => {
+ipcMain.on('check-receipts-validity', async (event, bookingYear) => {
   try {
-    reply(event, 'are-receipts-valid-reply', await receiptService.areReceiptsValid())
+    reply(event, 'check-receipts-validity-reply', await receiptService.checkReceiptsValidity(bookingYear))
   } catch (err) {
-    replyError(event, 'are-receipts-valid-reply', err.message ? err.message : err)
+    replyError(event, 'check-receipts-validity-reply', err.message ? err.message : err)
   }
 })
 
-ipcMain.on('get-receipts', async (event) => {
+ipcMain.on('get-receipts', async (event, bookingYear) => {
   try {
-    reply(event, 'get-receipts-reply', await receiptService.getReceipts())
+    reply(event, 'get-receipts-reply', await receiptService.getReceipts(bookingYear))
   } catch (err) {
     replyError(event, 'get-receipts-reply', err.message ? err.message : err)
   }
@@ -157,17 +170,17 @@ ipcMain.on('create-receipt', async (event, receipt) => {
   }
 })
 
-ipcMain.on('delete-receipt', async (event, receiptId) => {
+ipcMain.on('delete-receipt', async (event, receiptId, bookingYear) => {
   try {
-    reply(event, 'delete-receipt-reply', await receiptService.deleteReceipt(receiptId))
+    reply(event, 'delete-receipt-reply', await receiptService.deleteReceipt(receiptId, bookingYear))
   } catch (err) {
     replyError(event, 'delete-receipt-reply', err.message ? err.message : err)
   }
 })
 
-ipcMain.on('delete-receipts', async (event, receiptsIds) => {
+ipcMain.on('delete-receipts', async (event, receiptsIds, bookingYear) => {
   try {
-    reply(event, 'delete-receipts-reply', await receiptService.deleteReceipts(receiptsIds))
+    reply(event, 'delete-receipts-reply', await receiptService.deleteReceipts(receiptsIds, bookingYear))
   } catch (err) {
     replyError(event, 'delete-receipts-reply', err.message ? err.message : err)
   }
@@ -189,41 +202,9 @@ ipcMain.on('create-receipt-pdf', async (event) => {
   }
 })
 
-ipcMain.on('get-default-payment-slip', async (event) => {
+ipcMain.on('get-shares', async (event, bookingYear) => {
   try {
-    reply(event, 'get-default-payment-slip-reply', await defaultPaymentSlipService.getDefaultPaymentSlip())
-  } catch (err) {
-    replyError(event, 'get-default-payment-slip-reply', err.message ? err.message : err)
-  }
-})
-
-ipcMain.on('create-default-payment-slip', async (event, defaultPaymentSlip) => {
-  try {
-    reply(event, 'create-default-payment-slip-reply', await defaultPaymentSlipService.createDefaultPaymentSlip(defaultPaymentSlip))
-  } catch (err) {
-    replyError(event, 'create-default-payment-slip-reply', err.message ? err.message : err)
-  }
-})
-
-ipcMain.on('get-default-receipt', async (event) => {
-  try {
-    reply(event, 'get-default-receipt-reply', await defaultReceiptService.getDefaultReceipt())
-  } catch (err) {
-    replyError(event, 'get-default-receipt-reply', err.message ? err.message : err)
-  }
-})
-
-ipcMain.on('create-default-receipt', async (event, defaultReceipt) => {
-  try {
-    reply(event, 'create-default-receipt-reply', await defaultReceiptService.createDefaultReceipt(defaultReceipt))
-  } catch (err) {
-    replyError(event, 'create-default-receipt-reply', err.message ? err.message : err)
-  }
-})
-
-ipcMain.on('get-shares', async (event) => {
-  try {
-    reply(event, 'get-shares-reply', await shareService.getShares())
+    reply(event, 'get-shares-reply', await shareService.getShares(bookingYear))
   } catch (err) {
     replyError(event, 'get-shares-reply', err.message ? err.message : err)
   }
@@ -261,9 +242,9 @@ ipcMain.on('update-share', async (event, share) => {
   }
 })
 
-ipcMain.on('get-savings', async (event) => {
+ipcMain.on('get-savings', async (event, bookingYear) => {
   try {
-    reply(event, 'get-savings-reply', await savingService.getSavings())
+    reply(event, 'get-savings-reply', await savingService.getSavings(bookingYear))
   } catch (err) {
     replyError(event, 'get-savings-reply', err.message ? err.message : err)
   }
@@ -301,9 +282,9 @@ ipcMain.on('update-saving', async (event, saving) => {
   }
 })
 
-ipcMain.on('get-items', async (event) => {
+ipcMain.on('get-items', async (event, bookingYear) => {
   try {
-    reply(event, 'get-items-reply', await itemService.getItems())
+    reply(event, 'get-items-reply', await itemService.getItems(bookingYear))
   } catch (err) {
     replyError(event, 'get-items-reply', err.message ? err.message : err)
   }
@@ -341,9 +322,9 @@ ipcMain.on('update-item', async (event, item) => {
   }
 })
 
-ipcMain.on('get-debts', async (event) => {
+ipcMain.on('get-debts', async (event, bookingYear) => {
   try {
-    reply(event, 'get-debts-reply', await debtService.getDebts())
+    reply(event, 'get-debts-reply', await debtService.getDebts(bookingYear))
   } catch (err) {
     replyError(event, 'get-debts-reply', err.message ? err.message : err)
   }
@@ -381,27 +362,27 @@ ipcMain.on('update-debt', async (event, debt) => {
   }
 })
 
-ipcMain.on('get-annual-report', async (event, year) => {
+ipcMain.on('get-annual-report', async (event, bookingYear) => {
   try {
-    reply(event, 'get-annual-report-reply', await annualReportService.getAnnualReport(year))
+    reply(event, 'get-annual-report-reply', await annualReportService.getAnnualReport(bookingYear))
   } catch (err) {
     replyError(event, 'get-annual-report-reply', err.message ? err.message : err)
   }
 })
 
-ipcMain.on('get-annual-report-common-data', async (event) => {
+ipcMain.on('get-annual-report-common', async (event) => {
   try {
-    reply(event, 'get-annual-report-common-data-reply', await annualReportService.getAnnualReportCommonData())
+    reply(event, 'get-annual-report-common-reply', await annualReportService.getAnnualReportCommon())
   } catch (err) {
-    replyError(event, 'get-annual-report-common-data-reply', err.message ? err.message : err)
+    replyError(event, 'get-annual-report-common-reply', err.message ? err.message : err)
   }
 })
 
-ipcMain.on('create-annual-report-common-data', async (event, common) => {
+ipcMain.on('create-annual-report-common', async (event, common) => {
   try {
-    reply(event, 'create-annual-report-common-data-reply', await annualReportService.createAnnualReportCommonData(common))
+    reply(event, 'create-annual-report-common-reply', await annualReportService.createAnnualReportCommon(common))
   } catch (err) {
-    replyError(event, 'create-annual-report-common-data-reply', err.message ? err.message : err)
+    replyError(event, 'create-annual-report-common-reply', err.message ? err.message : err)
   }
 })
 
@@ -434,14 +415,6 @@ ipcMain.on('create-annual-report-pdf', async (event) => {
     reply(event, 'create-annual-report-pdf-reply', await annualReportService.createAnnualReportPdf(event.sender.webContents))
   } catch (err) {
     replyError(event, 'create-annual-report-pdf-reply', err.message ? err.message : err)
-  }
-})
-
-ipcMain.on('get-booked-years', async (event) => {
-  try {
-    reply(event, 'get-booked-years-reply', await commonService.getBookedYears())
-  } catch (err) {
-    replyError(event, 'get-booked-years-reply', err.message ? err.message : err)
   }
 })
 

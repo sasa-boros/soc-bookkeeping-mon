@@ -9,9 +9,9 @@ function findOne () {
     })
 }
 
-function insert (doc) {
+function insert (annualReportCommon) {
     return new Promise((resolve, reject) => { 
-        db.annualReportCommons.insert(doc, (err, newDoc) => {
+        db.annualReportCommons.insert(annualReportCommon, (err, newDoc) => {
             if (err) {
                 reject(err)
             }

@@ -1,24 +1,23 @@
 <template> 
   <b-container fluid>
-     <br>
      <b-row>
       <b-col cols="6">
         <b-button-group class="float-left">
-          <b-btn id="addPaymentSlipBtn" v-on:mouseleave="hideTooltip('addPaymentSlipBtn')" v-b-tooltip.hover.top.window="{title: phrases.addPaymentSlip}" @click.stop="openCreatePaymentSlipModal" variant="light" class="btn-xs">
+          <b-btn v-on:focus="unfocusElementOnNonKeyboardEvent" id="addPaymentSlipBtn" v-on:mouseleave="hideTooltip('addPaymentSlipBtn')" v-b-tooltip.hover.top.window="{title: phrases.addPaymentSlip}" @click.stop="openCreatePaymentSlipModal" variant="light" class="btn-xs">
             <img src="~@/assets/add.png">               
           </b-btn>
         </b-button-group> 
         <b-button-group class="float-left">
-          <b-btn id="deleteSelectedBtn" v-on:mouseleave="hideTooltip('deleteSelectedBtn')" v-b-tooltip.hover.top.window="{title: phrases.deleteSelected}" @click.stop="openDeleteCheckedPaymentSlipsModal()" :disabled="noRowChecked" variant="light" class="btn-xs">
+          <b-btn v-on:focus="unfocusElementOnNonKeyboardEvent" id="deleteSelectedBtn" v-on:mouseleave="hideTooltip('deleteSelectedBtn')" v-b-tooltip.hover.top.window="{title: phrases.deleteSelected}" @click.stop="openDeleteCheckedPaymentSlipsModal()" :disabled="noRowChecked" variant="light" class="btn-xs">
             <img src="~@/assets/trash.png">               
           </b-btn>
         </b-button-group>
       </b-col>
       <b-col cols="6">
         <b-form-group class="float-right">
-          <label :for="`yearSelect`">{{phrases.filterByYear}}: </label>
+          <label :for="`monthSelect`" style="font-size:100%">{{phrases.filterByMonth}}: </label>
           &nbsp;
-          <b-form-select v-model="yearToFilter" id="yearSelect" :options="yearOptions" size="sm" class="my-0"/>
+          <b-form-select v-model="monthToFilter" id="monthSelect" :options="monthOptions" size="sm" class="my-0"/>
         </b-form-group>
       </b-col>
     </b-row>
@@ -55,7 +54,7 @@
         </template>
         <template v-slot:cell(preview)="row">
           <b-button-group>
-            <b-button id="updatePaymentSlipBtn" v-on:mouseleave="hideTooltip('updatePaymentSlipBtn')" v-b-tooltip.hover.top.window="{title: phrases.seeDetails}" @click.stop="openUpdatePaymentSlipModal(row.item)" variant="link" class="btn-xs">
+            <b-button v-on:focus="unfocusElementOnNonKeyboardEvent" id="updatePaymentSlipBtn" v-on:mouseleave="hideTooltip('updatePaymentSlipBtn')" v-b-tooltip.hover.top.window="{title: phrases.seeDetails}" @click.stop="openUpdatePaymentSlipModal(row.item, row.index)" variant="link" class="btn-xs">
               <img src="~@/assets/see-more.png" class="rowImg">                                           
             </b-button>
           </b-button-group>                
@@ -72,7 +71,7 @@
         <template v-slot:cell(formatedDate)="row">{{ row.item.date | formatDate }}</template>
         <template v-slot:cell(delete)="row">
           <b-button-group>
-            <b-button id="deletePaymentSlipBtn" v-on:mouseleave="hideTooltip('deletePaymentSlipBtn')" v-b-tooltip.hover.top.window="{title: phrases.deletePaymentSlip}" @click.stop="openDeletePaymentSlipModal(row.item)" variant="link" class="btn-xs">
+            <b-button v-on:focus="unfocusElementOnNonKeyboardEvent" id="deletePaymentSlipBtn" v-on:mouseleave="hideTooltip('deletePaymentSlipBtn')" v-b-tooltip.hover.top.window="{title: phrases.deletePaymentSlip}" @click.stop="openDeletePaymentSlipModal(row.item)" variant="link" class="btn-xs">
               <img src="~@/assets/delete.png" class="rowImg">                                           
             </b-button>     
           </b-button-group>               
@@ -93,7 +92,7 @@
     </b-row>
 
     <b-modal no-close-on-backdrop hide-footer hide-header size="a5" id="create-payment-slip-modal">
-      <payment-slip-preview :paymentSlip='selectedItem' :paymentSlipPreview='isPreview' :existingPaymentSlips="paymentSlips" parentModal="create-payment-slip-modal" v-on:updatePaymentSlipTable="update"></payment-slip-preview>
+      <payment-slip-preview :paymentSlip='selectedItem' :paymentSlipPreview='isPreview' :existingPaymentSlips="paymentSlips" parentModal="create-payment-slip-modal" v-on:updatePaymentSlipTable="update(true)"></payment-slip-preview>
     </b-modal>
 
     <b-modal no-close-on-backdrop id="delete-payment-slip-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('deletePaymentSlipModal')">
@@ -114,12 +113,12 @@
   import store from '@/store'
   import { mapState } from 'vuex'
   import PaymentSlipPreview from './PaymentSlipsPane/PaymentSlipPreview'
-  import MessageConfirmDialog from '../../MessageConfirmDialog'
-  import { EventBus } from '../../../eventbus/event-bus.js';
+  import MessageConfirmDialog from '../../../MessageConfirmDialog'
+  import { EventBus } from '../../../../eventbus/event-bus.js';
   
-  const paymentSlipController = require('../../../controllers/paymentSlipController')
-  const i18n = require('../../../../translations/i18n')
-  const { asFormatedString, largeAmountNumberOptions } = require('../../../utils/utils')
+  const paymentSlipController = require('../../../../controllers/paymentSlipController')
+  const i18n = require('../../../../../translations/i18n')
+  const { asFormatedString, largeAmountNumberOptions } = require('../../../../utils/utils')
 
   export default {
     data () {
@@ -140,7 +139,7 @@
           areYouSureToDeletePaymentSlip: i18n.getTranslation('Are you sure you want to delete payment slip?'),
           areYouSureToDeleteCheckedPaymentSlips: i18n.getTranslation('Are you sure you want to delete selected payment slips?'),
           noRecordsToShow: i18n.getTranslation('There are no payment slips to show'),
-          filterByYear: i18n.getTranslation('Filter by year'),
+          filterByMonth: i18n.getTranslation('Filter by month'),
           invalidPaymentSlip: i18n.getTranslation('Invalid payment slip'),
           select: i18n.getTranslation('Select'),
           selectAll: i18n.getTranslation('Select all'),
@@ -149,7 +148,7 @@
         },
         paymentSlips: [],
         items: [],
-        yearToFilter: '',
+        monthToFilter: '',
         currentPage: 1,
         perPage: 10,
         totalRows: null,
@@ -159,38 +158,43 @@
         itemsShownInTable: [],
         checkAll: false,
         selectedItem: null,
+        selectedItemIndex: null,
         isPreview: false,
         errorText: "",
         sortBy: null,
         sortDesc: true,
         sortDirection: 'desc',
-        sortsPerHeader: null
+        sortsPerHeader: null,
+        monthOptions: [
+          '',
+          i18n.getTranslation('January.lokativ'), 
+          i18n.getTranslation('February.lokativ'), 
+          i18n.getTranslation('March.lokativ'),
+          i18n.getTranslation('April.lokativ'), 
+          i18n.getTranslation('May.lokativ'), 
+          i18n.getTranslation('June.lokativ'),
+          i18n.getTranslation('July.lokativ'),
+          i18n.getTranslation('August.lokativ'),
+          i18n.getTranslation('September.lokativ'),
+          i18n.getTranslation('October.lokativ'),
+          i18n.getTranslation('November.lokativ'),
+          i18n.getTranslation('December.lokativ')
+        ]
       }
     },
     created () {
-      this.loadPaymentSlips()
+      const self = this
+      this.$watch('bookingYear', () => {
+        self.update()
+      }, {immediate: true})
       EventBus.$on('updatePaymentSlipTable', () => {
         this.update()
-        this.$emit('updateInvalidPaymentSlipsInfo')
       });
     },
     computed: {
       ...mapState(
         {
-          yearOptions: function (state) {
-            var yearOptions = JSON.parse(JSON.stringify(state.CommonValues.bookedYears))
-            yearOptions.unshift('')
-            var yearToFilter = this.yearToFilter
-            if (yearToFilter != '') {
-              var yearFiltered = yearOptions.find(yo => {
-                return yo == yearToFilter
-              })
-              if (!yearFiltered) {
-                this.yearToFilter = ''
-              }
-            }
-            return yearOptions
-          }
+          bookingYear: state => state.CommonValues.bookingYear
         }
       ),
       noRowChecked () {
@@ -209,6 +213,11 @@
       }
     },
     methods: {
+      unfocusElementOnNonKeyboardEvent (e) {
+        if (!e.relatedTarget) {
+          e.target.blur()
+        }
+      },
       unsort (key, field, e) {
         e.stopPropagation()
         if (!field.sortable) {
@@ -229,24 +238,46 @@
       focusModalCloseButton (modalRef) {
         this.$refs[modalRef].$refs.closeButton.focus()
       },
-      update() {
-        this.loadPaymentSlips()
-        this.$emit('updateBookedYears')
+      update(highlightChange) {
+        this.loadPaymentSlips(highlightChange)
         this.$emit('updateInvalidPaymentSlipsInfo')
-        this.yearToFilter = ''
+        this.monthToFilter = ''
         this.clearChecked()
+        if (highlightChange) {
+          this.highlightChangedRow()
+        }
+      },
+      highlightChangedRow() {
+        var updatedRow;
+        if (this.selectedItem) {
+          updatedRow = document.querySelector('#payment-slips-table tbody tr[aria-rowindex="' + ((this.currentPage - 1 ) * 10 + this.selectedItemIndex + 1) + '"]')
+        } else {
+          updatedRow = document.querySelector('#payment-slips-table tbody tr[aria-rowindex="1"]')
+        }
+        if (updatedRow) {
+          const oldStyle = updatedRow.style
+          updatedRow.style.setProperty('box-shadow', '0 1px 1px rgba(128, 147, 168, 0.075) inset, 0 0 8px rgba(128, 147, 168, 0.6)')
+          setTimeout(() => {
+            updatedRow.style = oldStyle
+          }, 2000)
+        }
       },
       clearChecked () {
         this.checkAll = false
         this.checkedPaymentSlips = []
       },
-      loadPaymentSlips () {
+      loadPaymentSlips (highlightChange) {
         const self = this
-        paymentSlipController.getPaymentSlips().then((res) => {
+        paymentSlipController.getPaymentSlips(this.bookingYear).then((res) => {
           if (!res.err) {
             self.paymentSlips = res.data ? res.data : []
             self.items = self.paymentSlips
             self.totalRows = self.paymentSlips.length
+            if (highlightChange) {
+              self.$nextTick(() => {
+                self.highlightChangedRow()
+              })
+            }
           } else {
             self.openErrorModal(res.err)
           }
@@ -256,6 +287,7 @@
         this.hideTooltip('addPaymentSlipBtn')
         this.isPreview = false
         this.selectedItem = null
+        this.selectedItemIndex = null
         this.$root.$emit('bv::show::modal', 'create-payment-slip-modal')
       },
       toggleCheckAll () {
@@ -263,7 +295,7 @@
         this.checkedPaymentSlips = this.checkAll ? [] : this.itemsShownInTable
       },
       rowDblClickHandler (record, index) {
-        this.openUpdatePaymentSlipModal(record)
+        this.openUpdatePaymentSlipModal(record, index)
       },
       isValid (paymentSlip) {
         return paymentSlip.isValid
@@ -275,7 +307,7 @@
       },
       deletePaymentSlip () {
         const self = this
-        paymentSlipController.deletePaymentSlip(this.deletedPaymentSlip._id).then((res) => {
+        paymentSlipController.deletePaymentSlip(this.deletedPaymentSlip._id, this.bookingYear).then((res) => {
           if (!res.err) {
             self.update()
           } else {
@@ -293,7 +325,7 @@
           checkedPaymentSlipsIds.push(paymentSlip._id)
         })
         const self = this
-        paymentSlipController.deletePaymentSlips(checkedPaymentSlipsIds).then((res) => {
+        paymentSlipController.deletePaymentSlips(checkedPaymentSlipsIds, this.bookingYear).then((res) => {
           if (!res.err) {
             self.update()
           } else {
@@ -301,9 +333,10 @@
           }
         })
       },
-      openUpdatePaymentSlipModal (item) {
+      openUpdatePaymentSlipModal (item, index) {
         this.hideTooltip('updatePaymentSlipBtn')
         this.selectedItem = item
+        this.selectedItemIndex = index
         this.isPreview = true
         this.$root.$emit('bv::show::modal', 'create-payment-slip-modal')
       },
@@ -355,7 +388,7 @@
     },
     filters: {
       formatDate (date) {
-        const options = { year: 'numeric', month: 'long', day: 'numeric'}
+        const options = { month: 'long', day: 'numeric'}
         const language = i18n.usedLanguage
         return (new Date(date)).toLocaleDateString(language, options)
       },
@@ -371,12 +404,12 @@
           this.$root.$emit('bv::hide::tooltip', 'deleteSelectedBtn')
         }
       },
-      yearToFilter (newYearValue) {
-        if(newYearValue == '') {
+      monthToFilter (newMonthValue) {
+        if(newMonthValue == '') {
           this.items = this.paymentSlips;
         } else {
           this.items = this.paymentSlips.filter(value => {
-            if(new Date(value.date).getUTCFullYear() == newYearValue) {
+            if(new Date(value.date).getUTCMonth() == (this.monthOptions.indexOf(newMonthValue) - 1)) {
               return true;
             }
             return false;
@@ -406,15 +439,7 @@
     display: block;
     overflow: auto;
   }
-  #perPageSelect{
-    width: 60px;
-  }
-  #yearSelect{
-    width: 80px;
-    display: inline;
-  }
-  #filterInputFormGroup{
-    width: 200px;
-    display: inline;
+  #monthSelect {
+    width: 100px;
   }
 </style>

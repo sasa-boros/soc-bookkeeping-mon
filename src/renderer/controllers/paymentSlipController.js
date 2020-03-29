@@ -1,17 +1,17 @@
 const { ipcRenderer } = require('electron')
 
-function arePaymentSlipsValid () {
+function checkPaymentSlipsValidity (bookingYear) {
   return new Promise(function (resolve) {
-    ipcRenderer.send('are-payment-slips-valid')
-    ipcRenderer.once('are-payment-slips-valid-reply', (event, res) => {
+    ipcRenderer.send('check-payment-slips-validity', bookingYear)
+    ipcRenderer.once('check-payment-slips-validity-reply', (event, res) => {
       resolve(res)
     })
   })
 }
 
-function getPaymentSlips () {
+function getPaymentSlips (bookingYear) {
   return new Promise(function (resolve) {
-    ipcRenderer.send('get-payment-slips')
+    ipcRenderer.send('get-payment-slips', bookingYear)
     ipcRenderer.once('get-payment-slips-reply', (event, res) => {
       resolve(res)
     })
@@ -35,18 +35,18 @@ function updatePaymentSlip (paymentSlip) {
   })
 }
 
-function deletePaymentSlip (paymentSlipId) {
+function deletePaymentSlip (id, bookingYear) {
   return new Promise(function (resolve) {
-    ipcRenderer.send('delete-payment-slip', paymentSlipId)
+    ipcRenderer.send('delete-payment-slip', id, bookingYear)
     ipcRenderer.once('delete-payment-slip-reply', (event, res) => {
       resolve(res)
     })
   })
 }
 
-function deletePaymentSlips (paymentSlipsIds) {
+function deletePaymentSlips (ids, bookingYear) {
   return new Promise(function (resolve) {
-    ipcRenderer.send('delete-payment-slips', paymentSlipsIds)
+    ipcRenderer.send('delete-payment-slips', ids, bookingYear)
     ipcRenderer.once('delete-payment-slips-reply', (event, res) => {
       resolve(res)
     })
@@ -63,7 +63,7 @@ function createPaymentSlipPdf () {
 }
 
 module.exports = {
-  arePaymentSlipsValid: arePaymentSlipsValid,
+  checkPaymentSlipsValidity: checkPaymentSlipsValidity,
   getPaymentSlips: getPaymentSlips,
   createPaymentSlip: createPaymentSlip,
   deletePaymentSlip: deletePaymentSlip,

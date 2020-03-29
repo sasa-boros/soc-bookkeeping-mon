@@ -1,24 +1,23 @@
 <template> 
   <b-container fluid>
-     <br>
      <b-row>
       <b-col cols="6">
         <b-button-group class="float-left">
-          <b-btn id="addReceiptBtn" v-on:mouseleave="hideTooltip('addReceiptBtn')" v-b-tooltip.hover.top.window="{title: phrases.addReceipt}" @click.stop="openCreateReceiptModal" variant="light" class="btn-xs">
+          <b-btn v-on:focus="unfocusElementOnNonKeyboardEvent" id="addReceiptBtn" v-on:mouseleave="hideTooltip('addReceiptBtn')" v-b-tooltip.hover.top.window="{title: phrases.addReceipt}" @click.stop="openCreateReceiptModal" variant="light" class="btn-xs">
             <img src="~@/assets/add.png">               
           </b-btn>
         </b-button-group>
         <b-button-group class="float-left">
-          <b-btn id="deleteSelectedBtn" v-on:mouseleave="hideTooltip('deleteSelectedBtn')" v-b-tooltip.hover.top.window="{title: phrases.deleteSelected}" @click.stop="openDeleteCheckedReceiptsModal" :disabled="noRowChecked" :class="{disabledBtn : noRowChecked}" variant="light" class="btn-xs">
+          <b-btn v-on:focus="unfocusElementOnNonKeyboardEvent" id="deleteSelectedBtn" v-on:mouseleave="hideTooltip('deleteSelectedBtn')" v-b-tooltip.hover.top.window="{title: phrases.deleteSelected}" @click.stop="openDeleteCheckedReceiptsModal" :disabled="noRowChecked" :class="{disabledBtn : noRowChecked}" variant="light" class="btn-xs">
             <img src="~@/assets/trash.png">               
           </b-btn>
         </b-button-group> 
       </b-col>
       <b-col cols="6">
         <b-form-group class="float-right">
-          <label :for="`yearSelect`">{{phrases.filterByYear}}: </label>
+          <label style="font-size:100%" :for="`monthSelect`">{{phrases.filterByMonth}}: </label>
           &nbsp;
-          <b-form-select v-model="yearToFilter" id="yearSelect" :options="yearOptions" size="sm" class="my-0"/>
+          <b-form-select v-model="monthToFilter" id="monthSelect" :options="monthOptions" size="sm" class="my-0"/>
         </b-form-group>
       </b-col>
     </b-row>
@@ -55,7 +54,7 @@
         </template>
         <template v-slot:cell(preview)="row">
           <b-button-group>
-            <b-button id="updateReceiptBtn" v-on:mouseleave="hideTooltip('updateReceiptBtn')" v-b-tooltip.hover.top.window="{title: phrases.seeDetails}" @click.stop="openUpdateReceiptModal(row.item)" variant="link" class="btn-xs">
+            <b-button v-on:focus="unfocusElementOnNonKeyboardEvent" id="updateReceiptBtn" v-on:mouseleave="hideTooltip('updateReceiptBtn')" v-b-tooltip.hover.top.window="{title: phrases.seeDetails}" @click.stop="openUpdateReceiptModal(row.item, row.index)" variant="link" class="btn-xs">
               <img src="~@/assets/see-more.png" class="rowImg">                                           
             </b-button>
           </b-button-group>                
@@ -72,7 +71,7 @@
         <template v-slot:cell(formatedDate)="row">{{ row.item.date | formatDate }}</template>
         <template v-slot:cell(delete)="row">
           <b-button-group>
-            <b-button id="deleteReceiptBtn" v-on:mouseleave="hideTooltip('deleteReceiptBtn')" v-b-tooltip.hover.top.window="{title: phrases.deleteReceipt}" @click.stop="openDeleteReceiptModal(row.item)" variant="link" class="btn-xs">
+            <b-button v-on:focus="unfocusElementOnNonKeyboardEvent" id="deleteReceiptBtn" v-on:mouseleave="hideTooltip('deleteReceiptBtn')" v-b-tooltip.hover.top.window="{title: phrases.deleteReceipt}" @click.stop="openDeleteReceiptModal(row.item)" variant="link" class="btn-xs">
               <img src="~@/assets/delete.png" class="rowImg">                                           
             </b-button>     
           </b-button-group>                
@@ -93,7 +92,7 @@
     </b-row>
 
     <b-modal no-close-on-backdrop hide-footer hide-header size="a5" id="create-receipt-modal">
-      <receipt-preview :receipt='selectedItem' :receiptPreview='isPreview' parentModal="create-receipt-modal" v-on:updateReceiptTable="update"></receipt-preview>
+      <receipt-preview :receipt='selectedItem' :receiptPreview='isPreview' parentModal="create-receipt-modal" v-on:updateReceiptTable="update(true)"></receipt-preview>
     </b-modal>
 
     <b-modal no-close-on-backdrop id="delete-receipt-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('deleteReceiptModal')">
@@ -114,12 +113,12 @@
   import store from '@/store'
   import { mapState } from 'vuex'
   import ReceiptPreview from './ReceiptsPane/ReceiptPreview'
-  import MessageConfirmDialog from '../../MessageConfirmDialog'
-  import { EventBus } from '../../../eventbus/event-bus.js';
+  import MessageConfirmDialog from '../../../MessageConfirmDialog'
+  import { EventBus } from '../../../../eventbus/event-bus.js';
   
-  const receiptController = require('../../../controllers/receiptController')
-  const i18n = require('../../../../translations/i18n')
-  const { asFormatedString, largeAmountNumberOptions } = require('../../../utils/utils')
+  const receiptController = require('../../../../controllers/receiptController')
+  const i18n = require('../../../../../translations/i18n')
+  const { asFormatedString, largeAmountNumberOptions } = require('../../../../utils/utils')
 
   export default {
     data () {
@@ -140,7 +139,7 @@
           areYouSureToDeleteReceipt: i18n.getTranslation('Are you sure you want to delete receipt?'),
           areYouSureToDeleteCheckedReceipts: i18n.getTranslation('Are you sure you want to delete selected receipts?'),
           noRecordsToShow: i18n.getTranslation('There are no receipts to show'),
-          filterByYear: i18n.getTranslation('Filter by year'),
+          filterByMonth: i18n.getTranslation('Filter by month'),
           invalidReceipt: i18n.getTranslation('Invalid receipt'),
           select: i18n.getTranslation('Select'),
           selectAll: i18n.getTranslation('Select all'),
@@ -149,7 +148,7 @@
         },
         receipts: [],
         items: [],
-        yearToFilter: '',
+        monthToFilter: '',
         currentPage: 1,
         perPage: 10,
         totalRows: null,
@@ -159,38 +158,43 @@
         itemsShownInTable: [],
         checkAll: false,
         selectedItem: null,
+        selectedItemIndex: null,
         isPreview: false,
         errorText: "",
         sortBy: null,
         sortDesc: true,
         sortDirection: 'desc',
-        sortsPerHeader: null
+        sortsPerHeader: null,
+        monthOptions: [
+          '',
+          i18n.getTranslation('January.lokativ'), 
+          i18n.getTranslation('February.lokativ'), 
+          i18n.getTranslation('March.lokativ'),
+          i18n.getTranslation('April.lokativ'), 
+          i18n.getTranslation('May.lokativ'), 
+          i18n.getTranslation('June.lokativ'),
+          i18n.getTranslation('July.lokativ'),
+          i18n.getTranslation('August.lokativ'),
+          i18n.getTranslation('September.lokativ'),
+          i18n.getTranslation('October.lokativ'),
+          i18n.getTranslation('November.lokativ'),
+          i18n.getTranslation('December.lokativ')
+        ]
       }
     },
     created () {
-      this.loadReceipts()
+      const self = this
+      this.$watch('bookingYear', () => {
+        self.update()
+      }, {immediate: true})
       EventBus.$on('updateReceiptTable', () => {
         this.update()
-        this.$emit('updateInvalidReceiptsInfo')
       });
     },
     computed: {
       ...mapState(
         {
-          yearOptions: function (state) {
-            var yearOptions = JSON.parse(JSON.stringify(state.CommonValues.bookedYears))
-            yearOptions.unshift('')
-            var yearToFilter = this.yearToFilter
-            if (yearToFilter != '') {
-              var yearFiltered = yearOptions.find(yo => {
-                return yo == yearToFilter
-              })
-              if (!yearFiltered) {
-                this.yearToFilter = ''
-              }
-            }
-            return yearOptions
-          }
+          bookingYear: state => state.CommonValues.bookingYear
         }
       ),
       noRowChecked () {
@@ -209,6 +213,11 @@
       }
     },
     methods: {
+      unfocusElementOnNonKeyboardEvent (e) {
+        if (!e.relatedTarget) {
+          e.target.blur()
+        }
+      },
       unsort (key, field, e) {
         e.stopPropagation()
         if (!field.sortable) {
@@ -229,24 +238,46 @@
       focusModalCloseButton (modalRef) {
         this.$refs[modalRef].$refs.closeButton.focus()
       },
-      update() {
-        this.loadReceipts()
-        this.$emit('updateBookedYears')
+      update(highlightChange) {
+        this.loadReceipts(highlightChange)
         this.$emit('updateInvalidReceiptsInfo')
-        this.yearToFilter = ''
+        this.monthToFilter = ''
         this.clearChecked()
+        if (highlightChange) {
+          this.highlightChangedRow()
+        }
+      },
+      highlightChangedRow() {
+        var updatedRow;
+        if (this.selectedItem) {
+          updatedRow = document.querySelector('#receipts-table tbody tr[aria-rowindex="' + ((this.currentPage - 1 ) * 10 + this.selectedItemIndex + 1) + '"]')
+        } else {
+          updatedRow = document.querySelector('#receipts-table tbody tr[aria-rowindex="1"]')
+        }
+        if (updatedRow) {
+          const oldStyle = updatedRow.style
+          updatedRow.style.setProperty('box-shadow', '0 1px 1px rgba(128, 147, 168, 0.075) inset, 0 0 8px rgba(128, 147, 168, 0.6)')
+          setTimeout(() => {
+            updatedRow.style = oldStyle
+          }, 2000)
+        }
       },
       clearChecked () {
         this.checkAll = false
         this.checkedReceipts = []
       },
-      loadReceipts () {
+      loadReceipts (highlightChange) {
         const self = this
-        receiptController.getReceipts().then((res) => {
+        receiptController.getReceipts(this.bookingYear).then((res) => {
           if (!res.err) {
             self.receipts = res.data ? res.data : []
             self.items = self.receipts
             self.totalRows = self.receipts.length
+            if (highlightChange) {
+              self.$nextTick(() => {
+                self.highlightChangedRow()
+              })
+            }
           } else {
             self.openErrorModal(res.err)
           }
@@ -254,8 +285,9 @@
       },
       openCreateReceiptModal () {
         this.hideTooltip('addReceiptBtn')
-        this.isPreview = false;
-        this.selectedItem = null;
+        this.isPreview = false
+        this.selectedItem = null
+        this.selectedItemIndex = null
         this.$root.$emit('bv::show::modal', 'create-receipt-modal')
       },
       toggleCheckAll () {
@@ -263,7 +295,7 @@
         this.checkedReceipts = this.checkAll ? [] : this.itemsShownInTable
       },
       rowDblClickHandler (record, index) {
-        this.openUpdateReceiptModal(record)
+        this.openUpdateReceiptModal(record, index)
       },
       isValid (receipt) {
         return receipt.isValid
@@ -275,7 +307,7 @@
       },
       deleteReceipt () {
         const self = this
-        receiptController.deleteReceipt(this.deletedReceipt._id).then((res) => {
+        receiptController.deleteReceipt(this.deletedReceipt._id, this.bookingYear).then((res) => {
           if (!res.err) {
             self.update()
           } else {
@@ -293,7 +325,7 @@
           checkedReceiptsIds.push(receipt._id)
         })
         const self = this
-        receiptController.deleteReceipts(checkedReceiptsIds).then((res) => {
+        receiptController.deleteReceipts(checkedReceiptsIds, this.bookingYear).then((res) => {
           if (!res.err) {
             self.update()
           } else {
@@ -301,10 +333,11 @@
           }
         })
       },
-      openUpdateReceiptModal (item) {
+      openUpdateReceiptModal (item, index) {
         this.hideTooltip('updateReceiptBtn')
         this.isPreview = true
         this.selectedItem = item
+        this.selectedItemIndex = index
         this.$root.$emit('bv::show::modal', 'create-receipt-modal')
       },
       openErrorModal(error) {
@@ -355,7 +388,7 @@
     },
     filters: {
       formatDate (date) {
-        const options = { year: 'numeric', month: 'long', day: 'numeric' }
+        const options = { month: 'long', day: 'numeric' }
         const language = i18n.usedLanguage
         return (new Date(date)).toLocaleDateString(language, options)
       },
@@ -371,12 +404,12 @@
           this.$root.$emit('bv::hide::tooltip', 'deleteSelectedBtn')
         }
       },
-      yearToFilter (newYearValue) {
-        if(newYearValue == '') {
+      monthToFilter (newMonthValue) {
+        if(newMonthValue == '') {
           this.items = this.receipts;
         } else {
           this.items = this.receipts.filter(value => {
-            if(new Date(value.date).getUTCFullYear() == newYearValue) {
+            if(new Date(value.date).getUTCMonth() == (this.monthOptions.indexOf(newMonthValue) - 1)) {
               return true;
             }
             return false;
@@ -406,15 +439,8 @@
     display: block;
     overflow: auto;
   }
-  #perPageSelect{
-    width: 60px;
-  }
-  #yearSelect{
-    width: 80px;
-    display: inline;
-  }
-  #filterInputFormGroup{
-    width: 200px;
+  #monthSelect{
+    width: 100px;
     display: inline;
   }
 </style>

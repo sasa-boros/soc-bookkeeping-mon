@@ -20,13 +20,35 @@ function findById (id) {
     })
 }
 
-function insert (doc) {
+function findByYear (year) {
     return new Promise((resolve, reject) => { 
-        db.incomeCodes.insert(doc, (err, newDoc) => {
+        db.incomeCodes.find({year: year}).sort({ 'partition': 1, 'position': 1 }).exec((err, docs) => {
+            if (err) {
+                reject(err)
+            }
+            resolve(docs)
+        })
+    })
+}
+
+function insert (incomeCode) {
+    return new Promise((resolve, reject) => { 
+        db.incomeCodes.insert(incomeCode, (err, newDoc) => {
             if (err) {
                 reject(err)
             }
             resolve(newDoc)
+        })
+    })
+}
+
+function updateById (id, incomeCode) {
+    return new Promise((resolve, reject) => { 
+        db.incomeCodes.update({ _id: id }, incomeCode, (err, numReplaced) => {
+            if (err) {
+                reject(err)
+            }
+            resolve(numReplaced)
         })
     })
 }
@@ -42,21 +64,11 @@ function removeById (id) {
     })
 }
 
-function updateById (id, doc) {
-    return new Promise((resolve, reject) => { 
-        db.incomeCodes.update({ _id: id }, doc, (err, numReplaced) => {
-            if (err) {
-                reject(err)
-            }
-            resolve(numReplaced)
-        })
-    })
-}
-
 module.exports = {
     findAll: findAll,
     findById, findById,
+    findByYear: findByYear,
     insert: insert,
-    removeById: removeById,
-    updateById: updateById
+    updateById: updateById,
+    removeById: removeById
 }

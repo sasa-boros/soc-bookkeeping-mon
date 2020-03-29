@@ -1,8 +1,8 @@
 const shareDao = require('../dao/shareDao')
 
-async function getShares () {
-  console.log(`Getting all shares`)
-  var shares = await shareDao.findAll()
+async function getShares (bookingYear) {
+  console.log(`Getting shares for year ${bookingYear}`)
+  var shares = await shareDao.findByYear(bookingYear)
   console.log(`Returning shares: \n${JSON.stringify(shares, null, 2)}`)
   return shares
 }
@@ -14,28 +14,28 @@ async function createShare (share) {
   console.log('Successfully created share')
 }
 
-async function deleteShare (shareId) {
-  console.log(`Deleting share with id ${shareId}`)
-  await shareDao.removeById(shareId)
-  console.log('Successfully deleted share')
-}
-
-async function deleteShares (sharesIds) {
-  console.log(`Deleting shares with ids ${sharesIds}`)
-  await shareDao.removeManyByIds(sharesIds)
-  console.log('Successfully deleted shares')
-}
-
 async function updateShare (share) {
   console.log(`Updating share: \n${JSON.stringify(share, null, 2)}`)
   await shareDao.updateById(share._id, share)
   console.log('Successfully updated share')
 }
 
+async function deleteShare (id) {
+  console.log(`Deleting share with id ${id}`)
+  await shareDao.removeById(id)
+  console.log('Successfully deleted share')
+}
+
+async function deleteShares (ids) {
+  console.log(`Deleting shares with ids ${ids}`)
+  await shareDao.removeByIds(ids)
+  console.log('Successfully deleted shares')
+}
+
 module.exports = {
   getShares: getShares,
   createShare: createShare,
+  updateShare: updateShare,
   deleteShare: deleteShare,
-  deleteShares: deleteShares,
-  updateShare: updateShare
+  deleteShares: deleteShares
 }

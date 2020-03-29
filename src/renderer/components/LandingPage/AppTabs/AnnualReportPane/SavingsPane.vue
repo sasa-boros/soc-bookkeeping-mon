@@ -1,25 +1,17 @@
 <template>
   <b-container fluid>
-    <br>
      <b-row>
       <b-col cols="6">
         <b-button-group class="float-left">
-          <b-btn id="addSavingButton" v-on:mouseleave="hideTooltip('addSavingButton')" v-b-tooltip.hover.top.window="{title: phrases.addSaving}" @click.stop="openCreateSavingModal" variant="light" class="btn-xs">
+          <b-btn v-on:focus="unfocusElementOnNonKeyboardEvent" id="addSavingButton" v-on:mouseleave="hideTooltip('addSavingButton')" v-b-tooltip.hover.top.window="{title: phrases.addSaving}" @click.stop="openCreateSavingModal" variant="light" class="btn-xs">
             <img src="~@/assets/add.png">               
           </b-btn>
         </b-button-group> 
         <b-button-group class="float-left">
-          <b-btn id="deleteSelectedBtn" v-on:mouseleave="hideTooltip('deleteSelectedBtn')" v-b-tooltip.hover.top.window="{title: phrases.deleteSelected}" @click.stop="openDeleteCheckedSavingsModal()" :disabled="noRowChecked" variant="light" class="btn-xs">
+          <b-btn v-on:focus="unfocusElementOnNonKeyboardEvent" id="deleteSelectedBtn" v-on:mouseleave="hideTooltip('deleteSelectedBtn')" v-b-tooltip.hover.top.window="{title: phrases.deleteSelected}" @click.stop="openDeleteCheckedSavingsModal()" :disabled="noRowChecked" variant="light" class="btn-xs">
             <img src="~@/assets/trash.png">               
           </b-btn>
         </b-button-group>
-      </b-col>
-      <b-col cols="6">
-        <b-form-group class="float-right">
-          <label :for="`yearSelect`">{{phrases.filterByYear}}: </label>
-          &nbsp;
-          <b-form-select v-model="yearToFilter" id="yearSelect" :options="yearOptions" size="sm" class="my-0"/>
-        </b-form-group>
       </b-col>
     </b-row>
 
@@ -32,7 +24,6 @@
               :fields="fields"
               :current-page="currentPage"
               :per-page="perPage"
-              :filter="filter"
               :sort-by.sync="sortBy"
               :sort-desc.sync="sortDesc"
               :sort-direction="sortDirection"
@@ -54,7 +45,7 @@
         </template>
         <template v-slot:cell(preview)="row">
           <b-button-group>
-            <b-button id="updateSavingBtn" v-on:mouseleave="hideTooltip('updateSavingBtn')" v-b-tooltip.hover.top.window="{title: phrases.seeDetails}" @click.stop="openUpdateSavingModal(row.item)" variant="link" class="btn-xs">
+            <b-button v-on:focus="unfocusElementOnNonKeyboardEvent" id="updateSavingBtn" v-on:mouseleave="hideTooltip('updateSavingBtn')" v-b-tooltip.hover.top.window="{title: phrases.seeDetails}" @click.stop="openUpdateSavingModal(row.item, row.index)" variant="link" class="btn-xs">
               <img src="~@/assets/see-more.png" class="rowImg">                                           
             </b-button>
           </b-button-group>                
@@ -70,10 +61,9 @@
         <template v-slot:cell(amount)="row">{{ row.item.amount | formatAmount }}</template>
         <template v-slot:cell(amountDeposited)="row">{{ row.item.amountDeposited | formatAmount }}</template>
         <template v-slot:cell(amountWithdrawn)="row">{{ row.item.amountWithdrawn | formatAmount }}</template>
-        <template v-slot:cell(year)="row">{{ row.item.year }}</template>
         <template v-slot:cell(delete)="row">
           <b-button-group>
-            <b-button id="deleteSavingBtn" v-on:mouseleave="hideTooltip('deleteSavingBtn')" v-b-tooltip.hover.top.window="{title: phrases.deleteSaving}" @click.stop="openDeleteSavingModal(row.item)" variant="link" class="btn-xs">
+            <b-button v-on:focus="unfocusElementOnNonKeyboardEvent" id="deleteSavingBtn" v-on:mouseleave="hideTooltip('deleteSavingBtn')" v-b-tooltip.hover.top.window="{title: phrases.deleteSaving}" @click.stop="openDeleteSavingModal(row.item)" variant="link" class="btn-xs">
               <img src="~@/assets/delete.png" class="rowImg">                                           
             </b-button>     
           </b-button-group>                
@@ -88,7 +78,7 @@
     </b-row>
 
     <b-modal no-close-on-backdrop hide-footer hide-header size="lg" id="create-saving-modal">
-      <saving-preview :saving='selectedItem' :savingPreview='isPreview' parentModal="create-saving-modal" v-on:updateSavingsTable="update"></saving-preview>
+      <saving-preview :saving='selectedItem' :savingPreview='isPreview' parentModal="create-saving-modal" v-on:updateSavingsTable="update(true)"></saving-preview>
     </b-modal>
 
     <b-modal no-close-on-backdrop id="delete-saving-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('deleteSavingModal')">
@@ -110,11 +100,11 @@
   import store from '@/store'
   import { mapState } from 'vuex'
   import SavingPreview from './SavingsPane/SavingPreview'
-  import MessageConfirmDialog from '../../MessageConfirmDialog'
+  import MessageConfirmDialog from '../../../MessageConfirmDialog'
 
-  const savingController = require('../../../controllers/savingController')
-  const i18n = require('../../../../translations/i18n')
-  const { asFormatedString, largeAmountNumberOptions } = require('../../../utils/utils')
+  const savingController = require('../../../../controllers/savingController')
+  const i18n = require('../../../../../translations/i18n')
+  const { asFormatedString, largeAmountNumberOptions } = require('../../../../utils/utils')
 
   export default {
     data () {
@@ -124,7 +114,6 @@
           deleteSaving: i18n.getTranslation('Delete saving'),
           deleteSelected: i18n.getTranslation('Delete selected'),
           seeDetails: i18n.getTranslation('See details'),
-          filterByYear: i18n.getTranslation('Filter by year'),
           select: i18n.getTranslation('Select'),
           selectAll: i18n.getTranslation('Select all'),
           cancel: i18n.getTranslation('Cancel'),
@@ -133,7 +122,6 @@
           areYouSureToDeleteSaving: i18n.getTranslation('Are you sure you want to delete saving?'),
           areYouSureToDeleteCheckedSavings: i18n.getTranslation('Are you sure you want to delete selected savings?'),
           noRecordsToShow: i18n.getTranslation('There are no savings to show'),
-          year: i18n.getTranslation('Year'),
           account: i18n.getTranslation('Account'),
           savingEntity: i18n.getTranslation('Saving entity'),
           amount: i18n.getTranslation('Amount on year start'),
@@ -142,16 +130,15 @@
         },
         savings: [],
         items: [],
-        yearToFilter: '',
         currentPage: 1,
         perPage: 10,
         totalRows: null,
-        filter: null,
         deletedSavings: null,
         checkedSavings: [],
         itemsShownInTable: [],
         checkAll: false,
         selectedItem: null,
+        selectedItemIndex: null,
         isPreview: false,
         errorText: "",
         sortBy: null,
@@ -161,25 +148,15 @@
       }
     },
     created () {
-      this.loadSavings()
+      const self = this
+      this.$watch('bookingYear', () => {
+        self.loadSavings()
+      }, {immediate: true})
     },
     computed: {
       ...mapState(
         {
-          yearOptions: function (state) {
-            var yearOptions = JSON.parse(JSON.stringify(state.CommonValues.bookedYears))
-            yearOptions.unshift('')
-            var yearToFilter = this.yearToFilter
-            if (yearToFilter != '') {
-              var yearFiltered = yearOptions.find(yo => {
-                return yo == yearToFilter
-              })
-              if (!yearFiltered) {
-                this.yearToFilter = ''
-              }
-            }
-            return yearOptions
-          }
+          bookingYear: state => state.CommonValues.bookingYear
         }
       ),
       noRowChecked () {
@@ -194,12 +171,16 @@
           { key: 'amount', label: this.phrases.amount, class: 'text-center', sortable: true, thStyle: {'outline': 'none', 'user-select': 'none'} },
           { key: 'amountDeposited', label: this.phrases.amountDeposited, class: 'text-center', sortable: true, thStyle: {'outline': 'none', 'user-select': 'none'} },
           { key: 'amountWithdrawn', label: this.phrases.amountWithdrawn, class: 'text-center', sortable: true, thStyle: {'outline': 'none', 'user-select': 'none'} },
-          { key: 'year', label: this.phrases.year, class: 'text-center', sortable: true, thStyle: {'outline': 'none', 'user-select': 'none'} },
           { key: 'delete', label: '', thStyle: {outline: 'none', width: '70px'} },
         ]
       }
     },
     methods: {
+      unfocusElementOnNonKeyboardEvent (e) {
+        if (!e.relatedTarget) {
+          e.target.blur()
+        }
+      },
       unsort (key, field, e) {
         e.stopPropagation()
         if (!field.sortable) {
@@ -220,23 +201,44 @@
       focusModalCloseButton (modalRef) {
         this.$refs[modalRef].$refs.closeButton.focus()
       },
-      update() {
-        this.loadSavings()
-        this.$emit('updateBookedYears')
-        this.yearToFilter = ''
+      update(highlightChange) {
+        this.loadSavings(highlightChange)
         this.clearChecked()
+        if (highlightChange) {
+          this.highlightChangedRow()
+        }
+      },
+      highlightChangedRow() {
+        var updatedRow;
+        if (this.selectedItem) {
+          updatedRow = document.querySelector('#savings-table tbody tr[aria-rowindex="' + ((this.currentPage - 1 ) * 10 + this.selectedItemIndex + 1) + '"]')
+        } else {
+          updatedRow = document.querySelector('#savings-table tbody tr[aria-rowindex="1"]')
+        }
+        if (updatedRow) {
+          const oldStyle = updatedRow.style
+          updatedRow.style.setProperty('box-shadow', '0 1px 1px rgba(128, 147, 168, 0.075) inset, 0 0 8px rgba(128, 147, 168, 0.6)')
+          setTimeout(() => {
+            updatedRow.style = oldStyle
+          }, 2000)
+        }
       },
       clearChecked () {
         this.checkAll = false
         this.checkedSavings = []
       },
-      loadSavings () {
+      loadSavings (highlightChange) {
         const self = this
-        savingController.getSavings().then((res) => {
+        savingController.getSavings(this.bookingYear).then((res) => {
           if (!res.err) {
             self.savings = res.data ? res.data : []
             self.items = self.savings
             self.totalRows = self.savings.length
+            if (highlightChange) {
+              self.$nextTick(() => {
+                self.highlightChangedRow()
+              })
+            }
           } else {
             self.openErrorModal(res.err)
           }
@@ -246,13 +248,14 @@
         this.hideTooltip('addSavingBtn')
         this.isPreview = false
         this.selectedItem = null
+        this.selectedItemIndex = null
         this.$root.$emit('bv::show::modal', 'create-saving-modal')
       },
       toggleCheckAll () {
         this.checkedSavings = this.checkAll ? [] : this.itemsShownInTable
       },
       rowDblClickHandler (record, index) {
-        this.openUpdateSavingModal(record)
+        this.openUpdateSavingModal(record, index)
       },
       openDeleteSavingModal(saving) {
         this.hideTooltip('deleteSavingBtn')
@@ -287,9 +290,10 @@
           }
         })
       },
-      openUpdateSavingModal (item) {
+      openUpdateSavingModal (item, index) {
         this.hideTooltip('updateSavingBtn')
         this.selectedItem = item
+        this.selectedItemIndex = index
         this.isPreview = true
         this.$root.$emit('bv::show::modal', 'create-saving-modal')
       },
@@ -320,21 +324,6 @@
           /* Close delete-selected button tooltip before it gets disabled and stuck */
           this.$root.$emit('bv::hide::tooltip', 'deleteSelectedBtn')
         }
-      },
-      yearToFilter (newYearValue) {
-        if(newYearValue == '') {
-          this.items = this.savings;
-        } else {
-          this.items = this.savings.filter(value => {
-            if(value.year == newYearValue) {
-              return true;
-            }
-            return false;
-          })
-        }
-        this.totalRows = this.items.length
-        this.currentPage = 1
-        this.checkedSavings = []
       }
     },
     components: { SavingPreview, MessageConfirmDialog }
@@ -342,10 +331,6 @@
 </script>
 
 <style scoped>
-  #yearSelect{
-    width: 80px;
-    display: inline;
-  }
   .tableDiv {
     display: block;
     overflow: auto;

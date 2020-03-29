@@ -8,7 +8,7 @@
   import LandingPage from '@/components/LandingPage'
 
   export default {
-    name: 'soc-bookkeeping-mon',
+    name: 'soc-bookkeeping',
     components: {
       LandingPage
     }

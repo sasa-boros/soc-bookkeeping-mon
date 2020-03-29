@@ -9,6 +9,31 @@
   margin-bottom: 0px;
 }
 
+.appTab {
+  display: block;
+  overflow: auto;
+}
+
+.appTab.focus-visible {
+  box-shadow: none !important;
+}
+
+.appTabsIcon {
+  width: 25px;
+}
+
+.navText {
+  font-size: 100%;
+}
+
+fieldset.form-group {
+  margin-bottom: 0px;
+}
+
+.card-header {
+  border-bottom: none;
+}
+
 .tooltip .tooltip-inner {
   font-size: 90%;
   line-height: 1;
@@ -79,9 +104,8 @@ h1 {
   background-color: rgb(153, 153, 153);
 }
 .btn-light:hover:enabled {
-  background-color:  rgb(208, 226, 247);
+  background-color:  #e7f3fc;
 }
-
 .nav-link {
   padding-right: 4px !important;
   padding-left: 4px !important;
@@ -89,6 +113,10 @@ h1 {
   padding-bottom:4px !important;
   color:#514A4A !important;
 }
+.nav-pills .nav-link.active, .nav-pills .show>.nav-link {
+  background-color: #e7f3fc;
+}
+
 td .btn-group {
   height:30px;
 }
@@ -99,10 +127,10 @@ td .custom-checkbox {
   height:30px;
 }
 .table tbody tr:hover {
-  background-color:  rgb(208, 226, 247) !important;
+  background-color:  #e7f3fc !important;
 }
 .page-link {
-  border-color:rgb(208, 226, 247) !important;
+  border-color:#e7f3fc !important;
   color:#514A4A !important;
 }
 
@@ -114,49 +142,66 @@ td .custom-checkbox {
 }
 
 .highlight {
-  background-color:  rgb(208, 226, 247) !important;
+  background-color:  #e7f3fc !important;
 }
 
 .page-link:hover {
-  background-color:  rgb(208, 226, 247) !important;
+  background-color:  #e7f3fc !important;
 }
 
 li.active .page-link {
-  background-color:  rgb(208, 226, 247) !important;
+  background-color:  #e7f3fc !important;
 }
-
 
 .btn-light:active:enabled {
-  background-color:  rgb(208, 226, 247);
+  background-color:  #e7f3fc;
 }
 .is-invalid {
-  outline: dotted 2px red !important;
+  outline: dotted 1px red !important;
   /* To keep selects from getting wider when invalid */
   padding-right: 0 !important;
   background-color: white;
   background-image: url('~@/assets/invalid-red.png') !important;
+  box-shadow: none !important;
+}
+
+input[type]:focus(.is-invalid) {
+  outline: dotted 1px red !important;
+  /* To keep selects from getting wider when invalid */
+  padding-right: 0 !important;
+  background-color: white;
+  background-image: url('~@/assets/invalid-red.png') !important;
+  box-shadow: none !important;
 }
 
 input[type]:focus:not(.is-invalid) {
-  border-color:  rgb(208, 226, 247) !important;
+  border-color:  #e7f3fc !important;
   box-shadow: 0 1px 1px rgba(128, 147, 168, 0.075) inset, 0 0 8px rgba(128, 147, 168, 0.6) !important;
   outline: 0 none !important;
 }
 
-*:focus:not(.focus-visible) {
-  border-color: none !important;
-  outline: none !important;
-  box-shadow: none !important;
-}
 .js-focus-visible :focus:not([data-focus-visible-added]) {
   border-color: none !important;
   outline: none !important;
   box-shadow: none !important;
 }
 
+.custom-control-input.focus-visible~.custom-control-label::before
+{
+  border-color:  #e7f3fc !important;
+  box-shadow: 0 1px 1px rgba(128, 147, 168, 0.075) inset, 0 0 8px rgba(128, 147, 168, 0.6) !important;
+  outline: 0 none !important;
+}
+
+.focus-visible {
+  border-color:  #e7f3fc !important;
+  box-shadow: 0 1px 1px rgba(128, 147, 168, 0.075) inset, 0 0 8px rgba(128, 147, 168, 0.6) !important;
+  outline: 0 none !important;
+}
+
 .custom-control-input~.custom-control-label::before
 {
-  border-color:  rgb(208, 226, 247) !important;
+  border-color:  #e7f3fc !important;
   outline: none !important;
   box-shadow: none !important;
 }
@@ -167,21 +212,9 @@ input[type]:focus:not(.is-invalid) {
 
 .custom-select
 {
-  border-color:  rgb(208, 226, 247) !important;
+  border-color:  #e7f3fc !important;
 }
 
-.custom-control-input.focus-visible~.custom-control-label::before
-{
-  border-color:  rgb(208, 226, 247) !important;
-  box-shadow: 0 1px 1px rgba(128, 147, 168, 0.075) inset, 0 0 8px rgba(128, 147, 168, 0.6) !important;
-  outline: 0 none !important;
-}
-
-.focus-visible {
-  border-color:  rgb(208, 226, 247) !important;
-  box-shadow: 0 1px 1px rgba(128, 147, 168, 0.075) inset, 0 0 8px rgba(128, 147, 168, 0.6) !important;
-  outline: 0 none !important;
-}
 .dropdown-menu {
   padding:none !important;
   padding-top:0px !important;
@@ -196,7 +229,7 @@ input[type]:focus:not(.is-invalid) {
 }
 
 .dropdown-item:hover {
-  background-color:  rgb(208, 226, 247) !important;
+  background-color:  #e7f3fc !important;
 }
 
 .dropdown-toggle::after {

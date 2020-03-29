@@ -1,11 +1,11 @@
 <template>
-  <b-container fluid>
+  <b-container fluid class="no-margins-and-pads">
     <b-button-group class="float-left">
-      <b-button id="createOutcomeCodeBtn" v-on:mouseleave="hideTooltip('createOutcomeCodeBtn')" v-b-tooltip.hover.top.window="{title: phrases.createOutcomeCode}" v-on:click="openCreateOutcomeCodeModal()" variant="light" class="btn-xs">
+      <b-button v-on:focus="unfocusElementOnNonKeyboardEvent" id="createOutcomeCodeBtn" v-on:mouseleave="hideTooltip('createOutcomeCodeBtn')" v-b-tooltip.hover.top.window="{title: phrases.createOutcomeCode}" v-on:click="openCreateOutcomeCodeModal()" variant="light" class="btn-xs">
         <img src="~@/assets/add.png">
       </b-button>
     </b-button-group>
-    <b-table show-empty fixed
+    <b-table show-empty fixed id="outcome-codes-table"
               stacked="md"
               bordered
               class="mt-3"
@@ -21,7 +21,7 @@
               >
         <template v-slot:cell(preview)="row">
           <b-button-group>
-            <b-button id="updateOutcomeCodeBtn" v-on:mouseleave="hideTooltip('updateOutcomeCodeBtn')" v-b-tooltip.hover.top.window="{title: phrases.seeDetails}" v-on:click="openCreateOutcomeCodeModal(row.item)" variant="link" class="btn-xs">
+            <b-button v-on:focus="unfocusElementOnNonKeyboardEvent" id="updateOutcomeCodeBtn" v-on:mouseleave="hideTooltip('updateOutcomeCodeBtn')" v-b-tooltip.hover.top.window="{title: phrases.seeDetails}" v-on:click="openCreateOutcomeCodeModal(row.item)" variant="link" class="btn-xs">
               <img src="~@/assets/see-more.png" class="rowImg">                                           
             </b-button>
           </b-button-group>
@@ -37,7 +37,7 @@
         </template>
         <template v-slot:cell(remove)="row">
           <b-button-group v-show="!row.item.tax">
-            <b-button id="deleteOutcomeCodeBtn" v-on:mouseleave="hideTooltip('deleteOutcomeCodeBtn')" v-b-tooltip.hover.top.window="{title: phrases.deleteOutcomeCode}" v-on:click="openDeleteOutcomeCodeModal(row.item)" variant="link" class="btn-xs">
+            <b-button v-on:focus="unfocusElementOnNonKeyboardEvent" id="deleteOutcomeCodeBtn" v-on:mouseleave="hideTooltip('deleteOutcomeCodeBtn')" v-b-tooltip.hover.top.window="{title: phrases.deleteOutcomeCode}" v-on:click="openDeleteOutcomeCodeModal(row.item)" variant="link" class="btn-xs">
                 <img src="~@/assets/delete.png" class="rowImg">
             </b-button>
           </b-button-group>
@@ -59,14 +59,16 @@
 </template>
 
 <script>
+  import store from '@/store'
+  import { mapState } from 'vuex'
   import OutcomeCodePreview from './OutcomeCodesTable/OutcomeCodePreview';
-  import MessageConfirmDialog from '../../../MessageConfirmDialog'
-  import { EventBus } from '../../../../eventbus/event-bus.js';
+  import MessageConfirmDialog from '../../../../MessageConfirmDialog'
+  import { EventBus } from '../../../../../eventbus/event-bus.js';
 
   const { dialog } = require('electron').remote
-  const outcomeCodeController = require('../../../../controllers/outcomeCodeController')
-  const i18n = require('../../../../../translations/i18n')
-  const { asRoman } = require('../../../../utils/utils')
+  const outcomeCodeController = require('../../../../../controllers/outcomeCodeController')
+  const i18n = require('../../../../../../translations/i18n')
+  const { asRoman } = require('../../../../../utils/utils')
 
   export default {
     data () {
@@ -118,17 +120,37 @@
       }
     },
     created () {
-      this.loadOutcomeCodes()
+      const self = this
+      this.$watch('bookingYear', () => {
+        self.loadOutcomeCodes()
+      }, {immediate: true})
+    },
+    computed: {
+      ...mapState(
+        {
+          bookingYear: state => state.CommonValues.bookingYear
+        }
+      ),
     },
     methods: {
+      unfocusElementOnNonKeyboardEvent (e) {
+        if (!e.relatedTarget) {
+          e.target.blur()
+        }
+      },
       focusModalCloseButton (modalRef) {
         this.$refs[modalRef].$refs.closeButton.focus()
       },
-      loadOutcomeCodes () {
+      loadOutcomeCodes (el) {
         const self = this
-        outcomeCodeController.getOutcomeCodes().then((res) => {
+        outcomeCodeController.getOutcomeCodes(this.bookingYear).then((res) => {
           if (!res.err) {
             self.outcomeCodes = res.data ? res.data : []
+            if (el)  {
+              self.$nextTick(() => {
+                self.highlightChangedRow(el)
+              })
+            }
           } else {
             self.openErrorModal(res.err)
           }
@@ -163,7 +185,6 @@
         outcomeCodeController.deleteOutcomeCode(this.deletedOutcomeCode._id).then((res) => {
           if (!res.err) {
             self.update()
-            //this.$emit('updateDefaultReceipt')
           } else {
             self.openErrorModal(res.err)
           }
@@ -180,11 +201,36 @@
         this.errorText = error
         this.$root.$emit('bv::show::modal', 'outcome-code-table-error-modal')
       },
-      update () {
+      updateFromCodesPane () {
         this.loadOutcomeCodes()
-        EventBus.$emit('updateAnnualReportPane')
+        EventBus.$emit('updateReceiptTable')
+      },
+      update (el) {
+        this.loadOutcomeCodes(el)
+        EventBus.$emit('updateGeneralPane')
         EventBus.$emit('updateReceiptTable');
-      }
+      },
+      highlightChangedRow(el) {
+        var updatedRow;
+        if (el && this.outcomeCodes) {
+          const updatedRows = document.querySelectorAll('#outcome-codes-table tbody tr')
+          for (let i=0; i < this.outcomeCodes.length; i++) {
+            if (this.outcomeCodes[i].partition == el.partition && this.outcomeCodes[i].position == el.position) {
+              if (i < updatedRows.length) {
+                updatedRow = updatedRows[i]
+                break;
+              }
+            }
+          }
+        } 
+        if (updatedRow) {
+          const oldStyle = updatedRow.style
+          updatedRow.style.setProperty('box-shadow', '0 1px 1px rgba(128, 147, 168, 0.075) inset, 0 0 8px rgba(128, 147, 168, 0.6)')
+          setTimeout(() => {
+            updatedRow.style = oldStyle
+          }, 2000)
+        }
+      },
     },
     filters: {
       formatPartition (partition) {

@@ -1,30 +1,16 @@
 const state = {
-  defaultPaymentSlip: {},
-  defaultReceipt: {},
-  bookedYears: []
+  bookingYear: new Date().getFullYear()
 }
 
 const mutations = {
-  SET_DEFAULT_PAYMENT_SLIP (state, paymentSlip) {
-    state.defaultPaymentSlip = paymentSlip ? paymentSlip : {};
-  },
-  SET_DEFAULT_RECEIPT (state, receipt) {
-    state.defaultReceipt = receipt ? receipt : {};
-  },
-  SET_BOOKED_YEARS (state, bookedYears) {
-    state.bookedYears = bookedYears;
+  SET_BOOKING_YEAR (state, bookingYear) {
+    state.bookingYear = bookingYear;
   }
 }
 
 const actions = {
-  SET_DEFAULT_PAYMENT_SLIP ({ commit }, paymentSlip) {
-    commit('SET_DEFAULT_PAYMENT_SLIP', paymentSlip);
-  },
-  SET_DEFAULT_RECEIPT ({ commit }, receipt) {
-    commit('SET_DEFAULT_RECEIPT', receipt);
-  },
-  SET_BOOKED_YEARS ({ commit }, bookedYears) {
-    commit('SET_BOOKED_YEARS', bookedYears);
+  SET_BOOKING_YEAR ({ commit }, bookingYear) {
+    commit('SET_BOOKING_YEAR', bookingYear);
   }
 }
 

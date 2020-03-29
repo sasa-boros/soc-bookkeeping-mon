@@ -5,9 +5,9 @@ const path = require('path')
 
 const { PDFDocument } = require('pdf-lib')
 
-async function arePaymentSlipsValid () {
-  console.log('Checking if all payment slips are valid')
-  const paymentSlips = await paymentSlipDao.findAll()
+async function checkPaymentSlipsValidity (bookingYear) {
+  console.log(`Checking if payment slips for year ${bookingYear} are valid`)
+  const paymentSlips = await paymentSlipDao.findByYear(bookingYear)
   var result = true
   for (let i=0; i < paymentSlips.length; i++) {
     if (!paymentSlips[i].isValid) {
@@ -19,9 +19,9 @@ async function arePaymentSlipsValid () {
   return result
 }
 
-async function getPaymentSlips () {
-  console.log(`Getting all payment slips`)
-  var paymentSlips = await paymentSlipDao.findAll()
+async function getPaymentSlips (bookingYear) {
+  console.log(`Getting payment slips for year ${bookingYear}`)
+  var paymentSlips = await paymentSlipDao.findByYear(bookingYear)
   console.log(`Returning payment slips: \n${JSON.stringify(paymentSlips, null, 2)}`)
   return paymentSlips
 }
@@ -32,22 +32,8 @@ async function createPaymentSlip (paymentSlip) {
   console.log(`Creating payment slip: \n${JSON.stringify(paymentSlip, null, 2)}`)
   paymentSlip.isValid = true
   await paymentSlipDao.insert(paymentSlip)
-  await assignAnnualReportValues()
+  await assignAnnualReportValues(paymentSlip.date.getFullYear())
   console.log('Successfully created payment slip')
-}
-
-async function deletePaymentSlip (paymentSlipId) {
-  console.log(`Deleting payment slip with id ${paymentSlipId}`)
-  await paymentSlipDao.removeById(paymentSlipId)
-  await assignAnnualReportValues()
-  console.log('Successfully deleted payment slip')
-}
-
-async function deletePaymentSlips (paymentSlipsIds) {
-  console.log(`Deleting payment slips with ids ${paymentSlipsIds}`)
-  await paymentSlipDao.removeManyByIds(paymentSlipsIds)
-  await assignAnnualReportValues()
-  console.log('Successfully deleted payment slips')
 }
 
 async function updatePaymentSlip (paymentSlip) {
@@ -55,27 +41,30 @@ async function updatePaymentSlip (paymentSlip) {
   paymentSlip.isValid = true
   paymentSlip.date = new Date(paymentSlip.date)
   await paymentSlipDao.updateById(paymentSlip._id, paymentSlip)
-  await assignAnnualReportValues()
+  await assignAnnualReportValues(paymentSlip.date.getFullYear())
   console.log('Successfully updated payment slip')
 }
 
-async function assignAnnualReportValues () {
-  let paymentSlips = await paymentSlipDao.findAllSortByDateAsc()
-  var perYearOrdinal = {}
+async function deletePaymentSlip (id, bookingYear) {
+  console.log(`Deleting payment slip with id ${id}`)
+  await paymentSlipDao.removeById(id)
+  await assignAnnualReportValues(bookingYear)
+  console.log('Successfully deleted payment slip')
+}
+
+async function deletePaymentSlips (ids, bookingYear) {
+  console.log(`Deleting payment slips with ids ${ids}`)
+  await paymentSlipDao.removeByIds(ids)
+  await assignAnnualReportValues(bookingYear)
+  console.log('Successfully deleted payment slips')
+}
+
+async function assignAnnualReportValues (bookingYear) {
+  let paymentSlips = await paymentSlipDao.findByYearSortByDateAsc(bookingYear)
   for (let i = 0; i < paymentSlips.length; i++) {
     const paymentSlip = paymentSlips[i]
-    const year = paymentSlip.date.getYear()
-    const month = paymentSlip.date.getMonth()
-    if(perYearOrdinal[year]) {
-      perYearOrdinal[year] += 1
-    } else {
-      perYearOrdinal[year] = 1
-    }
-    if (paymentSlip.ordinal == perYearOrdinal[year] && paymentSlip.annualReportPage ==  (month + 1)) {
-      continue
-    }
-    paymentSlip.ordinal = perYearOrdinal[year]
-    paymentSlip.annualReportPage = month + 1
+    paymentSlip.ordinal = i + 1
+    paymentSlip.annualReportPage = paymentSlip.date.getMonth() + 1
     await paymentSlipDao.updateById(paymentSlip._id, paymentSlip, true)
   }
 }
@@ -110,7 +99,7 @@ function pdfSettings () {
 }
 
 module.exports = {
-  arePaymentSlipsValid: arePaymentSlipsValid,
+  checkPaymentSlipsValidity: checkPaymentSlipsValidity,
   getPaymentSlips: getPaymentSlips,
   createPaymentSlip: createPaymentSlip,
   deletePaymentSlip: deletePaymentSlip,

@@ -5,9 +5,9 @@ const path = require('path')
 
 const { PDFDocument } = require('pdf-lib')
 
-async function areReceiptsValid () {
-  console.log('Checking if all receipts are valid')
-  const receipts = await receiptDao.findAll()
+async function checkReceiptsValidity (bookingYear) {
+  console.log(`Checking if receipts for year ${bookingYear} are valid`)
+  const receipts = await receiptDao.findByYear(bookingYear)
   var result = true
   for (let i=0; i < receipts.length; i++) {
     if (!receipts[i].isValid) {
@@ -19,9 +19,9 @@ async function areReceiptsValid () {
   return result
 }
 
-async function getReceipts () {
-  console.log(`Getting all receipts`)
-  var receipts = await receiptDao.findAll()
+async function getReceipts (bookingYear) {
+  console.log(`Getting receipts for year ${bookingYear}`)
+  var receipts = await receiptDao.findByYear(bookingYear)
   console.log(`Returning receipts: \n${JSON.stringify(receipts, null, 2)}`)
   return receipts
 }
@@ -32,22 +32,8 @@ async function createReceipt (receipt) {
   console.log(`Creating receipt: \n${JSON.stringify(receipt, null, 2)}`)
   receipt.isValid = true
   await receiptDao.insert(receipt)
-  await assignAnnualReportValues()
+  await assignAnnualReportValues(receipt.date.getFullYear())
   console.log('Successfully created receipt')
-}
-
-async function deleteReceipt (receiptId) {
-  console.log(`Deleting receipt with id ${receiptId}`)
-  await receiptDao.removeById(receiptId)
-  await assignAnnualReportValues()
-  console.log('Successfully deleted receipt')
-}
-
-async function deleteReceipts (receiptsIds) {
-  console.log(`Deleting receipts with ids ${receiptsIds}`)
-  await receiptDao.removeManyByIds(receiptsIds)
-  await assignAnnualReportValues()
-  console.log('Successfully deleted receipts')
 }
 
 async function updateReceipt (receipt) {
@@ -55,26 +41,30 @@ async function updateReceipt (receipt) {
   receipt.isValid = true
   receipt.date = new Date(receipt.date)
   await receiptDao.updateById(receipt._id, receipt)
-  await assignAnnualReportValues()
+  await assignAnnualReportValues(receipt.date.getFullYear())
   console.log('Successfully updated receipt')
 }
 
-async function assignAnnualReportValues () {
-  let receipts = await receiptDao.findAllSortByDateAsc()
-  var perYearOrdinal = {}
+async function deleteReceipt (id, bookingYear) {
+  console.log(`Deleting receipt with id ${id}`)
+  await receiptDao.removeById(id)
+  await assignAnnualReportValues(bookingYear)
+  console.log('Successfully deleted receipt')
+}
+
+async function deleteReceipts (ids, bookingYear) {
+  console.log(`Deleting receipts with ids ${ids}`)
+  await receiptDao.removeByIds(ids)
+  await assignAnnualReportValues(bookingYear)
+  console.log('Successfully deleted receipts')
+}
+
+async function assignAnnualReportValues (bookingYear) {
+  let receipts = await receiptDao.findByYearSortByDateAsc(bookingYear)
   for (let i = 0; i < receipts.length; i++) {
     const receipt = receipts[i]
-    const year = receipt.date.getYear()
     const month = receipt.date.getMonth()
-    if(perYearOrdinal[year]) {
-      perYearOrdinal[year] += 1
-    } else {
-      perYearOrdinal[year] = 1
-    }
-    if (receipt.ordinal == perYearOrdinal[year] && receipt.annualReportPage ==  (month + 1)) {
-      continue
-    }
-    receipt.ordinal = perYearOrdinal[year]
+    receipt.ordinal = i + 1
     receipt.annualReportPage = month + 1
     await receiptDao.updateById(receipt._id, receipt, true)
   }
@@ -110,7 +100,7 @@ function pdfSettings () {
 }
 
 module.exports = {
-  areReceiptsValid: areReceiptsValid,
+  checkReceiptsValidity: checkReceiptsValidity,
   getReceipts: getReceipts,
   createReceipt: createReceipt,
   deleteReceipt: deleteReceipt,

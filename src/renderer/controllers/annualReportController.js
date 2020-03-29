@@ -1,18 +1,27 @@
 const { ipcRenderer } = require('electron')
 
-function getAnnualReport (year) {
+function getAnnualReport (bookingYear) {
   return new Promise(function (resolve) {
-    ipcRenderer.send('get-annual-report', year)
+    ipcRenderer.send('get-annual-report', bookingYear)
     ipcRenderer.once('get-annual-report-reply', (event, res) => {
       resolve(res)
     })
   })
 }
 
-function getAnnualReportData (year) {
+function getAnnualReportData (bookingYear) {
   return new Promise(function (resolve) {
-    ipcRenderer.send('get-annual-report-data', year)
+    ipcRenderer.send('get-annual-report-data', bookingYear)
     ipcRenderer.once('get-annual-report-data-reply', (event, res) => {
+      resolve(res)
+    })
+  })
+}
+
+function createAnnualReportData (annualReportData) {
+  return new Promise(function (resolve) {
+    ipcRenderer.send('create-annual-report-data', annualReportData)
+    ipcRenderer.once('create-annual-report-data-reply', (event, res) => {
       resolve(res)
     })
   })
@@ -27,28 +36,19 @@ function getAnnualReportPages (annualReport) {
   })
 }
 
-function getAnnualReportCommonData () {
+function getAnnualReportCommon () {
   return new Promise(function (resolve) {
-    ipcRenderer.send('get-annual-report-common-data')
-    ipcRenderer.once('get-annual-report-common-data-reply', (event, res) => {
+    ipcRenderer.send('get-annual-report-common')
+    ipcRenderer.once('get-annual-report-common-reply', (event, res) => {
       resolve(res)
     })
   })
 }
 
-function createAnnualReportCommonData (common) {
+function createAnnualReportCommon (common) {
   return new Promise(function (resolve) {
-    ipcRenderer.send('create-annual-report-common-data', common)
-    ipcRenderer.once('create-annual-report-common-data-reply', (event, res) => {
-      resolve(res)
-    })
-  })
-}
-
-function createAnnualReportData (annualReportData) {
-  return new Promise(function (resolve) {
-    ipcRenderer.send('create-annual-report-data', annualReportData)
-    ipcRenderer.once('create-annual-report-data-reply', (event, res) => {
+    ipcRenderer.send('create-annual-report-common', common)
+    ipcRenderer.once('create-annual-report-common-reply', (event, res) => {
       resolve(res)
     })
   })
@@ -65,9 +65,9 @@ function createAnnualReportPdf () {
 
 module.exports = {
   getAnnualReport: getAnnualReport,
-  getAnnualReportCommonData: getAnnualReportCommonData,
+  getAnnualReportCommon: getAnnualReportCommon,
+  createAnnualReportCommon: createAnnualReportCommon,
   getAnnualReportData: getAnnualReportData,
-  createAnnualReportCommonData: createAnnualReportCommonData,
   createAnnualReportData: createAnnualReportData,
   getAnnualReportPages: getAnnualReportPages,
   createAnnualReportPdf: createAnnualReportPdf

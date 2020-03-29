@@ -1,7 +1,7 @@
 // Using chrome cache to speed up app
 require('v8-compile-cache')
+
 const settingsService = require('./service/settingsService')
-const outcomeCodeService = require('./service/outcomeCodeService')
 
 const { app, BrowserWindow } = require('electron')
 const contextMenu = require('electron-context-menu');
@@ -23,30 +23,12 @@ require('../renderer/store')
 // Loading ipc main router
 require('./ipcRouter')
 
-createDefaults()
-
-async function createDefaults() {
-  // creating default ct 4% outcome code
-  const outcomeCodes = await outcomeCodeService.getOutcomeCodes()
-  if (outcomeCodes) {
-    const taxOutcomeCode = outcomeCodes.find(el => el.tax)
-    if (!taxOutcomeCode) {
-      outcomeCodeService.createOutcomeCode({partition: 3, position: 1, description: 'ЦТ 4%', tax: true})
-    }
-  } else {
-    outcomeCodeService.createOutcomeCode({partition: 3, position: 1, description: 'ЦТ 4%', tax: true})
-  }
-}
-
 let mainWindow
 const winURL = process.env.NODE_ENV === 'development'
   ? `http://localhost:9080`
   : `file://${__dirname}/index.html`
 
 async function createWindow () {
-  /**
-   * Initial window options
-   */
   const settings = await settingsService.getSettings()
   mainWindow = new BrowserWindow({
     show: false,
@@ -79,7 +61,9 @@ contextMenu({
 		copy: 'Копирај',
     paste: 'Налепи'
   },
-  shouldShowMenu: (event, params) => params.mediaType !== 'image'
+  shouldShowMenu: (event, params) => {
+    return params.mediaType !== 'image' && (!params.linkURL || params.linkURL == '')
+  }
 });
 
 

@@ -1,8 +1,8 @@
 const { ipcRenderer } = require('electron')
 
-function getSavings () {
+function getSavings (bookingYear) {
   return new Promise(function (resolve) {
-    ipcRenderer.send('get-savings')
+    ipcRenderer.send('get-savings', bookingYear)
     ipcRenderer.once('get-savings-reply', (event, res) => {
       resolve(res)
     })

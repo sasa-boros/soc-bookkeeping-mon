@@ -9,9 +9,20 @@ function findAll () {
     })
 }
 
-function findAllSortByDateAsc () {
+function findByYear (year) {
     return new Promise((resolve, reject) => { 
-        db.receipts.find({}).sort({ 'date': 1, 'createdAt': 1 }).exec((err, docs) => {
+        db.receipts.find({year: year}).sort({ 'createdAt': -1 }).exec( (err, docs) => {
+            if (err) {
+                reject(err)
+            }
+            resolve(docs)
+        })
+    })
+}
+
+function findByYearSortByDateAsc (year) {
+    return new Promise((resolve, reject) => { 
+        db.receipts.find({year: year}).sort({ 'date': 1, 'createdAt': 1 }).exec((err, docs) => {
             if (err) {
                 reject(err)
             }
@@ -31,15 +42,29 @@ function findBetweenDatesSortByOrdinalAsc (startDate, endDate) {
     })
 }
 
-function insert (doc) {
-    doc.createdAt = Date.now()
-    doc.updatedAt = Date.now()
+function insert (receipt) {
+    receipt.createdAt = Date.now()
+    receipt.updatedAt = Date.now()
     return new Promise((resolve, reject) => { 
-        db.receipts.insert(doc, (err, newDoc) => {
+        db.receipts.insert(receipt, (err, newDoc) => {
             if (err) {
                 reject(err)
             }
             resolve(newDoc)
+        })
+    })
+}
+
+function updateById (id, receipt, notTimestamped) {
+    if (!notTimestamped) {
+        receipt.updatedAt = Date.now()
+    }
+    return new Promise((resolve, reject) => { 
+        db.receipts.update({ _id: id }, receipt, (err, numReplaced) => {
+            if (err) {
+                reject(err)
+            }
+            resolve(numReplaced)
         })
     })
 }
@@ -55,7 +80,7 @@ function removeById (id) {
     })
 }
 
-function removeManyByIds (ids) {
+function removeByIds (ids) {
     return new Promise((resolve, reject) => { 
         db.receipts.remove({ _id: { $in : ids }}, {multi: true}, (err, numRemoved) => {
             if (err) {
@@ -66,26 +91,13 @@ function removeManyByIds (ids) {
     })
 }
 
-function updateById (id, doc, notTimestamped) {
-    if (!notTimestamped) {
-        doc.updatedAt = Date.now()
-    }
-    return new Promise((resolve, reject) => { 
-        db.receipts.update({ _id: id }, doc, (err, numReplaced) => {
-            if (err) {
-                reject(err)
-            }
-            resolve(numReplaced)
-        })
-    })
-}
-
 module.exports = {
     findAll: findAll,
-    findAllSortByDateAsc: findAllSortByDateAsc,
+    findByYear: findByYear,
+    findByYearSortByDateAsc: findByYearSortByDateAsc,
     findBetweenDatesSortByOrdinalAsc: findBetweenDatesSortByOrdinalAsc,
     insert: insert,
+    updateById: updateById,
     removeById: removeById,
-    removeManyByIds: removeManyByIds,
-    updateById: updateById
+    removeByIds: removeByIds
 }

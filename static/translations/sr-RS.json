@@ -1,5 +1,9 @@
 {
     "Annual report": "Дневник благајне",
+    "About": "Информације",
+    "Settings": "Поставке",
+    "Codes":  "Партије и позиције",
+    "General":  "Опште",
     "Payment slips": "Уплатнице",
     "Receipts": "Признанице",
     "Shares": "Хартије од вредности",
@@ -7,8 +11,10 @@
     "Inventory": "Инвентар",
     "Debts": "Дуговања",
     "Income and outcome codes": "Партије и позиције",
-    "Settings": "Поставке",
-    "Information": "О апликацији",
+
+    "Import partitions and positions": "Увези партије и позиције",
+    "Are you sure to import partitions and positions?": "Да ли сте сигурни да желите да увезете партије и позиције из претходне године?",
+    "Import partitions and positions consequences": "Увозом партија и позиција из претходне године прегазићете постојеће партије и позиције.",
 
     "Delete selected": "Обриши означено",
     "See details": "Види детаље / измени",
@@ -58,8 +64,9 @@
     "There are no payment slips to show": "Нема уплатница за приказ", 
     "Default values for payment slips": "Подразумеване вредности за уплатнице",
     "Adapt payment slips": "Подеси уплатнице",
+    "Ordinal num": "Редни број",
     
-    "Filter by year": "Филтрирај према години",
+    "Filter by month": "Филтрирај према месецу",
     
     "Add receipt": "Додај признаницу",
     "Delete receipt": "Обриши признаницу",
@@ -73,7 +80,6 @@
     "Position": "Позиција",
     "Description": "Опис",
     "Adapt receipts": "Подеси признанице",
-    "Ordinal num" : "Редни број",
     
     "Add share": "Додај хартију од вредности",
     "Delete share": "Обриши хартију од вредности",
@@ -135,8 +141,8 @@
     "Previous page": "Претходна страница",
     "Next page": "Наредна страница",
     "Invalid payment slips or receipts found": "Постоје невалидне уплатнице или признанице књижене за изабрану годину. Исправите их како бисте приказали дневник благајне.",
-    "Invalid payment slip": "Уплатница није валидна услед брисања партије и позиције",
-    "Invalid receipt": "Признаница није валидна услед брисања партије и позиције",
+    "Invalid payment slip": "Уплатница је невалидна услед брисања партије и позиције",
+    "Invalid receipt": "Признаница је невалидна услед брисања партије и позиције",
     "Invalid payment slips exist": "Постоје невалидне уплатнице",
     "Invalid receipts exist": "Постоје невалидне признанице",
     "Maximum number of income codes reached (15).": "Досегли сте максималан број партија и позиција примања (15).",
@@ -153,9 +159,9 @@
     "Updated at": "Ажурирано",
 
     "for year" : "за годину",
-    "page": "страница",
     "total-report": "завршни-рачун",
     "annual-report": "дневник-благајне",
+    "page": "страница",
     "payment-slip": "уплатница",
     "receipt": "признаница",
 

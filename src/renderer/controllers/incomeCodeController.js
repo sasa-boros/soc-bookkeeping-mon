@@ -1,8 +1,8 @@
 const { ipcRenderer } = require('electron')
 
-function getIncomeCodes () {
+function getIncomeCodes (bookingYear) {
   return new Promise(function (resolve) {
-    ipcRenderer.send('get-income-codes')
+    ipcRenderer.send('get-income-codes', bookingYear)
     ipcRenderer.once('get-income-codes-reply', (event, res) => {
       resolve(res)
     })
@@ -36,9 +36,19 @@ function updateIncomeCode (incomeCode) {
   })
 }
 
+function importFromPreviousYear (bookingYear) {
+  return new Promise(function (resolve) {
+    ipcRenderer.send('import-income-codes', bookingYear)
+    ipcRenderer.once('import-income-codes-reply', (event, res) => {
+      resolve(res)
+    })
+  })
+}
+
 module.exports = {
   getIncomeCodes: getIncomeCodes,
   createIncomeCode: createIncomeCode,
   updateIncomeCode: updateIncomeCode,
-  deleteIncomeCode: deleteIncomeCode
+  deleteIncomeCode: deleteIncomeCode,
+  importFromPreviousYear: importFromPreviousYear
 }

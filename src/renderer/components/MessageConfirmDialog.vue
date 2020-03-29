@@ -1,24 +1,21 @@
 <template>
   <b-container fluid>
     <b-row>
-      <b-col>
+      <b-col cols=11>
         <img v-show="type=='warning'" src="~@/assets/warning.png">
         <img v-show="type=='error'" src="~@/assets/error.png">
       </b-col>
       <b-col>
-        <b-button ref="closeButton" @click.stop="closeDialog()" variant="link" class="btn-xs float-right">
+        <b-button id="closeButton" ref="closeButton" @click.stop="closeDialog()" variant="link" class="btn-xs float-right">
           <img src="~@/assets/close.png">
         </b-button>
       </b-col>
     </b-row>
     <b-row v-show="text">
       <b-col>
-        <div> 
-          {{text}} 
-        </div>
+        <pre class="mainText">{{text}}</pre>
       </b-col>
     </b-row>
-    <br>
     <b-row v-show="subText">
       <b-col>
         <div class="subText"> 
@@ -73,6 +70,7 @@ export default {
   methods: {
     closeDialog () {
       this.$root.$emit('bv::hide::modal', this.parentModal)
+      this.$emit('closed')
     },
     confirm () {
       this.$emit('confirmed')
@@ -83,8 +81,14 @@ export default {
 </script>
 
 <style scoped>
+.mainText {
+  font-family:'Times New Roman'; 
+  word-wrap: break-word; 
+  white-space: pre-wrap;
+  font-size:100%;
+}
 .subText {
+  font-size: 95%;
   color: #888585;
-  font-size:10.0pt;
 }
 </style>

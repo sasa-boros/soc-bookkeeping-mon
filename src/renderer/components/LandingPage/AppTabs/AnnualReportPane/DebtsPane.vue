@@ -1,25 +1,17 @@
 <template>
   <b-container fluid>
-    <br>
      <b-row>
       <b-col cols="6">
         <b-button-group class="float-left">
-          <b-btn id="addDebtButton" v-on:mouseleave="hideTooltip('addDebtButton')" v-b-tooltip.hover.top.window="{title: phrases.addDebt}" @click.stop="openCreateDebtModal" variant="light" class="btn-xs">
+          <b-btn v-on:focus="unfocusElementOnNonKeyboardEvent" id="addDebtButton" v-on:mouseleave="hideTooltip('addDebtButton')" v-b-tooltip.hover.top.window="{title: phrases.addDebt}" @click.stop="openCreateDebtModal" variant="light" class="btn-xs">
             <img src="~@/assets/add.png">               
           </b-btn>
         </b-button-group> 
         <b-button-group class="float-left">
-          <b-btn id="deleteSelectedBtn" v-on:mouseleave="hideTooltip('deleteSelectedBtn')" v-b-tooltip.hover.top.window="{title: phrases.deleteSelected}" @click.stop="openDeleteCheckedDebtsModal()" :disabled="noRowChecked" variant="light" class="btn-xs">
+          <b-btn v-on:focus="unfocusElementOnNonKeyboardEvent" id="deleteSelectedBtn" v-on:mouseleave="hideTooltip('deleteSelectedBtn')" v-b-tooltip.hover.top.window="{title: phrases.deleteSelected}" @click.stop="openDeleteCheckedDebtsModal()" :disabled="noRowChecked" variant="light" class="btn-xs">
             <img src="~@/assets/trash.png">               
           </b-btn>
         </b-button-group>
-      </b-col>
-      <b-col cols="6">
-        <b-form-group class="float-right">
-          <label :for="`yearSelect`">{{phrases.filterByYear}}: </label>
-          &nbsp;
-          <b-form-select v-model="yearToFilter" id="yearSelect" :options="yearOptions" size="sm" class="my-0"/>
-        </b-form-group>
       </b-col>
     </b-row>
 
@@ -32,7 +24,6 @@
               :fields="fields"
               :current-page="currentPage"
               :per-page="perPage"
-              :filter="filter"
               :sort-by.sync="sortBy"
               :sort-desc.sync="sortDesc"
               :sort-direction="sortDirection"
@@ -54,7 +45,7 @@
         </template>
         <template v-slot:cell(preview)="row">
           <b-button-group>
-            <b-button id="updateDebtBtn" v-on:mouseleave="hideTooltip('updateDebtBtn')" v-b-tooltip.hover.top.window="{title: phrases.seeDetails}" @click.stop="openUpdateDebtModal(row.item)" variant="link" class="btn-xs">
+            <b-button v-on:focus="unfocusElementOnNonKeyboardEvent" id="updateDebtBtn" v-on:mouseleave="hideTooltip('updateDebtBtn')" v-b-tooltip.hover.top.window="{title: phrases.seeDetails}" @click.stop="openUpdateDebtModal(row.item, row.index)" variant="link" class="btn-xs">
               <img src="~@/assets/see-more.png" class="rowImg">                                           
             </b-button>
           </b-button-group>                
@@ -67,10 +58,9 @@
         </template>
         <template v-slot:cell(description)="row">{{ row.item.description }}</template>
         <template v-slot:cell(amount)="row">{{ row.item.amount | formatAmount }}</template>
-        <template v-slot:cell(year)="row">{{ row.item.year }}</template>
         <template v-slot:cell(delete)="row">
           <b-button-group>
-            <b-button id="deleteDebtBtn" v-on:mouseleave="hideTooltip('deleteDebtBtn')" v-b-tooltip.hover.top.window="{title: phrases.deleteDebt}" @click.stop="openDeleteDebtModal(row.item)" variant="link" class="btn-xs">
+            <b-button v-on:focus="unfocusElementOnNonKeyboardEvent" id="deleteDebtBtn" v-on:mouseleave="hideTooltip('deleteDebtBtn')" v-b-tooltip.hover.top.window="{title: phrases.deleteDebt}" @click.stop="openDeleteDebtModal(row.item)" variant="link" class="btn-xs">
               <img src="~@/assets/delete.png" class="rowImg">                                           
             </b-button>     
           </b-button-group>                
@@ -85,7 +75,7 @@
     </b-row>
 
     <b-modal no-close-on-backdrop hide-footer hide-header size="lg" id="create-debt-modal">
-      <debt-preview :debt='selectedItem' :debtPreview='isPreview' parentModal="create-debt-modal" v-on:updateDebtsTable="update"></debt-preview>
+      <debt-preview :debt='selectedItem' :debtPreview='isPreview' parentModal="create-debt-modal" v-on:updateDebtsTable="update(true)"></debt-preview>
     </b-modal>
 
     <b-modal no-close-on-backdrop id="delete-debt-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('deleteDebtModal')">
@@ -107,11 +97,11 @@
   import store from '@/store'
   import { mapState } from 'vuex'
   import DebtPreview from './DebtsPane/DebtPreview'
-  import MessageConfirmDialog from '../../MessageConfirmDialog'
+  import MessageConfirmDialog from '../../../MessageConfirmDialog'
 
-  const debtController = require('../../../controllers/debtController')
-  const i18n = require('../../../../translations/i18n')
-  const { asFormatedString, largeAmountNumberOptions } = require('../../../utils/utils')
+  const debtController = require('../../../../controllers/debtController')
+  const i18n = require('../../../../../translations/i18n')
+  const { asFormatedString, largeAmountNumberOptions } = require('../../../../utils/utils')
 
   export default {
     data () {
@@ -121,7 +111,6 @@
           deleteDebt: i18n.getTranslation('Delete debt'),
           deleteSelected: i18n.getTranslation('Delete selected'),
           seeDetails: i18n.getTranslation('See details'),
-          filterByYear: i18n.getTranslation('Filter by year'),
           select: i18n.getTranslation('Select'),
           selectAll: i18n.getTranslation('Select all'),
           cancel: i18n.getTranslation('Cancel'),
@@ -130,22 +119,20 @@
           areYouSureToDeleteDebt: i18n.getTranslation('Are you sure you want to delete debt?'),
           areYouSureToDeleteCheckedDebts: i18n.getTranslation('Are you sure you want to delete selected debts?'),
           noRecordsToShow: i18n.getTranslation('There are no debts to show'),
-          year: i18n.getTranslation('Year'),
           description: i18n.getTranslation('Description'),
           amount: i18n.getTranslation('Amount')
         },
         debts: [],
         items: [],
-        yearToFilter: '',
         currentPage: 1,
         perPage: 10,
         totalRows: null,
-        filter: null,
         deletedDebts: null,
         checkedDebts: [],
         itemsShownInTable: [],
         checkAll: false,
         selectedItem: null,
+        selectedItemIndex: null,
         isPreview: false,
         errorText: "",
         sortBy: null,
@@ -155,25 +142,15 @@
       }
     },
     created () {
-      this.loadDebts()
+      const self = this
+      this.$watch('bookingYear', () => {
+        self.loadDebts()
+      }, {immediate: true})
     },
     computed: {
       ...mapState(
         {
-          yearOptions: function (state) {
-            var yearOptions = JSON.parse(JSON.stringify(state.CommonValues.bookedYears))
-            yearOptions.unshift('')
-            var yearToFilter = this.yearToFilter
-            if (yearToFilter != '') {
-              var yearFiltered = yearOptions.find(yo => {
-                return yo == yearToFilter
-              })
-              if (!yearFiltered) {
-                this.yearToFilter = ''
-              }
-            }
-            return yearOptions
-          }
+          bookingYear: state => state.CommonValues.bookingYear
         }
       ),
       noRowChecked () {
@@ -185,12 +162,16 @@
           { key: 'preview', label: '', thStyle: {outline: 'none', width: '70px'}  },
           { key: 'description', label: this.phrases.description, class: 'text-center', thStyle: {'outline': 'none', 'user-select': 'none'} },
           { key: 'amount', label: this.phrases.amount, class: 'text-center', sortable: true, thStyle: {'outline': 'none', 'user-select': 'none'} },
-          { key: 'year', label: this.phrases.year, class: 'text-center', sortable: true, thStyle: {'outline': 'none', 'user-select': 'none'} },
           { key: 'delete', label: '', thStyle: {outline: 'none', width: '70px'} },
         ]
       }
     },
     methods: {
+      unfocusElementOnNonKeyboardEvent (e) {
+        if (!e.relatedTarget) {
+          e.target.blur()
+        }
+      },
       unsort (key, field, e) {
         e.stopPropagation()
         if (!field.sortable) {
@@ -211,23 +192,44 @@
       focusModalCloseButton (modalRef) {
         this.$refs[modalRef].$refs.closeButton.focus()
       },
-      update() {
-        this.loadDebts()
-        this.$emit('updateBookedYears')
-        this.yearToFilter = ''
+      update(highlightChange) {
+        this.loadDebts(highlightChange)
         this.clearChecked()
+        if (highlightChange) {
+          this.highlightChangedRow()
+        }
+      },
+      highlightChangedRow() {
+        var updatedRow;
+        if (this.selectedItem) {
+          updatedRow = document.querySelector('#debts-table tbody tr[aria-rowindex="' + ((this.currentPage - 1 ) * 10 + this.selectedItemIndex + 1) + '"]')
+        } else {
+          updatedRow = document.querySelector('#debts-table tbody tr[aria-rowindex="1"]')
+        }
+        if (updatedRow) {
+          const oldStyle = updatedRow.style
+          updatedRow.style.setProperty('box-shadow', '0 1px 1px rgba(128, 147, 168, 0.075) inset, 0 0 8px rgba(128, 147, 168, 0.6)')
+          setTimeout(() => {
+            updatedRow.style = oldStyle
+          }, 2000)
+        }
       },
       clearChecked () {
         this.checkAll = false
         this.checkedDebts = []
       },
-      loadDebts () {
+      loadDebts (highlightChange) {
         const self = this
-        debtController.getDebts().then((res) => {
+        debtController.getDebts(this.bookingYear).then((res) => {
           if (!res.err) {
             self.debts = res.data ? res.data : []
             self.items = self.debts
             self.totalRows = self.debts.length
+            if (highlightChange) {
+              self.$nextTick(() => {
+                self.highlightChangedRow()
+              })
+            }
           } else {
             self.openErrorModal(res.err)
           }
@@ -237,13 +239,14 @@
         this.hideTooltip('addDebtBtn')
         this.isPreview = false
         this.selectedItem = null
+        this.selectedItemIndex = null
         this.$root.$emit('bv::show::modal', 'create-debt-modal')
       },
       toggleCheckAll () {
         this.checkedDebts = this.checkAll ? [] : this.itemsShownInTable
       },
       rowDblClickHandler (record, index) {
-        this.openUpdateDebtModal(record)
+        this.openUpdateDebtModal(record, index)
       },
       openDeleteDebtModal(debt) {
         this.hideTooltip('deleteDebtBtn')
@@ -278,9 +281,10 @@
           }
         })
       },
-      openUpdateDebtModal (item) {
+      openUpdateDebtModal (item, index) {
         this.hideTooltip('updateDebtBtn')
         this.selectedItem = item
+        this.selectedItemIndex = index
         this.isPreview = true
         this.$root.$emit('bv::show::modal', 'create-debt-modal')
       },
@@ -311,21 +315,6 @@
           /* Close delete-selected button tooltip before it gets disabled and stuck */
           this.$root.$emit('bv::hide::tooltip', 'deleteSelectedBtn')
         }
-      },
-      yearToFilter (newYearValue) {
-        if(newYearValue == '') {
-          this.items = this.debts;
-        } else {
-          this.items = this.debts.filter(value => {
-            if(value.year == newYearValue) {
-              return true;
-            }
-            return false;
-          })
-        }
-        this.totalRows = this.items.length
-        this.currentPage = 1
-        this.checkedDebts = []
       }
     },
     components: { DebtPreview, MessageConfirmDialog }
@@ -333,10 +322,6 @@
 </script>
 
 <style scoped>
-  #yearSelect{
-    width: 80px;
-    display: inline;
-  }
   .tableDiv {
     display: block;
     overflow: auto;

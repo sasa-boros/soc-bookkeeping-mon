@@ -1,11 +1,11 @@
 <template>
-  <b-container fluid>
-     <b-button-group class="float-left">
-      <b-button v-on:mouseleave="hideTooltip('addIncomeCodeBtn')" id="addIncomeCodeBtn" v-b-tooltip.hover.top.window="{title: phrases.createIncomeCode}" v-on:click="openCreateIncomeCodeModal()" variant="light" class="btn-xs">
+  <b-container fluid class="no-margins-and-pads">
+     <b-button-group class="float-left" >
+      <b-button v-on:focus="unfocusElementOnNonKeyboardEvent" v-on:mouseleave="hideTooltip('addIncomeCodeBtn')" id="addIncomeCodeBtn" v-b-tooltip.hover.top.window="{title: phrases.createIncomeCode}" v-on:click="openCreateIncomeCodeModal()" variant="light" class="btn-xs">
         <img src="~@/assets/add.png">
       </b-button>
      </b-button-group>
-    <b-table show-empty fixed
+    <b-table show-empty fixed id="income-codes-table"
               stacked="md"
               bordered
               class="mt-3"
@@ -21,7 +21,7 @@
               >
         <template v-slot:cell(preview)="row">
           <b-button-group>
-            <b-button id="updateIncomeCodeBtn" v-on:mouseleave="hideTooltip('updateIncomeCodeBtn')" v-b-tooltip.hover.top.window="{title: phrases.seeDetails}" v-on:click="openCreateIncomeCodeModal(row.item)" variant="link" class="btn-xs">
+            <b-button v-on:focus="unfocusElementOnNonKeyboardEvent" id="updateIncomeCodeBtn" v-on:mouseleave="hideTooltip('updateIncomeCodeBtn')" v-b-tooltip.hover.top.window="{title: phrases.seeDetails}" v-on:click="openCreateIncomeCodeModal(row.item)" variant="link" class="btn-xs">
               <img src="~@/assets/see-more.png" class="rowImg">                                           
             </b-button>
           </b-button-group>
@@ -37,7 +37,7 @@
         </template>
         <template v-slot:cell(remove)="row">
            <b-button-group>
-              <b-button id="deleteIncomeCodeBtn" v-on:mouseleave="hideTooltip('deleteIncomeCodeBtn')" v-b-tooltip.hover.top.window="{title: phrases.deleteIncomeCode}" v-on:click="openDeleteIncomeCodeModal(row.item)" variant="link" class="btn-xs">
+              <b-button v-on:focus="unfocusElementOnNonKeyboardEvent" id="deleteIncomeCodeBtn" v-on:mouseleave="hideTooltip('deleteIncomeCodeBtn')" v-b-tooltip.hover.top.window="{title: phrases.deleteIncomeCode}" v-on:click="openDeleteIncomeCodeModal(row.item)" variant="link" class="btn-xs">
                   <img src="~@/assets/delete.png" class="rowImg">
               </b-button>
            </b-button-group>
@@ -59,14 +59,16 @@
 </template>
 
 <script>
+  import store from '@/store'
+  import { mapState } from 'vuex'
   import IncomeCodePreview from './IncomeCodesTable/IncomeCodePreview';
-  import MessageConfirmDialog from '../../../MessageConfirmDialog';
-  import { EventBus } from '../../../../eventbus/event-bus.js';
+  import MessageConfirmDialog from '../../../../MessageConfirmDialog';
+  import { EventBus } from '../../../../../eventbus/event-bus.js';
 
   const { dialog } = require('electron').remote
-  const incomeCodeController = require('../../../../controllers/incomeCodeController')
-  const i18n = require('../../../../../translations/i18n')
-  const { asRoman } = require('../../../../utils/utils')
+  const incomeCodeController = require('../../../../../controllers/incomeCodeController')
+  const i18n = require('../../../../../../translations/i18n')
+  const { asRoman } = require('../../../../../utils/utils')
 
   export default {
     data () {
@@ -118,17 +120,37 @@
       }
     },
     created () {
-      this.loadIncomeCodes()
+      const self = this
+      this.$watch('bookingYear', () => {
+        self.loadIncomeCodes()
+      }, {immediate: true})
+    },
+    computed: {
+      ...mapState(
+        {
+          bookingYear: state => state.CommonValues.bookingYear
+        }
+      ),
     },
     methods: {
+      unfocusElementOnNonKeyboardEvent (e) {
+        if (!e.relatedTarget) {
+          e.target.blur()
+        }
+      },
       focusModalCloseButton (modalRef) {
         this.$refs[modalRef].$refs.closeButton.focus()
       },
-      loadIncomeCodes () {
+      loadIncomeCodes (el) {
         const self = this
-        incomeCodeController.getIncomeCodes().then((res) => {
+        incomeCodeController.getIncomeCodes(this.bookingYear).then((res) => {
           if (!res.err) {
             self.incomeCodes = res.data ? res.data : []
+            if (el)  {
+              self.$nextTick(() => {
+                self.highlightChangedRow(el)
+              })
+            }
           } else {
             self.openErrorModal(res.err)
           }
@@ -163,7 +185,6 @@
         incomeCodeController.deleteIncomeCode(this.deletedIncomeCode._id).then((res) => {
           if (!res.err) {
             self.update()
-            //this.$emit('updateDefaultPaymentSlip')
           } else {
             self.openErrorModal(res.err)
           }
@@ -180,11 +201,36 @@
         this.errorText = error
         this.$root.$emit('bv::show::modal', 'income-code-table-error-modal')
       },
-      update () {
+      updateFromCodesPane () {
         this.loadIncomeCodes()
-        EventBus.$emit('updateAnnualReportPane')
         EventBus.$emit('updatePaymentSlipTable')
-      }
+      },
+      update (el) {
+        this.loadIncomeCodes(el)
+        EventBus.$emit('updateGeneralPane')
+        EventBus.$emit('updatePaymentSlipTable')
+      },
+      highlightChangedRow(el) {
+        var updatedRow;
+        if (el && this.incomeCodes) {
+          const updatedRows = document.querySelectorAll('#income-codes-table tbody tr')
+          for (let i=0; i < this.incomeCodes.length; i++) {
+            if (this.incomeCodes[i].partition == el.partition && this.incomeCodes[i].position == el.position) {
+              if (i < updatedRows.length) {
+                updatedRow = updatedRows[i]
+                break;
+              }
+            }
+          }
+        } 
+        if (updatedRow) {
+          const oldStyle = updatedRow.style
+          updatedRow.style.setProperty('box-shadow', '0 1px 1px rgba(128, 147, 168, 0.075) inset, 0 0 8px rgba(128, 147, 168, 0.6)')
+          setTimeout(() => {
+            updatedRow.style = oldStyle
+          }, 2000)
+        }
+      },
     },
     filters: {
       formatPartition (partition) {
@@ -197,7 +243,7 @@
 
 <style scoped>
   .btn-light {
-    background-color:#e6f4ff;
+    background-color:#e7f3fc;
     border: none;
   }
 </style>

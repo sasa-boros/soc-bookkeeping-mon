@@ -9,9 +9,9 @@ function findOne () {
     })
 }
 
-function insert (doc) {
+function insert (settings) {
     return new Promise((resolve, reject) => { 
-        db.settings.insert(doc, (err, newDoc) => {
+        db.settings.insert(settings, (err, newDoc) => {
             if (err) {
                 reject(err)
             }

@@ -10,7 +10,7 @@
           </b-button-group>
         </b-col>
       </b-row>
-      <h5 align="center">Партија и позиција издавања</h5>
+      <h5 align="center">Партија и позиција примања</h5>
       <br>
       <b-row>
         <b-col cols="3">
@@ -38,14 +38,14 @@
         </b-col>
         <b-col>
           <b-form-group>
-            <b-form-input :disabled="isTaxCode" id="descriptionInput" type="text" v-model="form.description" class="descriptionInput" v-on:keypress="limitInputPerSize"/>
+            <b-form-input ref="descriptionInput" id="descriptionInput" v-on:mouseleave="hideTooltip('descriptionInput')" type="text" v-model="form.description" v-on:keypress="limitInputPerSize" class="descriptionInput"/>
           </b-form-group>
         </b-col>
       </b-row>
-      <b-row >
+      <b-row>
         <b-col>
           <b-button-group class="float-right">
-            <b-button ref="saveOutcomeCodeBtn" id="saveOutcomeCodeBtn" v-on:mouseleave="hideTooltip('saveOutcomeCodeBtn')" type="submit" variant="light" class="btn-lg">
+            <b-button ref="saveIncomeCodeBtn" id="saveIncomeCodeBtn" v-on:mouseleave="hideTooltip('saveIncomeCodeBtn')" type="submit" variant="light" class="btn-lg">
               <img src="~@/assets/save.png">
             </b-button>
             <b-button ref="clearFormBtn" id="clearFormBtn" v-on:mouseleave="hideTooltip('clearFormBtn')" @click.stop="clearForm()" variant="light" class="btn-lg">
@@ -56,44 +56,44 @@
       </b-row>
     </b-form>
 
-      <b-tooltip boundary='window' target="saveOutcomeCodeBtn" triggers="hover" placement="top" ref="saveOutcomeCodeBtnTooltip" v-on:hide.prevent>
-        {{phrases.save}}
-      </b-tooltip>
+    <b-tooltip boundary='window' target="saveIncomeCodeBtn" triggers="hover" placement="top" ref="saveIncomeCodeBtnTooltip" v-on:hide.prevent>
+      {{phrases.save}}
+    </b-tooltip>
 
-      <b-tooltip boundary='window' target="clearFormBtn" triggers="hover" placement="top" ref="clearFormBtnTooltip" v-on:hide.prevent>
-        {{phrases.clear}}
-      </b-tooltip>
+    <b-tooltip boundary='window' target="clearFormBtn" triggers="hover" placement="top" ref="clearFormBtnTooltip" v-on:hide.prevent>
+      {{phrases.clear}}
+    </b-tooltip>
 
-      <b-tooltip boundary='window' target="partitionInput" triggers="hover" placement="top" ref="partitionInputTooltip" :disabled.sync="disablePartitionTooltip" v-on:hide.prevent>
-        {{partitionTooltipText}}
-      </b-tooltip>
+    <b-tooltip boundary='window' target="partitionInput" triggers="hover" placement="top" ref="partitionInputTooltip" :disabled.sync="disablePartitionTooltip" v-on:hide.prevent>
+      {{partitionTooltipText}}
+    </b-tooltip>
 
-      <b-tooltip boundary='window' target="positionInput" triggers="hover" placement="top" ref="positionInputTooltip" :disabled.sync="disablePositionTooltip" v-on:hide.prevent>
-        {{positionTooltipText}}
-      </b-tooltip>
+    <b-tooltip boundary='window' target="positionInput" triggers="hover" placement="top" ref="positionInputTooltip" :disabled.sync="disablePositionTooltip" v-on:hide.prevent>
+      {{positionTooltipText}}
+    </b-tooltip>
 
-      <b-modal no-close-on-backdrop id="outcome-code-preview-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('outcomeCodePreviewErrorModal')">
-        <message-confirm-dialog ref="outcomeCodePreviewErrorModal" parentModal="outcome-code-preview-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
-      </b-modal>
+    <b-modal no-close-on-backdrop id="income-code-preview-error-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('incomeCodePreviewErrorModal')">
+      <message-confirm-dialog ref="incomeCodePreviewErrorModal" parentModal="income-code-preview-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
+    </b-modal>
   </b-container>
 </template>
 
 <script>
-import MessageConfirmDialog from '../../../../MessageConfirmDialog'
+import MessageConfirmDialog from '../../../../../MessageConfirmDialog'
 
-const outcomeCodeController = require('../../../../../controllers/outcomeCodeController')
-const i18n = require('../../../../../../translations/i18n')
-const { partitionPositionNumberOptions, mapCodeToCodeForm, mapCodeFormToCode } = require('../../../../../utils/utils')
+const incomeCodeController = require('../../../../../../controllers/incomeCodeController')
+const i18n = require('../../../../../../../translations/i18n')
+const { partitionPositionNumberOptions, mapCodeToCodeForm, mapCodeFormToCode } = require('../../../../../../utils/utils')
 const AutoNumeric = require('autonumeric')
 const Mousetrap = require('mousetrap');
 
 export default {
   props: {
-    existingOutcomeCodes: {
+    existingIncomeCodes: {
       type: Array,
       default: []
     },
-    outcomeCode: Object,
+    incomeCode: Object,
     isUpdate: {
       type: Boolean,
       default: false
@@ -107,7 +107,7 @@ export default {
         clear: i18n.getTranslation('Clear'),
         enterPartition: i18n.getTranslation('Enter partition'),
         enterPosition: i18n.getTranslation('Enter position'),
-        notUnique: i18n.getTranslation('Outcome code partition and position not unique'),
+        notUnique: i18n.getTranslation('Income code partition and position not unique'),
         ok: i18n.getTranslation('Ok')
       },
       form: { 
@@ -120,15 +120,13 @@ export default {
       partitionInputAutonumeric: null,
       positionInputAutonumeric: null,
       alreadySubmited: false,
-      tooltipTimeouts: [],
-      isTaxCode: false
+      tooltipTimeouts: []
     }
   },
   created () {
     if (this.isUpdate) {
-      this.form = mapCodeToCodeForm(JSON.parse(JSON.stringify(this.outcomeCode)))
+      this.form = mapCodeToCodeForm(JSON.parse(JSON.stringify(this.incomeCode)))
     }
-    this.determineIfItsTaxCode()
   },
   mounted () {
     this.partitionInputAutonumeric = new AutoNumeric('#partitionInput', partitionPositionNumberOptions)
@@ -181,8 +179,8 @@ export default {
     },
     notUnique: function () {
       const self = this
-      var euqivalentInstance = this.existingOutcomeCodes.filter(outcomeCode => {
-        return outcomeCode.partition == self.form.partition && outcomeCode.position == self.form.position && outcomeCode._id != self.form._id
+      var euqivalentInstance = this.existingIncomeCodes.filter(incomeCode => {
+        return incomeCode.partition == self.form.partition && incomeCode.position == self.form.position && incomeCode._id != self.form._id
       })
 
       if (euqivalentInstance && euqivalentInstance.length > 0) {
@@ -203,18 +201,13 @@ export default {
         }, 100)
       }
     },
-    determineIfItsTaxCode () {
-       if (this.outcomeCode && this.outcomeCode.tax) {
-            this.isTaxCode = true
-        }
-    },
     focusModalCloseButton (modalRef) {
       this.$refs[modalRef].$refs.closeButton.focus()
     },
     bindKeys() {
       const self = this
       Mousetrap.bind(['command+s', 'ctrl+s'], function(e) {
-        self.$refs.saveOutcomeCodeBtn.click()
+        self.$refs.saveIncomeCodeBtn.click()
         return false
       });
       Mousetrap.prototype.stopCallback = function () {
@@ -239,17 +232,18 @@ export default {
         return
       }
       this.shouldValidate = true;
-      const self = this;
       if (!this.isFormValid()) {
         this.showInvalidTooltips()
         return
       }
+      const self = this;
       if (this.isUpdate) {
         this.alreadySubmited = true
-        outcomeCodeController.updateOutcomeCode(mapCodeFormToCode(this.form)).then((res) => {
+        var code = mapCodeFormToCode(this.form)
+        incomeCodeController.updateIncomeCode(code).then((res) => {
             if (!res.err) {
               this.shouldValidate = false;
-              self.$emit('updateOutcomeCodes')
+              self.$emit('updateIncomeCodes', code)
               self.closeModal();
             } else {
               self.alreadySubmited = false
@@ -258,10 +252,11 @@ export default {
         })
       } else {
         this.alreadySubmited = true
-        outcomeCodeController.createOutcomeCode(mapCodeFormToCode(this.form)).then((res) => {
+        var code = mapCodeFormToCode(this.form)
+        incomeCodeController.createIncomeCode(code).then((res) => {
             if (!res.err) {
               this.shouldValidate = false;
-              self.$emit('updateOutcomeCodes')
+              self.$emit('updateIncomeCodes', code)
               self.closeModal();
             } else {
               self.alreadySubmited = false
@@ -281,10 +276,7 @@ export default {
       this.partitionInputAutonumeric.clear()
       this.form.position = null;
       this.positionInputAutonumeric.clear()
-      if (!this.isTaxCode) {
-        this.form.description = null;
-      }
-      this.form.isTaxed = null;
+      this.form.description = null;
     },
     showInvalidTooltips () {
       if (this.missingPartition || this.notUnique) {
@@ -303,15 +295,11 @@ export default {
       }, 2500)
     },
     hideTooltip (elementId) {
-      if (elementId) {
-        this.$root.$emit('bv::hide::tooltip', elementId)
-      } else {
-        this.$root.$emit('bv::hide::tooltip')
-      }
+      this.$root.$emit('bv::hide::tooltip', elementId)
     },
     openErrorModal(error) {
       this.errorText = error
-      this.$root.$emit('bv::show::modal', 'outcome-code-preview-error-modal')
+      this.$root.$emit('bv::show::modal', 'income-code-preview-error-modal')
     },
     closeModal () {
         this.$root.$emit('bv::hide::modal', this.parentModal)

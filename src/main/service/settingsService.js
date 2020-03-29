@@ -3,6 +3,7 @@ const { app } = require('electron')
 const path = require('path')
 const zipper = require('zip-local');
 const config = require('../config')
+
 const Datastore = require('nedb')
 
 async function getSettings () {
@@ -38,9 +39,7 @@ async function loadDbs() {
     db.annualReportCommons = new Datastore({ filename: path.join(app.getPath('userData'), config.db.collections.annualReportCommons), autoload: true})
     db.annualReports = new Datastore({ filename:  path.join(app.getPath('userData'), config.db.collections.annualReports), autoload: true})
     db.paymentSlips = new Datastore({ filename:  path.join(app.getPath('userData'), config.db.collections.paymentSlips), autoload: true})
-    db.defaultPaymentSlips = new Datastore({ filename: path.join(app.getPath('userData'), config.db.collections.defaultPaymentSlips), autoload: true})
     db.receipts = new Datastore({ filename: path.join(app.getPath('userData'), config.db.collections.receipts), autoload: true})
-    db.defaultReceipts = new Datastore({ filename: path.join(app.getPath('userData'), config.db.collections.defaultReceipts), autoload: true})
     db.shares = new Datastore({ filename: path.join(app.getPath('userData'), config.db.collections.shares), autoload: true})
     db.savings = new Datastore({ filename: path.join(app.getPath('userData'), config.db.collections.savings), autoload: true})
     db.items = new Datastore({ filename: path.join(app.getPath('userData'), config.db.collections.items), autoload: true})
