@@ -11,7 +11,7 @@
             v-model="churchMunicipality"
             v-on:input="disableCommonSaveBtn = false"
             v-on:keypress="limitInputPerSize"
-          />у
+          />&nbsp;&nbsp;у
           <b-form-input
             id="churchTownInput"
             type="text"
@@ -352,14 +352,14 @@ export default {
     border-radius: 0 !important;
   }
   #churchMunicipalityInput {
-    width: 235px;
-    max-width: 320px;
+    width: 400px;
+    max-width: 400px;
     border-style: none;
     display:inline;
   }
   #churchTownInput {
-    width: 320px;
-    max-width: 320px;
+    width: 278px;
+    max-width: 278px;
     border-style: none;
     display:inline;
   }
