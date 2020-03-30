@@ -437,7 +437,6 @@
 <style scoped>
   .tableDiv {
     display: block;
-    overflow: auto;
   }
   #monthSelect {
     width: 100px;

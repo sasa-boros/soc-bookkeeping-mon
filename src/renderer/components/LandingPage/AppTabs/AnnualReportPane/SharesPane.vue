@@ -330,6 +330,5 @@
 <style scoped>
   .tableDiv {
     display: block;
-    overflow: auto;
   }
 </style>
