@@ -80,10 +80,10 @@ async function getAnnualReport (year) {
   const annualReportData = await annualReportDao.findOneByYear(year)
   const incomeCodes = await incomeCodeDao.findByYear(year)
   const outcomeCodes = await outcomeCodeDao.findByYear(year)
-  const shares = await shareDao.findByYear(year)
-  const savings = await savingDao.findByYear(year)
-  const items = await itemDao.findByYear(year)
-  const debts = await debtDao.findByYear(year)
+  const shares = await shareDao.findByYear(year, 1)
+  const savings = await savingDao.findByYear(year, 1)
+  const items = await itemDao.findByYear(year, 1)
+  const debts = await debtDao.findByYear(year, 1)
   
   const annualReport = new AnnualReport()
   // common

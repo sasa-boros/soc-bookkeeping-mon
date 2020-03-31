@@ -87,12 +87,12 @@
 
     <b-row>
       <b-col>
-        <b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" align="center" v-on:input="clearChecked"/>
+        <b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" align="center" v-on:input="clearChecked(); clearRowHighlight()"/>
       </b-col>
     </b-row>
 
     <b-modal no-close-on-backdrop hide-footer hide-header size="a5" id="create-receipt-modal">
-      <receipt-preview :receipt='selectedItem' :receiptPreview='isPreview' parentModal="create-receipt-modal" v-on:updateReceiptTable="update(true)"></receipt-preview>
+      <receipt-preview :receipt='selectedItem' :receiptPreview='isPreview' parentModal="create-receipt-modal" v-on:updateReceiptTable="update(); highlightUpdatedRow()"></receipt-preview>
     </b-modal>
 
     <b-modal no-close-on-backdrop id="delete-receipt-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('deleteReceiptModal')">
@@ -238,46 +238,48 @@
       focusModalCloseButton (modalRef) {
         this.$refs[modalRef].$refs.closeButton.focus()
       },
-      update(highlightChange) {
-        this.loadReceipts(highlightChange)
+      update() {
+        this.loadReceipts()
         this.$emit('updateInvalidReceiptsInfo')
         this.monthToFilter = ''
         this.clearChecked()
-        if (highlightChange) {
-          this.highlightChangedRow()
+      },
+      highlightUpdatedRow () {
+        this.clearRowHighlight()
+
+        var rowToHighlight
+        if (this.selectedItem) {
+          rowToHighlight = document.querySelector('#receipts-table tbody tr[aria-rowindex="' + ((this.currentPage - 1 ) * 10 + this.selectedItemIndex + 1) + '"]')
+        } else {
+          rowToHighlight = document.querySelector('#receipts-table tbody tr[aria-rowindex="1"]')
+        }
+        if (rowToHighlight) {
+          rowToHighlight.style.setProperty('box-shadow', '0 1px 1px rgba(128, 147, 168, 0.075) inset, 0 0 8px rgba(128, 147, 168, 0.6)')
+          this.highlightedRow = rowToHighlight
+          this.highlightedRowTimeout = setTimeout(() => {
+            rowToHighlight.style.setProperty('box-shadow', 'none')
+          }, 2500)
         }
       },
-      highlightChangedRow() {
-        var updatedRow;
-        if (this.selectedItem) {
-          updatedRow = document.querySelector('#receipts-table tbody tr[aria-rowindex="' + ((this.currentPage - 1 ) * 10 + this.selectedItemIndex + 1) + '"]')
-        } else {
-          updatedRow = document.querySelector('#receipts-table tbody tr[aria-rowindex="1"]')
+      clearRowHighlight () {
+        if (this.highlightedRow) {
+          this.highlightedRow.style.setProperty('box-shadow', 'none')
         }
-        if (updatedRow) {
-          const oldStyle = updatedRow.style
-          updatedRow.style.setProperty('box-shadow', '0 1px 1px rgba(128, 147, 168, 0.075) inset, 0 0 8px rgba(128, 147, 168, 0.6)')
-          setTimeout(() => {
-            updatedRow.style = oldStyle
-          }, 2000)
+        if (this.highlightedRowTimeout) {
+          window.clearTimeout(this.highlightedRowTimeout)
         }
       },
       clearChecked () {
         this.checkAll = false
         this.checkedReceipts = []
       },
-      loadReceipts (highlightChange) {
+      loadReceipts () {
         const self = this
         receiptController.getReceipts(this.bookingYear).then((res) => {
           if (!res.err) {
             self.receipts = res.data ? res.data : []
             self.items = self.receipts
             self.totalRows = self.receipts.length
-            if (highlightChange) {
-              self.$nextTick(() => {
-                self.highlightChangedRow()
-              })
-            }
           } else {
             self.openErrorModal(res.err)
           }

@@ -13,7 +13,6 @@ const amountNumberOptions = {
   digitGroupSeparator : '.',
   maximumValue: 99999999,
   minimumValue: 0,
-  decimalPlacesShownOnFocus: 2,
   modifyValueOnWheel: false,
   watchExternalChanges: true
 }
@@ -23,7 +22,6 @@ const largeAmountNumberOptions = {
   digitGroupSeparator : '.',
   maximumValue: 999999999,
   minimumValue: 0,
-  decimalPlacesShownOnFocus: 2,
   modifyValueOnWheel: false,
   watchExternalChanges: true
 }

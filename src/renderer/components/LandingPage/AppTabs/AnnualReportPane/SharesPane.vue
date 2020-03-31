@@ -72,12 +72,12 @@
 
     <b-row>
       <b-col>
-        <b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" align="center" v-on:input="clearChecked"/>
+        <b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" align="center" v-on:input="clearChecked(); clearRowHighlight()"/>
       </b-col>
     </b-row>
 
     <b-modal no-close-on-backdrop hide-footer hide-header size="lg" id="create-share-modal">
-      <share-preview :share='selectedItem' :sharePreview='isPreview' parentModal="create-share-modal" v-on:updateSharesTable="update(true)"></share-preview>
+      <share-preview :share='selectedItem' :sharePreview='isPreview' parentModal="create-share-modal" v-on:updateSharesTable="update(); highlightUpdatedRow()"></share-preview>
     </b-modal>
 
     <b-modal no-close-on-backdrop id="delete-share-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('deleteShareModal')">
@@ -198,44 +198,46 @@
       focusModalCloseButton (modalRef) {
         this.$refs[modalRef].$refs.closeButton.focus()
       },
-      update(highlightChange) {
-        this.loadShares(highlightChange)
+      update() {
+        this.loadShares()
         this.clearChecked()
-        if (highlightChange) {
-          this.highlightChangedRow()
-        }
-      },
-      highlightChangedRow() {
-        var updatedRow;
-        if (this.selectedItem) {
-          updatedRow = document.querySelector('#shares-table tbody tr[aria-rowindex="' + ((this.currentPage - 1 ) * 10 + this.selectedItemIndex + 1) + '"]')
-        } else {
-          updatedRow = document.querySelector('#shares-table tbody tr[aria-rowindex="1"]')
-        }
-        if (updatedRow) {
-          const oldStyle = updatedRow.style
-          updatedRow.style.setProperty('box-shadow', '0 1px 1px rgba(128, 147, 168, 0.075) inset, 0 0 8px rgba(128, 147, 168, 0.6)')
-          setTimeout(() => {
-            updatedRow.style = oldStyle
-          }, 2000)
-        }
       },
       clearChecked () {
         this.checkAll = false
         this.checkedShares = []
       },
-      loadShares (highlightChange) {
+      highlightUpdatedRow () {
+        this.clearRowHighlight()
+
+        var rowToHighlight
+        if (this.selectedItem) {
+          rowToHighlight = document.querySelector('#shares-table tbody tr[aria-rowindex="' + ((this.currentPage - 1 ) * 10 + this.selectedItemIndex + 1) + '"]')
+        } else {
+          rowToHighlight = document.querySelector('#shares-table tbody tr[aria-rowindex="1"]')
+        }
+        if (rowToHighlight) {
+          rowToHighlight.style.setProperty('box-shadow', '0 1px 1px rgba(128, 147, 168, 0.075) inset, 0 0 8px rgba(128, 147, 168, 0.6)')
+          this.highlightedRow = rowToHighlight
+          this.highlightedRowTimeout = setTimeout(() => {
+            rowToHighlight.style.setProperty('box-shadow', 'none')
+          }, 2500)
+        }
+      },
+      clearRowHighlight () {
+        if (this.highlightedRow) {
+          this.highlightedRow.style.setProperty('box-shadow', 'none')
+        }
+        if (this.highlightedRowTimeout) {
+          window.clearTimeout(this.highlightedRowTimeout)
+        }
+      },
+      loadShares () {
         const self = this
         shareController.getShares(this.bookingYear).then((res) => {
           if (!res.err) {
             self.shares = res.data ? res.data : []
             self.items = self.shares
             self.totalRows = self.shares.length
-            if (highlightChange) {
-              self.$nextTick(() => {
-                self.highlightChangedRow()
-              })
-            }
           } else {
             self.openErrorModal(res.err)
           }

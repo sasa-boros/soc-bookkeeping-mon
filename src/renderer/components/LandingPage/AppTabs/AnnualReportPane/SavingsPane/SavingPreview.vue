@@ -38,7 +38,7 @@
         </b-col>
         <b-col>
           <b-form-group>
-            <b-form-input v-on:cut="updateAfterCut" id="amountInput" type="text" v-model="form.amount" v-on:mouseleave="disableAmountTooltip ? null : hideTooltip('amountInput')" v-bind:class="{ 'is-invalid': shouldValidate && missingAmount }"/>
+            <b-form-input v-on:keypress.enter="adaptAutoNumericAmount('amount')" v-on:cut="updateAfterCut" id="amountInput" type="text" v-model="form.amount" v-on:mouseleave="disableAmountTooltip ? null : hideTooltip('amountInput')" v-bind:class="{ 'is-invalid': shouldValidate && missingAmount }"/>
           </b-form-group>
         </b-col>
       </b-row>
@@ -48,7 +48,7 @@
         </b-col>
         <b-col>
           <b-form-group>
-            <b-form-input v-on:cut="updateAfterCut" id="amountDepositedInput" type="text" v-model="form.amountDeposited" v-on:mouseleave="disableAmountDepositedTooltip ? null : hideTooltip('amountDepositedInput')" v-bind:class="{ 'is-invalid': shouldValidate && missingAmountDeposited }"/>
+            <b-form-input v-on:keypress.enter="adaptAutoNumericAmount('amountDeposited')" v-on:cut="updateAfterCut" id="amountDepositedInput" type="text" v-model="form.amountDeposited" v-on:mouseleave="disableAmountDepositedTooltip ? null : hideTooltip('amountDepositedInput')" v-bind:class="{ 'is-invalid': shouldValidate && missingAmountDeposited }"/>
           </b-form-group>
         </b-col>
       </b-row>
@@ -58,7 +58,7 @@
         </b-col>
         <b-col>
           <b-form-group>
-            <b-form-input v-on:cut="updateAfterCut" id="amountWithdrawnInput" type="text" v-model="form.amountWithdrawn" v-on:mouseleave="disableAmountWithdrawnTooltip ? null : hideTooltip('amountWithdrawnInput')" v-bind:class="{ 'is-invalid': shouldValidate && missingAmountWithdrawn }"/>
+            <b-form-input v-on:keypress.enter="adaptAutoNumericAmount('amountWithdrawn')" v-on:cut="updateAfterCut" id="amountWithdrawnInput" type="text" v-model="form.amountWithdrawn" v-on:mouseleave="disableAmountWithdrawnTooltip ? null : hideTooltip('amountWithdrawnInput')" v-bind:class="{ 'is-invalid': shouldValidate && missingAmountWithdrawn }"/>
           </b-form-group>
         </b-col>
       </b-row>
@@ -160,9 +160,6 @@
           sr: sr,
           srCYRL: srCYRL
         },
-        amountInputAutonumeric: null,
-        amountWithdrawnInputAutonumeric: null,
-        amountDepositedInputAutonumeric: null,
         alreadyPressed: false,
         tooltipTimeouts: []
       }
@@ -174,9 +171,9 @@
       }
     },
     mounted () {
-      this.amountInputAutonumeric = new AutoNumeric('#amountInput', largeAmountNumberOptions)
-      this.amountDepositedInputAutonumeric = new AutoNumeric('#amountDepositedInput', largeAmountNumberOptions)
-      this.amountWithdrawnInputAutonumeric = new AutoNumeric('#amountWithdrawnInput', largeAmountNumberOptions)
+      new AutoNumeric('#amountInput', largeAmountNumberOptions)
+      new AutoNumeric('#amountDepositedInput', largeAmountNumberOptions)
+      new AutoNumeric('#amountWithdrawnInput', largeAmountNumberOptions)
       this.bindKeys()
     },
     beforeDestroy () {
@@ -265,6 +262,11 @@
       }
     },
     methods: {
+      adaptAutoNumericAmount (formField) {
+        if (this.form[formField] && !this.form[formField].includes(',')) {
+          this.form[formField] = this.form[formField] + ',00'
+        }
+      },
       updateAfterCut (e) {
         if (e && e.target && e.target.id) {
           setTimeout(() => {
@@ -369,11 +371,8 @@
         this.form.account = null
         this.form.savingEntity = null
         this.form.amount = null
-        this.amountInputAutonumeric.clear()
         this.form.amountDeposited = null
-        this.amountDepositedInputAutonumeric.clear()
         this.form.amountWithdrawn = null
-        this.amountWithdrawnInputAutonumeric.clear()
       },
       openErrorModal(error) {
         this.errorText = error

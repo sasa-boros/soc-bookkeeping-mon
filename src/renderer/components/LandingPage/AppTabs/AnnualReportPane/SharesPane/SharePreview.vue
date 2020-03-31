@@ -48,7 +48,7 @@
         </b-col>
         <b-col>
           <b-form-group>
-            <b-form-input v-on:cut="updateAfterCut" id="nominalValueInput" type="text" v-model="form.nominalValue" v-on:mouseleave="disableNominalValueTooltip ? null : hideTooltip('nominalValueInput')" v-bind:class="{ 'is-invalid': shouldValidate && missingNominalValue }"/>
+            <b-form-input v-on:keypress.enter="adaptAutoNumericAmount('nominalValue')" v-on:cut="updateAfterCut" id="nominalValueInput" type="text" v-model="form.nominalValue" v-on:mouseleave="disableNominalValueTooltip ? null : hideTooltip('nominalValueInput')" v-bind:class="{ 'is-invalid': shouldValidate && missingNominalValue }"/>
           </b-form-group>
         </b-col>
       </b-row>
@@ -136,7 +136,6 @@
           sr: sr,
           srCYRL: srCYRL
         },
-        nominalValueInputAutonumeric: null,
         alreadyPressed: false,
         tooltipTimeouts: []
       }
@@ -148,7 +147,7 @@
       }
     },
     mounted () {
-      this.nominalValueInputAutonumeric = new AutoNumeric('#nominalValueInput', largeAmountNumberOptions)
+      new AutoNumeric('#nominalValueInput', largeAmountNumberOptions)
       this.bindKeys()
     },
     beforeDestroy () {
@@ -192,6 +191,11 @@
       }
     },
     methods: {
+      adaptAutoNumericAmount (formField) {
+        if (this.form[formField] && !this.form[formField].includes(',')) {
+          this.form[formField] = this.form[formField] + ',00'
+        }
+      },
       updateAfterCut (e) {
         if (e && e.target && e.target.id) {
           setTimeout(() => {
@@ -291,7 +295,6 @@
         this.form.ordinal = null
         this.form.name = null
         this.form.nominalValue = null
-        this.nominalValueInputAutonumeric.clear()
       },
       openErrorModal(error) {
         this.errorText = error

@@ -28,7 +28,7 @@
         </b-col>
         <b-col>
           <b-form-group>
-            <b-form-input v-on:cut="updateAfterCut" id="valueInput" type="text" v-model="form.value" v-on:mouseleave="disableValueTooltip ? null : hideTooltip('valueInput')" v-bind:class="{ 'is-invalid': shouldValidate && missingValue }"/>
+            <b-form-input v-on:keypress.enter="adaptAutoNumericAmount('value')" v-on:cut="updateAfterCut" id="valueInput" type="text" v-model="form.value" v-on:mouseleave="disableValueTooltip ? null : hideTooltip('valueInput')" v-bind:class="{ 'is-invalid': shouldValidate && missingValue }"/>
           </b-form-group>
         </b-col>
       </b-row>
@@ -114,7 +114,6 @@
           sr: sr,
           srCYRL: srCYRL
         },
-        valueInputAutonumeric: null,
         alreadyPressed: false,
         tooltipTimeouts: []
       }
@@ -126,7 +125,7 @@
       } 
     },
     mounted () {
-      this.valueInputAutonumeric = new AutoNumeric('#valueInput', largeAmountNumberOptions)
+      new AutoNumeric('#valueInput', largeAmountNumberOptions)
       this.bindKeys()
     },
     beforeDestroy () {
@@ -170,6 +169,11 @@
       }
     },
     methods: {
+      adaptAutoNumericAmount (formField) {
+        if (this.form[formField] && !this.form[formField].includes(',')) {
+          this.form[formField] = this.form[formField] + ',00'
+        }
+      },
       updateAfterCut (e) {
         if (e && e.target && e.target.id) {
           setTimeout(() => {
@@ -266,7 +270,6 @@
       clearForm () {
         this.form.name = null
         this.form.value = null
-        this.valueInputAutonumeric.clear()
       },
       openErrorModal(error) {
         this.errorText = error

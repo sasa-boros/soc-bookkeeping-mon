@@ -1,6 +1,9 @@
-function findAll () {
+function findAll (createdAtSortDirection) {
+    if (!createdAtSortDirection) {
+        createdAtSortDirection = -1
+    } 
     return new Promise((resolve, reject) => { 
-        db.shares.find({}).sort({ 'createdAt': -1 }).exec( (err, docs) => {
+        db.shares.find({}).sort({ 'createdAt': createdAtSortDirection }).exec( (err, docs) => {
             if (err) {
                 reject(err)
             }
@@ -9,9 +12,12 @@ function findAll () {
     })
 }
 
-function findByYear (year) {
+function findByYear (year, createdAtSortDirection) {
+    if (!createdAtSortDirection) {
+        createdAtSortDirection = -1
+    } 
     return new Promise((resolve, reject) => { 
-        db.shares.find({ 'year': year }).sort({ 'createdAt': 1 }).exec((err, docs) => {
+        db.shares.find({ 'year': year }).sort({ 'createdAt': createdAtSortDirection }).exec((err, docs) => {
             if (err) {
                 reject(err)
             }

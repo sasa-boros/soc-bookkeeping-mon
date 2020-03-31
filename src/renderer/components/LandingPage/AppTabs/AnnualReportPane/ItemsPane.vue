@@ -70,12 +70,12 @@
 
     <b-row>
       <b-col>
-        <b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" align="center" v-on:input="clearChecked"/>
+        <b-pagination :total-rows="totalRows" :per-page="perPage" v-model="currentPage" align="center" v-on:input="clearChecked(); clearRowHighlight()"/>
       </b-col>
     </b-row>
 
     <b-modal no-close-on-backdrop hide-footer hide-header size="lg" id="create-item-modal">
-      <item-preview :item='selectedItem' :itemPreview='isPreview' parentModal="create-item-modal" v-on:updateItemsTable="update(true)"></item-preview>
+      <item-preview :item='selectedItem' :itemPreview='isPreview' parentModal="create-item-modal" v-on:updateItemsTable="update(); highlightUpdatedRow()"></item-preview>
     </b-modal>
 
     <b-modal no-close-on-backdrop id="delete-item-modal" hide-backdrop hide-footer hide-header content-class="shadow" v-on:shown="focusModalCloseButton('deleteItemModal')">
@@ -192,44 +192,46 @@
       focusModalCloseButton (modalRef) {
         this.$refs[modalRef].$refs.closeButton.focus()
       },
-      update(highlightChange) {
-        this.loadItems(highlightChange)
+      update() {
+        this.loadItems()
         this.clearChecked()
-        if (highlightChange) {
-          this.highlightChangedRow()
+      },
+      highlightUpdatedRow () {
+        this.clearRowHighlight()
+
+        var rowToHighlight
+        if (this.selectedItem) {
+          rowToHighlight = document.querySelector('#items-table tbody tr[aria-rowindex="' + ((this.currentPage - 1 ) * 10 + this.selectedItemIndex + 1) + '"]')
+        } else {
+          rowToHighlight = document.querySelector('#items-table tbody tr[aria-rowindex="1"]')
+        }
+        if (rowToHighlight) {
+          rowToHighlight.style.setProperty('box-shadow', '0 1px 1px rgba(128, 147, 168, 0.075) inset, 0 0 8px rgba(128, 147, 168, 0.6)')
+          this.highlightedRow = rowToHighlight
+          this.highlightedRowTimeout = setTimeout(() => {
+            rowToHighlight.style.setProperty('box-shadow', 'none')
+          }, 2500)
         }
       },
-      highlightChangedRow() {
-        var updatedRow;
-        if (this.selectedItem) {
-          updatedRow = document.querySelector('#items-table tbody tr[aria-rowindex="' + ((this.currentPage - 1 ) * 10 + this.selectedItemIndex + 1) + '"]')
-        } else {
-          updatedRow = document.querySelector('#items-table tbody tr[aria-rowindex="1"]')
+      clearRowHighlight () {
+        if (this.highlightedRow) {
+          this.highlightedRow.style.setProperty('box-shadow', 'none')
         }
-        if (updatedRow) {
-          const oldStyle = updatedRow.style
-          updatedRow.style.setProperty('box-shadow', '0 1px 1px rgba(128, 147, 168, 0.075) inset, 0 0 8px rgba(128, 147, 168, 0.6)')
-          setTimeout(() => {
-            updatedRow.style = oldStyle
-          }, 2000)
+        if (this.highlightedRowTimeout) {
+          window.clearTimeout(this.highlightedRowTimeout)
         }
       },
       clearChecked () {
         this.checkAll = false
         this.checkedItems = []
       },
-      loadItems (highlightChange) {
+      loadItems () {
         const self = this
         itemController.getItems(this.bookingYear).then((res) => {
           if (!res.err) {
             self.items = res.data ? res.data : []
             self.tableItems = self.items
             self.totalRows = self.items.length
-            if (highlightChange) {
-              self.$nextTick(() => {
-                self.highlightChangedRow()
-              })
-            }
           } else {
             self.openErrorModal(res.err)
           }

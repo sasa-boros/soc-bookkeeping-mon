@@ -18,7 +18,7 @@
               <b>{{ asRomanNumber(ipcp.incomeCode.partition) + "/" + ipcp.incomeCode.position }}</b>&nbsp;&nbsp;&nbsp;{{ (ipcp.incomeCode.description ? ipcp.incomeCode.description : '') }} 
             </b-col>
             <b-col>
-              <b-form-input v-on:cut="updateAfterCut" :id="'ic' + index" type="text" v-model="ipcp.income" class="predictedAllowedCodeAmountInput"/>
+              <b-form-input v-on:keypress.enter="adaptPredictedIncomeAutoNumericAmount(index)" v-on:cut="updateAfterCut" :id="'ic' + index" type="text" v-model="ipcp.income" class="predictedAllowedCodeAmountInput"/>
             </b-col>
           </b-row>
         </div>
@@ -33,7 +33,7 @@
               <b>{{ asRomanNumber(opca.outcomeCode.partition) + "/" + opca.outcomeCode.position }}</b>&nbsp;&nbsp;&nbsp;{{ (opca.outcomeCode.description ? opca.outcomeCode.description : '') }} 
             </b-col>
             <b-col>
-              <b-form-input v-on:cut="updateAfterCut" :id="'oc' + index" type="text" v-model="opca.outcome" class="predictedAllowedCodeAmountInput"/>
+              <b-form-input v-on:keypress.enter="adaptAllowedOutcomeAutoNumericAmount(index)" v-on:cut="updateAfterCut" :id="'oc' + index" type="text" v-model="opca.outcome" class="predictedAllowedCodeAmountInput"/>
             </b-col>
           </b-row>
         </div>
@@ -45,7 +45,7 @@
           Пренос готовине из претходне године (рез. фонд):
         </b-col>
         <b-col>
-          <b-form-input v-on:cut="updateAfterCut" id="transferFromPreviousYearInput" type="text" v-model="form.transferFromPreviousYear"/>
+          <b-form-input v-on:keypress.enter="adaptAutoNumericAmount('transferFromPreviousYear')" v-on:cut="updateAfterCut" id="transferFromPreviousYearInput" type="text" v-model="form.transferFromPreviousYear"/>
         </b-col>
       </b-row>
       <br>
@@ -54,7 +54,7 @@
           Хартије од вредности - у току године отуђено (амортизовано):
         </b-col>
         <b-col>
-          <b-form-input v-on:cut="updateAfterCut" id="shareValueDepreciatedDuringYearInput" type="text" v-model="form.shareValueDepreciatedDuringYear"/>
+          <b-form-input v-on:keypress.enter="adaptAutoNumericAmount('shareValueDepreciatedDuringYear')" v-on:cut="updateAfterCut" id="shareValueDepreciatedDuringYearInput" type="text" v-model="form.shareValueDepreciatedDuringYear"/>
         </b-col>
       </b-row>
       <br>
@@ -63,7 +63,7 @@
           Некретнине: земљиште - вредност:
         </b-col>
         <b-col>
-          <b-form-input v-on:cut="updateAfterCut" id="realEstateLandValueInput" type="text" v-model="form.realEstateLandValue"/>
+          <b-form-input v-on:keypress.enter="adaptAutoNumericAmount('realEstateLandValue')" v-on:cut="updateAfterCut" id="realEstateLandValueInput" type="text" v-model="form.realEstateLandValue"/>
         </b-col>
       </b-row>
       <br>
@@ -72,7 +72,7 @@
           Некретнине: зграде - вредност:
         </b-col>
         <b-col>
-        <b-form-input v-on:cut="updateAfterCut" id="realEstateBuildingsValueInput" type="text" v-model="form.realEstateBuildingsValue"/>
+        <b-form-input v-on:keypress.enter="adaptAutoNumericAmount('realEstateBuildingsValue')" v-on:cut="updateAfterCut" id="realEstateBuildingsValueInput" type="text" v-model="form.realEstateBuildingsValue"/>
         </b-col>
       </b-row>
         <br>
@@ -154,6 +154,23 @@
       }
     },
     methods: {
+      adaptPredictedIncomeAutoNumericAmount (index) {
+        if (this.form.totalIncomePerCodePredicted && this.form.totalIncomePerCodePredicted[index] 
+        && this.form.totalIncomePerCodePredicted[index].income && !this.form.totalIncomePerCodePredicted[index].income.includes(',')) {
+          this.form.totalIncomePerCodePredicted[index].income = this.form.totalIncomePerCodePredicted[index].income + ',00'
+        }
+      },
+      adaptAllowedOutcomeAutoNumericAmount (index) {
+        if (this.form.totalOutcomePerCodeAllowed && this.form.totalOutcomePerCodeAllowed[index] 
+        && this.form.totalOutcomePerCodeAllowed[index].outcome && !this.form.totalOutcomePerCodeAllowed[index].outcome.includes(',')) {
+          this.form.totalOutcomePerCodeAllowed[index].outcome = this.form.totalOutcomePerCodeAllowed[index].outcome + ',00'
+        }
+      },
+      adaptAutoNumericAmount (formField) {
+        if (this.form[formField] && !this.form[formField].includes(',')) {
+          this.form[formField] = this.form[formField] + ',00'
+        }
+      },
       updateAfterCut (e) {
         if (e && e.target && e.target.id) {
           setTimeout(() => {
