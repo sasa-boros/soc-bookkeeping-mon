@@ -148,7 +148,7 @@
             self.outcomeCodes = res.data ? res.data : []
             if (el)  {
               self.$nextTick(() => {
-                self.highlightChangedRow(el)
+                self.highlightUpdatedRow(el)
               })
             }
           } else {
@@ -210,7 +210,8 @@
         EventBus.$emit('updateGeneralPane')
         EventBus.$emit('updateReceiptTable');
       },
-      highlightChangedRow(el) {
+      highlightUpdatedRow(el) {
+        this.clearRowHighlight()
         var updatedRow;
         if (el && this.outcomeCodes) {
           const updatedRows = document.querySelectorAll('#outcome-codes-table tbody tr')
@@ -224,13 +225,21 @@
           }
         } 
         if (updatedRow) {
-          const oldStyle = updatedRow.style
           updatedRow.style.setProperty('box-shadow', '0 1px 1px rgba(128, 147, 168, 0.075) inset, 0 0 8px rgba(128, 147, 168, 0.6)')
-          setTimeout(() => {
-            updatedRow.style = oldStyle
-          }, 2000)
+          this.highlightedRow = updatedRow
+          this.highlightedRowTimeout = setTimeout(() => {
+            updatedRow.style.setProperty('box-shadow', 'none')
+          }, 2500)
         }
       },
+      clearRowHighlight () {
+        if (this.highlightedRow) {
+          this.highlightedRow.style.setProperty('box-shadow', 'none')
+        }
+        if (this.highlightedRowTimeout) {
+          window.clearTimeout(this.highlightedRowTimeout)
+        }
+      }
     },
     filters: {
       formatPartition (partition) {
