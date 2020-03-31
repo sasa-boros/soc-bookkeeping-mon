@@ -13,7 +13,7 @@
       <h5 align="center">Улог на штедњи</h5>
       <br>
       <b-row>
-        <b-col cols="3">
+        <b-col cols="4">
           <label for="accountInput">Број рачуна:</label>
         </b-col>
         <b-col>
@@ -23,7 +23,7 @@
         </b-col>
       </b-row>
       <b-row>
-        <b-col cols="3">
+        <b-col cols="4">
           <label for="savingEntityInput">Новчани завод:</label>
         </b-col>
         <b-col>
@@ -33,7 +33,7 @@
         </b-col>
       </b-row>
       <b-row>
-        <b-col cols="3">
+        <b-col cols="4">
           <label for="amountInput">Стање на почетку године:</label>
         </b-col>
         <b-col>
@@ -43,7 +43,7 @@
         </b-col>
       </b-row>
       <b-row>
-        <b-col cols="3">
+        <b-col cols="4">
           <label for="amountDepositedInput">У току године уложено:</label>
         </b-col>
         <b-col>
@@ -53,7 +53,7 @@
         </b-col>
       </b-row>
       <b-row>
-        <b-col cols="3">
+        <b-col cols="4">
           <label for="amountWithdrawnInput">У току године изузето:</label>
         </b-col>
         <b-col>

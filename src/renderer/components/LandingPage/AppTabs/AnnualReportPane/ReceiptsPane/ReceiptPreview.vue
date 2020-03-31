@@ -1208,6 +1208,32 @@
         }
       },
       clearForm () {
+        this.form.firstOutcome = null;
+        this.form.secondOutcome = null;
+        this.form.thirdOutcome = null;
+        this.form.fourthOutcome = null;
+        this.form.fifthOutcome = null;
+        this.form.outcome = null;
+        var firstOutcomeInputEl = AutoNumeric.getAutoNumericElement('#firstOutcomeInput')
+        var secondOutcomeInputEl = AutoNumeric.getAutoNumericElement('#secondOutcomeInput')
+        var thirdOutcomeInputEl = AutoNumeric.getAutoNumericElement('#thirdOutcomeInput')
+        var fourthOutcomeInputEl = AutoNumeric.getAutoNumericElement('#fourthOutcomeInput')
+        var fifthOutcomeInputEl = AutoNumeric.getAutoNumericElement('#fifthOutcomeInput')
+        if (firstOutcomeInputEl) {
+          firstOutcomeInputEl.clear()
+        }
+        if (secondOutcomeInputEl) {
+          secondOutcomeInputEl.clear()
+        }
+        if (thirdOutcomeInputEl) {
+          thirdOutcomeInputEl.clear()
+        }
+        if (fourthOutcomeInputEl) {
+          fourthOutcomeInputEl.clear()
+        }
+        if (fifthOutcomeInputEl) {
+          fifthOutcomeInputEl.clear()
+        }
         this.selectedFirstOutcomeCode = null
         this.selectedSecondOutcomeCode = null
         this.selectedThirdOutcomeCode = null
@@ -1218,25 +1244,19 @@
         this.form.date = null
         this.form.firstPartition = null
         this.form.firstPosition = null
-        this.form.firstOutcome = null
         this.form.firstCodeValid = null
         this.form.secondPartition = null
         this.form.secondPosition = null
-        this.form.secondOutcome = null
         this.form.secondCodeValid = null
         this.form.thirdPartition = null
         this.form.thirdPosition = null
-        this.form.thirdOutcome = null
         this.form.thirdCodeValid = null
         this.form.fourthPartition = null
         this.form.fourthPosition = null
-        this.form.fourthOutcome = null
         this.form.fourthCodeValid = null
         this.form.fifthPartition = null
         this.form.fifthPosition = null
-        this.form.fifthOutcome = null
         this.form.fifthCodeValid = null
-        this.form.outcome = null
         this.form.reason = null
         this.form.received = null
         this.form.churchMunicipality = this.commonData ? this.commonData.churchMunicipality : null

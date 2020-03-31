@@ -41,6 +41,7 @@
 
   import store from '@/store'
   import { mapState } from 'vuex'
+  import { EventBus } from '../../../../eventbus/event-bus.js';
 
   const incomeCodeController = require('../../../../controllers/incomeCodeController')
   const outcomeCodeController = require('../../../../controllers/outcomeCodeController')
@@ -92,6 +93,7 @@
         this.alreadyPressed = false
         this.$refs.incomeCodesTable.updateFromCodesPane()
         this.$refs.outcomeCodesTable.updateFromCodesPane()
+        EventBus.$emit('updateGeneralPane')
       },
       openErrorModal(error) {
         this.errorText = error

@@ -9,6 +9,14 @@
   margin-bottom: 0px;
 }
 
+.modal .modal-lg {
+  max-width: 90vw;
+  width: 700px;
+  max-height:90vh;
+  height:400px;
+  overflow: hidden;
+}
+
 .appTab {
   display: block;
   overflow: auto;

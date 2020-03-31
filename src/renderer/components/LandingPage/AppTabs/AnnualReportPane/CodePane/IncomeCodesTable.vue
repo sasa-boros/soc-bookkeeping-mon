@@ -184,6 +184,7 @@
         const self = this
         incomeCodeController.deleteIncomeCode(this.deletedIncomeCode._id).then((res) => {
           if (!res.err) {
+            self.clearRowHighlight()
             self.update()
           } else {
             self.openErrorModal(res.err)
@@ -213,7 +214,7 @@
       highlightUpdatedRow(el) {
         this.clearRowHighlight()
         var updatedRow;
-        if (el && this.incomeCodes) {
+        if (el && this.incomeCodes && this.incomeCodes.length > 1) {
           const updatedRows = document.querySelectorAll('#income-codes-table tbody tr')
           for (let i=0; i < this.incomeCodes.length; i++) {
             if (this.incomeCodes[i].partition == el.partition && this.incomeCodes[i].position == el.position) {

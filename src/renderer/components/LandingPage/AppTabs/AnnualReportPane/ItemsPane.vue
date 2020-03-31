@@ -160,7 +160,7 @@
         return [
           { key: 'select', label: '', thStyle: {outline: 'none', width: '30px'} },
           { key: 'preview', label: '', thStyle: {outline: 'none', width: '70px'}  },
-          { key: 'name', label: this.phrases.name, class: 'text-center', thStyle: {'outline': 'none', 'user-select': 'none'} },
+          { key: 'name', label: this.phrases.name, class: 'text-center', sortable:true, thStyle: {'outline': 'none', 'user-select': 'none'} },
           { key: 'value', label: this.phrases.value, class: 'text-center', sortable: true, thStyle: {'outline': 'none', 'user-select': 'none'} },
           { key: 'delete', label: '', thStyle: {outline: 'none', width: '70px'} },
         ]
@@ -259,6 +259,7 @@
         const self = this
         itemController.deleteItem(this.deletedItem._id).then((res) => {
           if (!res.err) {
+            self.clearRowHighlight()
             self.update()
           } else {
             self.openErrorModal(res.err)
@@ -277,6 +278,7 @@
         const self = this
         itemController.deleteItems(checkedItemsIds).then((res) => {
           if (!res.err) {
+            self.clearRowHighlight()
             self.update()
           } else {
             self.openErrorModal(res.err)

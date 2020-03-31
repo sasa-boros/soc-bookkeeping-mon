@@ -13,7 +13,7 @@
       <h5 align="center">Ставка инвентара</h5>
       <br>
       <b-row>
-        <b-col cols="3">
+        <b-col cols="2">
           <label for="nameInput">Назив:</label>
         </b-col>
         <b-col>
@@ -23,7 +23,7 @@
         </b-col>
       </b-row>
       <b-row>
-        <b-col cols="3">
+        <b-col cols="2">
           <label for="valueInput">Вредност:</label>
         </b-col>
         <b-col>

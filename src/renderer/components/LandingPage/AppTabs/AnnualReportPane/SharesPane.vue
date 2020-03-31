@@ -166,7 +166,7 @@
           { key: 'preview', label: '', thStyle: {outline: 'none', width: '70px'}  },
           { key: 'series', label: this.phrases.series, class: 'text-center', sortable: true, thStyle: {'outline': 'none', 'user-select': 'none'} },
           { key: 'ordinal', label: this.phrases.ordinal, class: 'text-center', sortable: true, thStyle: {'outline': 'none', 'user-select': 'none'} },
-          { key: 'name', label: this.phrases.name, class: 'text-center', thStyle: {'outline': 'none', 'user-select': 'none'} },
+          { key: 'name', label: this.phrases.name, class: 'text-center', sortable:true, thStyle: {'outline': 'none', 'user-select': 'none'} },
           { key: 'nominalValue', label: this.phrases.nominalValue, class: 'text-center', sortable: true, thStyle: {'outline': 'none', 'user-select': 'none'} },
           { key: 'delete', label: '', thStyle: {outline: 'none', width: '70px'} },
         ]
@@ -265,6 +265,7 @@
         const self = this
         shareController.deleteShare(this.deletedShare._id).then((res) => {
           if (!res.err) {
+            self.clearRowHighlight()
             self.update()
           } else {
             self.openErrorModal(res.err)
@@ -283,6 +284,7 @@
         const self = this
         shareController.deleteShares(checkedSharesIds).then((res) => {
           if (!res.err) {
+            self.clearRowHighlight()
             self.update()
           } else {
             self.openErrorModal(res.err)

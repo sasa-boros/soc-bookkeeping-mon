@@ -10,11 +10,11 @@
       </b-row>
       <br>
       <div class="predictedAllowedDiv">
-        <h4 style="text-align:center">Буџетом предвиђено</h4>
+        <h4 style="text-align:center">Буџетом предвиђено - приходи</h4>
         <div v-for="(ipcp, index) in form.totalIncomePerCodePredicted" v-bind:key="'ic' + index">
           <br>
           <b-row>
-            <b-col cols='6'>
+            <b-col cols='7'>
               <b>{{ asRomanNumber(ipcp.incomeCode.partition) + "/" + ipcp.incomeCode.position }}</b>&nbsp;&nbsp;&nbsp;{{ (ipcp.incomeCode.description ? ipcp.incomeCode.description : '') }} 
             </b-col>
             <b-col>
@@ -25,11 +25,11 @@
       </div>
       <br>
       <div class="predictedAllowedDiv">
-        <h4 style="text-align:center">Буџетом одобрено</h4>
+        <h4 style="text-align:center">Буџетом предвиђено - расходи</h4>
         <div v-for="(opca, index) in form.totalOutcomePerCodeAllowed" v-bind:key="'oc' + index">
           <br>
           <b-row>
-            <b-col cols='6'>
+            <b-col cols='7'>
               <b>{{ asRomanNumber(opca.outcomeCode.partition) + "/" + opca.outcomeCode.position }}</b>&nbsp;&nbsp;&nbsp;{{ (opca.outcomeCode.description ? opca.outcomeCode.description : '') }} 
             </b-col>
             <b-col>
@@ -41,7 +41,7 @@
       <br>
       <br>
       <b-row>
-        <b-col cols="6">
+        <b-col cols="7">
           Пренос готовине из претходне године (рез. фонд):
         </b-col>
         <b-col>
@@ -50,7 +50,7 @@
       </b-row>
       <br>
       <b-row>
-        <b-col cols="6">
+        <b-col cols="7">
           Хартије од вредности - у току године отуђено (амортизовано):
         </b-col>
         <b-col>
@@ -59,7 +59,7 @@
       </b-row>
       <br>
       <b-row>
-        <b-col cols="6">
+        <b-col cols="7">
           Некретнине: земљиште - вредност:
         </b-col>
         <b-col>
@@ -68,7 +68,7 @@
       </b-row>
       <br>
       <b-row>
-        <b-col cols="6">
+        <b-col cols="7">
           Некретнине: зграде - вредност:
         </b-col>
         <b-col>
@@ -77,7 +77,7 @@
       </b-row>
         <br>
       <b-row>
-        <b-col cols="6">
+        <b-col cols="7">
           Некретнине: земљиште - површина:
         </b-col>
         <b-col>
@@ -86,7 +86,7 @@
       </b-row>
         <br>
       <b-row>
-        <b-col cols="6">
+        <b-col cols="7">
           Некретнине: зграде - површина:
         </b-col>
         <b-col>

@@ -184,6 +184,7 @@
         const self = this
         outcomeCodeController.deleteOutcomeCode(this.deletedOutcomeCode._id).then((res) => {
           if (!res.err) {
+            self.clearRowHighlight()
             self.update()
           } else {
             self.openErrorModal(res.err)
@@ -213,7 +214,7 @@
       highlightUpdatedRow(el) {
         this.clearRowHighlight()
         var updatedRow;
-        if (el && this.outcomeCodes) {
+        if (el && this.outcomeCodes && this.outcomeCodes.length > 1) {
           const updatedRows = document.querySelectorAll('#outcome-codes-table tbody tr')
           for (let i=0; i < this.outcomeCodes.length; i++) {
             if (this.outcomeCodes[i].partition == el.partition && this.outcomeCodes[i].position == el.position) {

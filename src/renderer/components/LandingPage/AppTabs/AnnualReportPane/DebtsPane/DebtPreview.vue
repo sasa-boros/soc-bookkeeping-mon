@@ -13,7 +13,7 @@
       <h5 align="center">Дуговање</h5>
       <br>
       <b-row>
-        <b-col cols="3">
+        <b-col cols="2">
           <label for="descriptionInput">Опис:</label>
         </b-col>
         <b-col>
@@ -23,7 +23,7 @@
         </b-col>
       </b-row>
       <b-row>
-        <b-col cols="3">
+        <b-col cols="2">
           <label for="amountInput">Износ:</label>
         </b-col>
         <b-col>

@@ -1153,6 +1153,32 @@
         }
       },
       clearForm () {
+        this.form.firstIncome = null;
+        this.form.secondIncome = null;
+        this.form.thirdIncome = null;
+        this.form.fourthIncome = null;
+        this.form.fifthIncome = null;
+        this.form.income = null;
+        var firstIncomeInputEl = AutoNumeric.getAutoNumericElement('#firstIncomeInput')
+        var secondIncomeInputEl = AutoNumeric.getAutoNumericElement('#secondIncomeInput')
+        var thirdIncomeInputEl = AutoNumeric.getAutoNumericElement('#thirdIncomeInput')
+        var fourthIncomeInputEl = AutoNumeric.getAutoNumericElement('#fourthIncomeInput')
+        var fifthIncomeInputEl = AutoNumeric.getAutoNumericElement('#fifthIncomeInput')
+        if (firstIncomeInputEl) {
+          firstIncomeInputEl.clear()
+        }
+        if (secondIncomeInputEl) {
+          secondIncomeInputEl.clear()
+        }
+        if (thirdIncomeInputEl) {
+          thirdIncomeInputEl.clear()
+        }
+        if (fourthIncomeInputEl) {
+          fourthIncomeInputEl.clear()
+        }
+        if (fifthIncomeInputEl) {
+          fifthIncomeInputEl.clear()
+        }
         this.selectedFirstIncomeCode = null
         this.selectedSecondIncomeCode = null
         this.selectedThirdIncomeCode = null
@@ -1163,25 +1189,19 @@
         this.form.date = null;
         this.form.firstPartition = null;
         this.form.firstPosition = null;
-        this.form.firstIncome = null;
         this.form.firstCodeValid = null;
         this.form.secondPartition = null;
         this.form.secondPosition = null;
-        this.form.secondIncome = null;
         this.form.secondCodeValid = null;
         this.form.thirdPartition = null;
         this.form.thirdPosition = null;
-        this.form.thirdIncome = null;
         this.form.thirdCodeValid = null;
         this.form.fourthPartition = null;
         this.form.fourthPosition = null;
-        this.form.fourthIncome = null;
         this.form.fourthCodeValid = null;
         this.form.fifthPartition = null;
         this.form.fifthPosition = null;
-        this.form.fifthIncome = null;
         this.form.fifthCodeValid = null;
-        this.form.income = null;
         this.form.town = this.commonData ? this.commonData.churchTown : null
         this.form.townReceived = this.commonData ? this.commonData.churchTown : null
         this.form.reason = null;

@@ -166,8 +166,8 @@
         return [
           { key: 'select', label: '', thStyle: {outline: 'none', width: '30px'} },
           { key: 'preview', label: '', thStyle: {outline: 'none', width: '70px'}  },
-          { key: 'account', label: this.phrases.account, class: 'text-center', thStyle: {'outline': 'none', 'user-select': 'none'} },
-          { key: 'savingEntity', label: this.phrases.savingEntity, class: 'text-center', thStyle: {'outline': 'none', 'user-select': 'none'} },
+          { key: 'account', label: this.phrases.account, class: 'text-center', sortable:true, thStyle: {'outline': 'none', 'user-select': 'none'} },
+          { key: 'savingEntity', label: this.phrases.savingEntity, class: 'text-center', sortable:true, thStyle: {'outline': 'none', 'user-select': 'none'} },
           { key: 'amount', label: this.phrases.amount, class: 'text-center', sortable: true, thStyle: {'outline': 'none', 'user-select': 'none'} },
           { key: 'amountDeposited', label: this.phrases.amountDeposited, class: 'text-center', sortable: true, thStyle: {'outline': 'none', 'user-select': 'none'} },
           { key: 'amountWithdrawn', label: this.phrases.amountWithdrawn, class: 'text-center', sortable: true, thStyle: {'outline': 'none', 'user-select': 'none'} },
@@ -268,6 +268,7 @@
         const self = this
         savingController.deleteSaving(this.deletedSaving._id).then((res) => {
           if (!res.err) {
+            self.clearRowHighlight()
             self.update()
           } else {
             self.openErrorModal(res.err)
@@ -286,6 +287,7 @@
         const self = this
         savingController.deleteSavings(checkedSavingsIds).then((res) => {
           if (!res.err) {
+            self.clearRowHighlight()
             self.update()
           } else {
             self.openErrorModal(res.err)

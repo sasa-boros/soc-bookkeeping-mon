@@ -13,7 +13,7 @@
       <h5 align="center">Партија и позиција издавања</h5>
       <br>
       <b-row>
-        <b-col cols="3">
+        <b-col cols="2">
           <label for="partitionInput">Партија:</label>
         </b-col>
         <b-col>
@@ -23,7 +23,7 @@
         </b-col>
       </b-row>
       <b-row>
-        <b-col cols="3">
+        <b-col cols="2">
           <label for="positionInput">Позиција:</label>
         </b-col>
         <b-col>
@@ -33,7 +33,7 @@
         </b-col>
       </b-row>
       <b-row>
-        <b-col cols="3">
+        <b-col cols="2">
           <label for="descriptionInput">Опис:</label>
         </b-col>
         <b-col>
@@ -217,12 +217,17 @@ export default {
         self.$refs.saveOutcomeCodeBtn.click()
         return false
       });
+      Mousetrap.bind(['command+e', 'ctrl+e'], function(e) {
+        self.clearForm()
+        return false
+      });
       Mousetrap.prototype.stopCallback = function () {
         return false
       }
     },
     unbindKeys() {
       Mousetrap.unbind(['command+s', 'ctrl+s'])
+      Mousetrap.unbind(['command+e', 'ctrl+e'])
     },
     limitInputPerSize(evt) {
       if (evt.key == 'Enter') {

@@ -159,7 +159,7 @@
         return [
           { key: 'select', label: '', thStyle: {outline: 'none', width: '30px'} },
           { key: 'preview', label: '', thStyle: {outline: 'none', width: '70px'}  },
-          { key: 'description', label: this.phrases.description, class: 'text-center', thStyle: {'outline': 'none', 'user-select': 'none'} },
+          { key: 'description', label: this.phrases.description, class: 'text-center', sortable:true, thStyle: {'outline': 'none', 'user-select': 'none'} },
           { key: 'amount', label: this.phrases.amount, class: 'text-center', sortable: true, thStyle: {'outline': 'none', 'user-select': 'none'} },
           { key: 'delete', label: '', thStyle: {outline: 'none', width: '70px'} },
         ]
@@ -258,6 +258,7 @@
         const self = this
         debtController.deleteDebt(this.deletedDebt._id).then((res) => {
           if (!res.err) {
+            self.clearRowHighlight()
             self.update()
           } else {
             self.openErrorModal(res.err)
@@ -276,6 +277,7 @@
         const self = this
         debtController.deleteDebts(checkedDebtsIds).then((res) => {
           if (!res.err) {
+            self.clearRowHighlight()
             self.update()
           } else {
             self.openErrorModal(res.err)

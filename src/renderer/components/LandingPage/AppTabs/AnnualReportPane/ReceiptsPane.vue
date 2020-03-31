@@ -206,7 +206,7 @@
           { key: 'preview', label: '', thStyle: {outline: 'none', width: '70px'} },
           { key: 'ordinal', label: this.phrases.ordinal, class: 'text-center', sortable: true, thStyle: {'outline': 'none', 'user-select': 'none'} },
           { key: 'outcome', label: this.phrases.outcome, class: 'text-center', sortable: true, thStyle: {'outline': 'none', 'user-select': 'none'} },
-          { key: 'reason', label: this.phrases.reason, class: 'text-center', thStyle: {'outline': 'none', 'user-select': 'none'} },
+          { key: 'reason', label: this.phrases.reason, class: 'text-center', sortable: true, thStyle: {'outline': 'none', 'user-select': 'none'} },
           { key: 'formatedDate', label: this.phrases.forDate, class: 'text-center', sortable: true, thStyle: {'outline': 'none', 'user-select': 'none'} },
           { key: 'delete', label: '', thStyle: {outline: 'none', width: '100px'} }
         ]
@@ -311,6 +311,7 @@
         const self = this
         receiptController.deleteReceipt(this.deletedReceipt._id, this.bookingYear).then((res) => {
           if (!res.err) {
+            self.clearRowHighlight()
             self.update()
           } else {
             self.openErrorModal(res.err)
@@ -329,6 +330,7 @@
         const self = this
         receiptController.deleteReceipts(checkedReceiptsIds, this.bookingYear).then((res) => {
           if (!res.err) {
+            self.clearRowHighlight()
             self.update()
           } else {
             self.openErrorModal(res.err)
