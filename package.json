@@ -70,7 +70,7 @@
     "bootstrap-vue": "^2.1.0",
     "electron-context-menu": "^0.16.0",
     "focus-visible": "^5.0.2",
-    "lodash": "^4.17.15",
+    "lodash": "^4.17.19",
     "mousetrap": "^1.6.3",
     "mustache": "^3.1.0",
     "nedb": "^1.8.0",
