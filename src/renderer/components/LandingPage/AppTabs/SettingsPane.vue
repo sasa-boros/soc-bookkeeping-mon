@@ -43,10 +43,6 @@
       <message-confirm-dialog ref="settingsPaneErrorModal" parentModal="settings-pane-error-modal" type="error" :text="errorText" :cancelOkText="phrases.ok"></message-confirm-dialog>
     </b-modal>
 
-    <b-tooltip boundary='window' target="commonSaveBtn" triggers="hover" placement="top" ref="commonSaveBtnTooltip" v-on:hide.prevent>
-      {{phrases.save}}
-    </b-tooltip>
-      
     <b-tooltip boundary='window' target="increaseZoomLevelButton" triggers="hover" placement="top" ref="increaseZoomLevelButtonTooltip" v-on:hide.prevent>
       {{phrases.increase}}
     </b-tooltip>
@@ -101,9 +97,7 @@
         churchMunicipality: null,
         churchTown: null,
         zoomLevel: Big(1.2),
-        commonDataSaveTimeout: null,
         alreadyPressed: false,
-        disableCommonSaveBtn: true,
         errorText: null,
         backupPath: null
       }

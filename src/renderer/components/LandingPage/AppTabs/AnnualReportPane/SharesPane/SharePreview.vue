@@ -14,7 +14,7 @@
       <br>
       <b-row>
         <b-col cols="3">
-          <label for="seriesInput">Серија:</label>
+          Серија:
         </b-col>
         <b-col>
           <b-form-group>
@@ -22,9 +22,10 @@
           </b-form-group>
         </b-col>
       </b-row>
+      <br>
       <b-row>
         <b-col cols="3">
-          <label for="ordinalInput">Број:</label>
+          Број:
         </b-col>
         <b-col>
           <b-form-group>
@@ -32,9 +33,10 @@
           </b-form-group>
         </b-col>
       </b-row>
+      <br>
       <b-row>
         <b-col cols="3">
-          <label for="nameInput">Назив:</label>
+          Назив:
         </b-col>
         <b-col>
           <b-form-group>
@@ -42,9 +44,10 @@
           </b-form-group>
         </b-col>
       </b-row>
+      <br>
       <b-row>
         <b-col cols="3">
-          <label for="nominalValueInput">Ном. вредност:</label>
+          Ном. вредност:
         </b-col>
         <b-col>
           <b-form-group>

@@ -1,51 +1,22 @@
 <template>
   <b-container fluid>
-    <br>
     <b-row class="text-center">
       <b-col>
-        <b-form ref="commonDataForm" @submit="createAnnualReportCommon" novalidate no-validation>
-          Дневник благајне Српског православног манастира
-          <b-form-input
-            id="churchMunicipalityInput"
-            type="text"
-            v-model="churchMunicipality"
-            v-on:input="disableCommonSaveBtn = false"
-            v-on:keypress="limitInputPerSize"
-          />&nbsp;&nbsp;у
-          <b-form-input
-            id="churchTownInput"
-            type="text"
-            v-model="churchTown"
-            v-on:input="disableCommonSaveBtn = false"
-            v-on:keypress="limitInputPerSize"
-          />&nbsp;
-          <b-button
-            id="commonSaveBtn"
-            ref="commonSaveBtn"
-            :class="{'hidden':  disableCommonSaveBtn}"
-            v-on:mouseleave="hideTooltip('commonSaveBtn')"
-            type="submit"
-            variant="light"
-          >
-            <img src="~@/assets/save.png" />
-          </b-button>
-        </b-form>
-      </b-col>
-    </b-row>
-    <b-row class="text-center">
-      <b-col>
-        Година књижења&nbsp;
+        <span>Година књижења:</span>
         <datepicker
           minimum-view="year"
           maximum-view="year"
-          format="yyyy"
+          format="yyyy."
           v-model="year"
           v-on:input="setBookingYear"
           :language="calendarLanguages.srCYRL"
           input-class="bookingYearDatepickerInput"
           wrapper-class="bookingYearDatepickerWrapper"
           calendar-class="bookingYearDatepickerCalendar"
+          id="bookingYearDatepicker"
         ></datepicker>
+        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+        <span>Прикажи дневник:</span>
         <b-button v-on:focus="unfocusElementOnNonKeyboardEvent" id="annualReportBtn" ref="annualReportBtn" v-on:mouseleave="hideTooltip('annualReportBtn')" v-on:click="createAnnualReport" variant="light" class="btn-lg">
           <img src="~@/assets/annual-report.png">
         </b-button>
@@ -191,18 +162,14 @@ export default {
         sr: sr,
         srCYRL: srCYRL
       },
-      churchMunicipality: null,
-      churchTown: null,
       alreadyPressed: false,
       year: new Date(),
       annualReport: null,
-      annualReportPages: [],
-      disableCommonSaveBtn: true
+      annualReportPages: []
     };
   },
   created () {
     this.setBookingYear()
-    this.loadAnnualReportCommon()
     const self = this
     this.$watch('bookingYear', () => {
       self.updateInvalidPaymentSlipsInfo()
@@ -227,34 +194,6 @@ export default {
     },
     setBookingYear() {
       this.$store.dispatch('SET_BOOKING_YEAR', this.year.getFullYear())
-    },
-    loadAnnualReportCommon () {
-      const self = this
-      annualReportController.getAnnualReportCommon().then((res) => {
-        if (!res.err) {
-          self.churchMunicipality = res.data ? res.data.churchMunicipality : null
-          self.churchTown = res.data ? res.data.churchTown : null
-        } else {
-          self.openErrorModal(res.err)
-        }
-      })
-    },
-    createAnnualReportCommon (evt) {
-      evt.preventDefault()
-      if (this.alreadyPressed) {
-        return
-      }
-      this.hideTooltip('commonSaveBtn')
-      const self = this
-      this.alreadyPressed = true
-      annualReportController.createAnnualReportCommon({churchMunicipality: self.churchMunicipality, churchTown: self.churchTown}).then(function(res) {
-        self.alreadyPressed = false
-        if (!res.err) {
-          self.disableCommonSaveBtn = true
-        } else {
-          self.openErrorModal(res.err)
-        }
-      })
     },
     createAnnualReport: function () {
       if (this.alreadyPressed) {
@@ -351,18 +290,6 @@ export default {
     border-bottom: .5pt solid black !important;
     border-radius: 0 !important;
   }
-  #churchMunicipalityInput {
-    width: 400px;
-    max-width: 400px;
-    border-style: none;
-    display:inline;
-  }
-  #churchTownInput {
-    width: 278px;
-    max-width: 278px;
-    border-style: none;
-    display:inline;
-  }
   .hidden {
     visibility:hidden;
   }
@@ -389,8 +316,6 @@ export default {
     white-space: nowrap;
     width:50px;
     max-height: 20px;
-    padding: 0px;
-    margin-bottom: 20px;
     font-weight: bold;
     color: black;
   }
@@ -398,15 +323,11 @@ export default {
     display: inline;
     white-space: normal;
     height: 20px;
-    margin: 0px;
-    padding: 0px;
     width: 95px;
   }
   .bookingYearDatepickerWrapper > div:first-child {
     display: inline;
     width: 95px;
-    margin: 0px;
-    padding: 0px;
   }
   .bookingYearDatepickerCalendar {
     left:0px;

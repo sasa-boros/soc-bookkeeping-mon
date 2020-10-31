@@ -14,7 +14,7 @@
       <br>
       <b-row>
         <b-col cols="2">
-          <label for="nameInput">Назив:</label>
+          Назив:
         </b-col>
         <b-col>
           <b-form-group>
@@ -22,9 +22,10 @@
           </b-form-group>
         </b-col>
       </b-row>
+      <br>
       <b-row>
         <b-col cols="2">
-          <label for="valueInput">Вредност:</label>
+          Вредност:
         </b-col>
         <b-col>
           <b-form-group>

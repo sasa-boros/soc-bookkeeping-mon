@@ -133,9 +133,9 @@
     "Income code partition and position not unique": "Већ постоји задата партија и позиција",
     "Outcome code partition and position not unique": "Већ постоји задата партија и позиција",
     "Are you sure you want to delete income code?" : "Да ли сте сигурни да желите да обришете партију и позицију?",
-    "By deleting income code you will possibly make some of payment slips invalid." : "Брисањем партије и позиције потенцијално ћете учинити неке од уплатница невалидним.",
+    "By deleting income code you will possibly make some of payment slips invalid." : "Брисањем партије и позиције можете учинити неке од уплатница невалидним.",
     "Are you sure you want to delete outcome code?" : "Да ли сте сигурни да желите да обришете партију и позицију?",
-    "By deleting outcome code you will possibly make some of receipts invalid." : "Брисањем партије и позиције потенцијално ћете учинити неке од признаница невалидним.",
+    "By deleting outcome code you will possibly make some of receipts invalid." : "Брисањем партије и позиције можете учинити неке од признаница невалидним.",
 
     "Ok": "У реду",
     "Previous page": "Претходна страница",

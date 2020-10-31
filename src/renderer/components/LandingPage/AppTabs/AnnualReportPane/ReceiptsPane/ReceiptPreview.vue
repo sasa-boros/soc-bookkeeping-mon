@@ -9,12 +9,12 @@
         <br/>         На динара <b-form-input disabled id="outcomeInput" ref="outcomeInput" v-model="form.outcome" class="input-small numberInput" type="text"></b-form-input> и словима <b-form-input disabled class="input-small" id="outcomeAsText1" v-model="generatedOutcomeTextLine1"></b-form-input>
         <br/><b-form-input disabled class="input-small" id="outcomeAsText2" v-model="generatedOutcomeTextLine2"></b-form-input>
         <br/>примљених из благајне Српског православног манастира
-у <b-form-input id="townInput" v-on:keypress="limitInputPerSize" v-model="form.town" class="input-small" type="text"></b-form-input> на име <b-form-input id="reasonInput" :autofocus="!receiptPreview" v-on:keypress="limitInputPerSize" v-on:mouseleave="disableReasonTooltip ? null : hideTooltip('reasonInput')" v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingReason }" type="text"></b-form-input>
+у <b-form-input disabled id="townInput" v-on:keypress="limitInputPerSize" v-model="form.town" class="input-small" type="text"></b-form-input> на име <b-form-input id="reasonInput" :autofocus="!receiptPreview" v-on:keypress="limitInputPerSize" v-on:mouseleave="disableReasonTooltip ? null : hideTooltip('reasonInput')" v-model="form.reason" class="input-small" v-bind:class="{ 'is-invalid': shouldValidate && missingReason }" type="text"></b-form-input>
                                                                                                                                          Примио,
                         Исплатио благајник,                                              <b-form-input v-on:keypress="limitInputPerSize"  v-model="form.received" class="input-small" id="receivedInput" type="text"></b-form-input>
 <br><b-form-input disabled class="input-small" id="payedInput" type="text"></b-form-input>&nbsp;                       Да се исплати на терет расхода <b-form-input disabled id="yearInput" ref="yearInput" class="input-small" v-model="bookingYear"></b-form-input> год.                      
-у <b-form-input id="townPayedInput" v-on:keypress="limitInputPerSize" v-model="form.townPayed" class="input-small" type="text"></b-form-input>&nbsp;         <span class="partText">Парт. </span><b-form-input id="firstPartInput"  type="text" v-model="formatedFirstPart" v-bind:class="{ 'is-invalid': !disableFirstPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableFirstPartTooltip ? null : hideTooltip('firstPartPosSelect')"><b-dropdown  id="firstPartPosSelect" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedFirstPartPos(option.value)" v-for="(option, index) in firstPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span> поз. <span v-on:mouseleave="disableFirstPosTooltip ? null : hideTooltip('firstPosInputWrapper')" id="firstPosInputWrapper"><b-form-input id="firstPosInput" v-model="form.firstPosition" v-bind:class="{ 'is-invalid': !disableFirstPosTooltip}" class="input-small" disabled/></span> дин. <span v-on:mouseleave="disableFirstOutcomeTooltip ? null : hideTooltip('firstOutcomeInputWrapper')" id="firstOutcomeInputWrapper"><b-form-input v-on:keypress.enter="adaptAutoNumericAmount('firstOutcome')" v-on:cut="updateAfterCut" id="firstOutcomeInput" v-model="form.firstOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableFirstOutcomeTooltip }" :disabled="missingFirstPart || (selectedFirstOutcomeCode && selectedFirstOutcomeCode.tax)" type="text"></b-form-input></span>
-<span v-on:mouseleave="disableDateTooltip ? null : hideTooltip('dateInput')"><datepicker id="dateInput" ref="dateInput" v-model="form.date" :input-class="{ 'is-invalid-date': shouldValidate && missingDate, 'receiptDatepickerInput': true }" :language="calendarLanguages.srCYRL" wrapper-class="receiptDatepickerWrapper" calendar-class="receiptDatepickerCalendar"></datepicker>год.</span>&nbsp;                                                             <span class="partText">”&nbsp;&nbsp;&nbsp;</span><b-form-input id="secondPartInput" type="text"  v-model="formatedSecondPart" v-bind:class="{ 'is-invalid': !disableSecondPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableSecondPartTooltip ? null : hideTooltip('secondPartPosSelect')"><b-dropdown  id="secondPartPosSelect" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedSecondPartPos(option.value)" v-for="(option, index) in secondPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableSecondPosTooltip ? null : hideTooltip('secondPosInputWrapper')" id="secondPosInputWrapper"><b-form-input id="secondPosInput" v-model="form.secondPosition" v-bind:class="{ 'is-invalid': !disableSecondPosTooltip }" class="input-small" disabled/></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableSecondOutcomeTooltip ? null : hideTooltip('secondOutcomeInputWrapper')" id="secondOutcomeInputWrapper"><b-form-input v-on:keypress.enter="adaptAutoNumericAmount('secondOutcome')" v-on:cut="updateAfterCut" v-model="form.secondOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableSecondOutcomeTooltip }" id="secondOutcomeInput" :disabled="missingSecondPart || (selectedSecondOutcomeCode && selectedSecondOutcomeCode.tax)" type="text"></b-form-input></span>
+у <b-form-input disabled id="townPayedInput" v-on:keypress="limitInputPerSize" v-model="form.townPayed" class="input-small" type="text"></b-form-input>&nbsp;         <span class="partText">Парт. </span><b-form-input id="firstPartInput"  type="text" v-model="formatedFirstPart" v-bind:class="{ 'is-invalid': !disableFirstPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableFirstPartTooltip ? null : hideTooltip('firstPartPosSelect')"><b-dropdown  id="firstPartPosSelect" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedFirstPartPos(option.value)" v-for="(option, index) in firstPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span> поз. <span v-on:mouseleave="disableFirstPosTooltip ? null : hideTooltip('firstPosInputWrapper')" id="firstPosInputWrapper"><b-form-input id="firstPosInput" v-model="form.firstPosition" v-bind:class="{ 'is-invalid': !disableFirstPosTooltip}" class="input-small" disabled/></span> дин. <span v-on:mouseleave="disableFirstOutcomeTooltip ? null : hideTooltip('firstOutcomeInputWrapper')" id="firstOutcomeInputWrapper"><b-form-input v-on:keypress.enter="adaptAutoNumericAmount('firstOutcome')" v-on:cut="updateAfterCut" id="firstOutcomeInput" v-model="form.firstOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableFirstOutcomeTooltip }" :disabled="missingFirstPart || (selectedFirstOutcomeCode && selectedFirstOutcomeCode.tax)" type="text"></b-form-input></span>
+<span v-on:mouseleave="disableDateTooltip ? null : hideTooltip('dateInput')"><datepicker id="dateInput" ref="dateInput" v-model="form.date" :input-class="{ 'is-invalid-date': shouldValidate && missingDate, 'receiptDatepickerInput': true }" :language="calendarLanguages.srCYRL" wrapper-class="receiptDatepickerWrapper" calendar-class="receiptDatepickerCalendar" v-on:input="determinePageAndOrdinal"></datepicker>год.</span>&nbsp;                                                             <span class="partText">”&nbsp;&nbsp;&nbsp;</span><b-form-input id="secondPartInput" type="text"  v-model="formatedSecondPart" v-bind:class="{ 'is-invalid': !disableSecondPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableSecondPartTooltip ? null : hideTooltip('secondPartPosSelect')"><b-dropdown  id="secondPartPosSelect" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedSecondPartPos(option.value)" v-for="(option, index) in secondPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableSecondPosTooltip ? null : hideTooltip('secondPosInputWrapper')" id="secondPosInputWrapper"><b-form-input id="secondPosInput" v-model="form.secondPosition" v-bind:class="{ 'is-invalid': !disableSecondPosTooltip }" class="input-small" disabled/></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableSecondOutcomeTooltip ? null : hideTooltip('secondOutcomeInputWrapper')" id="secondOutcomeInputWrapper"><b-form-input v-on:keypress.enter="adaptAutoNumericAmount('secondOutcome')" v-on:cut="updateAfterCut" v-model="form.secondOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableSecondOutcomeTooltip }" id="secondOutcomeInput" :disabled="missingSecondPart || (selectedSecondOutcomeCode && selectedSecondOutcomeCode.tax)" type="text"></b-form-input></span>
 &nbsp;                                                                                               <span class="partText">”&nbsp;&nbsp;&nbsp;</span><b-form-input id="thirdPartInput" type="text"  v-model="formatedThirdPart" v-bind:class="{ 'is-invalid': !disableThirdPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableThirdPartTooltip ? null : hideTooltip('thirdPartPosSelect')"><b-dropdown  id="thirdPartPosSelect" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedThirdPartPos(option.value)" v-for="(option, index) in thirdPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableThirdPosTooltip ? null : hideTooltip('thirdPosInputWrapper')" id="thirdPosInputWrapper"><b-form-input id="thirdPosInput" v-model="form.thirdPosition" v-bind:class="{ 'is-invalid': !disableThirdPosTooltip }" class="input-small" disabled/></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableThirdOutcomeTooltip ? null : hideTooltip('thirdOutcomeInputWrapper')" id="thirdOutcomeInputWrapper"><b-form-input v-on:keypress.enter="adaptAutoNumericAmount('thirdOutcome')" v-on:cut="updateAfterCut" v-model="form.thirdOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableThirdOutcomeTooltip }" id="thirdOutcomeInput" :disabled="missingThirdPart || (selectedThirdOutcomeCode && selectedThirdOutcomeCode.tax)" type="text"></b-form-input></span>
 &nbsp;                                                                                               <span class="partText">”&nbsp;&nbsp;&nbsp;</span><b-form-input id="fourthPartInput" type="text"  v-model="formatedFourthPart" v-bind:class="{ 'is-invalid': !disableFourthPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableFourthPartTooltip ? null : hideTooltip('fourthPartPosSelect')"><b-dropdown  id="fourthPartPosSelect" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedFourthPartPos(option.value)" v-for="(option, index) in fourthPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableFourthPosTooltip ? null : hideTooltip('fourthPosInputWrapper')" id="fourthPosInputWrapper"><b-form-input id="fourthPosInput" v-model="form.fourthPosition" v-bind:class="{ 'is-invalid': !disableFourthPosTooltip }" class="input-small" disabled/></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableFourthOutcomeTooltip ? null : hideTooltip('fourthOutcomeInputWrapper')" id="fourthOutcomeInputWrapper"><b-form-input v-on:keypress.enter="adaptAutoNumericAmount('fourthOutcome')" v-on:cut="updateAfterCut" v-model="form.fourthOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableFourthOutcomeTooltip }" id="fourthOutcomeInput" :disabled="missingFourthPart || (selectedFourthOutcomeCode && selectedFourthOutcomeCode.tax)" type="text"></b-form-input></span>
 &nbsp;                                                                                               <span class="partText">”&nbsp;&nbsp;&nbsp;</span><b-form-input id="fifthPartInput" type="text"  v-model="formatedFifthPart" v-bind:class="{ 'is-invalid': !disableFifthPartTooltip}" class="input-small" tabindex="-1"/><span v-on:mouseleave="disableFifthPartTooltip ? null : hideTooltip('fifthPartPosSelect')"><b-dropdown  id="fifthPartPosSelect" :no-caret="true" class="ignoreInPrint" variant="link"><b-dropdown-item class="partPosOption" v-on:click="setSelectedFifthPartPos(option.value)" v-for="(option, index) in fifthPartPosOptions" v-bind:key="index"><span v-html="option.html"></span></b-dropdown-item></b-dropdown></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableFifthPosTooltip ? null : hideTooltip('fifthPosInputWrapper')" id="fifthPosInputWrapper"><b-form-input id="fifthPosInput" v-model="form.fifthPosition" v-bind:class="{ 'is-invalid': !disableFifthPosTooltip }" class="input-small" disabled/></span>&nbsp;&nbsp;&nbsp;”&nbsp;&nbsp;&nbsp;&nbsp;<span v-on:mouseleave="disableFifthOutcomeTooltip ? null : hideTooltip('fifthOutcomeInputWrapper')" id="fifthOutcomeInputWrapper"><b-form-input v-on:keypress.enter="adaptAutoNumericAmount('fifthOutcome')" v-on:cut="updateAfterCut" v-model="form.fifthOutcome" class="input-small numberInput" v-bind:class="{ 'is-invalid': !disableFifthOutcomeTooltip }" id="fifthOutcomeInput" :disabled="missingFifthPart || (selectedFifthOutcomeCode && selectedFifthOutcomeCode.tax)" type="text"></b-form-input></span>
@@ -110,14 +110,6 @@
       {{phrases.pickDate}}
     </b-tooltip>
 
-    <b-tooltip boundary='window' target="annualReportPageInputWrapper" triggers="hover" placement="top" ref="annualReportPageInputTooltip" v-on:hide.prevent>
-      {{phrases.automaticallyGeneratedAfterSave}}
-    </b-tooltip>
-
-    <b-tooltip boundary='window' target="ordinalInputWrapper" triggers="hover" placement="top" ref="ordinalInputTooltip" v-on:hide.prevent>
-      {{phrases.automaticallyGeneratedAfterSave}}
-    </b-tooltip>
-
     <b-tooltip boundary='window' target="receiptDownloadBtn" triggers="hover" placement="top" ref="receiptDownloadBtnTooltip" v-on:hide.prevent>
       {{phrases.download}}
     </b-tooltip>
@@ -159,6 +151,10 @@
   export default {
     store: store,
     props: {
+      existingReceipts: {
+        type: Array,
+        default: [],
+      },
       receipt: {
         type: Object,
         default: null
@@ -191,7 +187,6 @@
           ok: i18n.getTranslation('Ok'),
           download: i18n.getTranslation('Download'),
           receiptFileName: i18n.getTranslation('receipt'),
-          automaticallyGeneratedAfterSave: i18n.getTranslation('Automatically generated after save'),
           saveError: i18n.getTranslation('Failed saving error'),
           unexistingPartitionAndPosition: i18n.getTranslation('Unexisting partition and position')
         },
@@ -211,7 +206,6 @@
         formatedThirdPart: null,
         formatedFourthPart: null,
         formatedFifthPart: null,
-        commonData: null,
         selectedFirstOutcomeCode: null,
         selectedSecondOutcomeCode: null,
         selectedThirdOutcomeCode: null,
@@ -230,7 +224,6 @@
       }
       this.disabledDates.to = new Date(this.bookingYear, 0, 1, 0, 0, 0);
       this.disabledDates.from = new Date(this.bookingYear, 11, 31, 23, 59, 59)
-      this.loadAnnualReportCommon()
       if(this.receiptPreview) {
         var receipt = JSON.parse(JSON.stringify(this.receipt));
         this.form = mapReceiptToReceiptForm(receipt);
@@ -240,7 +233,7 @@
           this.disablePrintAndDownload = false
         }
       } else {
-        this.form = mapReceiptToReceiptForm({});
+        this.form = mapReceiptToReceiptForm({town: this.churchTown, townPayed: this.churchTown});
       } 
       const self = this;
       outcomeCodeController.getOutcomeCodes(this.bookingYear).then(function (res) {
@@ -321,7 +314,8 @@
     computed: {
       ...mapState(
         {
-          bookingYear: state => state.CommonValues.bookingYear
+          bookingYear: state => state.CommonValues.bookingYear,
+          churchTown: state => state.CommonValues.churchTown
         }
       ),
       generatedOutcomeText: {
@@ -889,6 +883,35 @@
       }
     },
     methods: {
+      determinePageAndOrdinal () {
+        if (this.form.date == null) {
+          this.form.annualReportPage = null;
+          this.form.ordinal = null;
+          return;
+        }
+        let dates = [];
+        let currentDate = new Date(this.form.date);
+        this.form.annualReportPage = currentDate.getMonth() + 1;
+        for (let i = this.existingReceipts.length - 1; i >= 0; i--) {
+          let existingDate = new Date(this.existingReceipts[i].date);
+          if (this.receiptPreview) {
+             if (this.receipt._id != this.existingReceipts[i]._id) {
+               dates.push(existingDate);
+             } else {
+               dates.push(currentDate);
+             }
+          } else {
+            dates.push(existingDate);
+          }
+        }
+        if (!this.receiptPreview) {
+          dates.push(currentDate)
+        }
+        dates.sort((a,b) => {
+          return a - b;
+        });
+        this.form.ordinal = dates.indexOf(currentDate) + 1;
+      },
       adaptAutoNumericAmount (formField) {
         if (this.form[formField] && !this.form[formField].includes(',')) {
           this.form[formField] = this.form[formField] + ',00'
@@ -929,35 +952,35 @@
           var thirdOutcomeTax = this.form.thirdOutcome ? Big(asFloat(this.form.thirdOutcome, amountNumberOptions)).times(Big(0.04)) : Big(0.0)
           var fourthOutcomeTax = this.form.fourthOutcome ? Big(asFloat(this.form.fourthOutcome, amountNumberOptions)).times(Big(0.04)) : Big(0.0)
           var fifthOutcomeTax = this.form.fifthOutcome ? Big(asFloat(this.form.fifthOutcome, amountNumberOptions)).times(Big(0.04)) : Big(0.0)
-          var totalOutcomeTax = parseFloat(secondOutcomeTax.plus(thirdOutcomeTax).plus(fourthOutcomeTax).plus(fifthOutcomeTax))
+          var totalOutcomeTax = parseFloat(secondOutcomeTax.plus(thirdOutcomeTax).plus(fourthOutcomeTax).plus(fifthOutcomeTax).round())
           this.form.firstOutcome = asFormatedString(totalOutcomeTax, largeAmountNumberOptions)
         } else if (this.selectedSecondOutcomeCode && this.selectedSecondOutcomeCode.tax) {
           var firstOutcomeTax = this.form.firstOutcome ? Big(asFloat(this.form.firstOutcome, amountNumberOptions)).times(Big(0.04)) : Big(0.0)
           var thirdOutcomeTax = this.form.thirdOutcome ? Big(asFloat(this.form.thirdOutcome, amountNumberOptions)).times(Big(0.04)) : Big(0.0)
           var fourthOutcomeTax = this.form.fourthOutcome ? Big(asFloat(this.form.fourthOutcome, amountNumberOptions)).times(Big(0.04)) : Big(0.0)
           var fifthOutcomeTax = this.form.fifthOutcome ? Big(asFloat(this.form.fifthOutcome, amountNumberOptions)).times(Big(0.04)) : Big(0.0)
-          var totalOutcomeTax = parseFloat(firstOutcomeTax.plus(thirdOutcomeTax).plus(fourthOutcomeTax).plus(fifthOutcomeTax))
+          var totalOutcomeTax = parseFloat(firstOutcomeTax.plus(thirdOutcomeTax).plus(fourthOutcomeTax).plus(fifthOutcomeTax).round())
           this.form.secondOutcome = asFormatedString(totalOutcomeTax, largeAmountNumberOptions)
         } else if (this.selectedThirdOutcomeCode && this.selectedThirdOutcomeCode.tax) {
           var firstOutcomeTax = this.form.firstOutcome ? Big(asFloat(this.form.firstOutcome, amountNumberOptions)).times(Big(0.04)) : Big(0.0)
           var secondOutcomeTax = this.form.secondOutcome ? Big(asFloat(this.form.secondOutcome, amountNumberOptions)).times(Big(0.04)) : Big(0.0)
           var fourthOutcomeTax = this.form.fourthOutcome ? Big(asFloat(this.form.fourthOutcome, amountNumberOptions)).times(Big(0.04)) : Big(0.0)
           var fifthOutcomeTax = this.form.fifthOutcome ? Big(asFloat(this.form.fifthOutcome, amountNumberOptions)).times(Big(0.04)) : Big(0.0)
-          var totalOutcomeTax = parseFloat(firstOutcomeTax.plus(secondOutcomeTax).plus(fourthOutcomeTax).plus(fifthOutcomeTax)) 
+          var totalOutcomeTax = parseFloat(firstOutcomeTax.plus(secondOutcomeTax).plus(fourthOutcomeTax).plus(fifthOutcomeTax).round()) 
           this.form.thirdOutcome = asFormatedString(totalOutcomeTax, largeAmountNumberOptions)
         } else if (this.selectedFourthOutcomeCode && this.selectedFourthOutcomeCode.tax) {
           var firstOutcomeTax = this.form.firstOutcome ? Big(asFloat(this.form.firstOutcome, amountNumberOptions)).times(Big(0.04)) : Big(0.0)
           var secondOutcomeTax = this.form.secondOutcome ? Big(asFloat(this.form.secondOutcome, amountNumberOptions)).times(Big(0.04)) : Big(0.0)
           var thirdOutcomeTax = this.form.thirdOutcome ? Big(asFloat(this.form.thirdOutcome, amountNumberOptions)).times(Big(0.04)) : Big(0.0)
           var fifthOutcomeTax = this.form.fifthOutcome ? Big(asFloat(this.form.fifthOutcome, amountNumberOptions)).times(Big(0.04)) : Big(0.0)
-          var totalOutcomeTax = parseFloat(firstOutcomeTax.plus(secondOutcomeTax).plus(thirdOutcomeTax).plus(fifthOutcomeTax)) 
+          var totalOutcomeTax = parseFloat(firstOutcomeTax.plus(secondOutcomeTax).plus(thirdOutcomeTax).plus(fifthOutcomeTax).round()) 
           this.form.fourthOutcome = asFormatedString(totalOutcomeTax, largeAmountNumberOptions)
         } else if (this.selectedFifthOutcomeCode && this.selectedFifthOutcomeCode.tax) {
           var firstOutcomeTax = this.form.firstOutcome ? Big(asFloat(this.form.firstOutcome, amountNumberOptions)).times(Big(0.04)) : Big(0.0)
           var secondOutcomeTax = this.form.secondOutcome ? Big(asFloat(this.form.secondOutcome, amountNumberOptions)).times(Big(0.04)) : Big(0.0)
           var thirdOutcomeTax = this.form.thirdOutcome ? Big(asFloat(this.form.thirdOutcome, amountNumberOptions)).times(Big(0.04)) : Big(0.0)
           var fourthOutcomeTax = this.form.fourthOutcome ? Big(asFloat(this.form.fourthOutcome, amountNumberOptions)).times(Big(0.04)) : Big(0.0)
-          var totalOutcomeTax = parseFloat(firstOutcomeTax.plus(secondOutcomeTax).plus(thirdOutcomeTax).plus(fourthOutcomeTax)) 
+          var totalOutcomeTax = parseFloat(firstOutcomeTax.plus(secondOutcomeTax).plus(thirdOutcomeTax).plus(fourthOutcomeTax).round()) 
           this.form.fifthOutcome = asFormatedString(totalOutcomeTax, largeAmountNumberOptions)
         }
       },
@@ -996,21 +1019,6 @@
       },
       postDatepickerOnBlur (evt) {
         this.postDatepickerJustBlurred = true
-      },
-      loadAnnualReportCommon () {
-        const self = this
-        annualReportController.getAnnualReportCommon().then((res) => {
-          if (!res.err) {
-            if(!self.receiptPreview) {
-              self.form.churchMunicipality = res.data ? res.data.churchMunicipality : null
-              self.form.town = res.data ? res.data.churchTown : null
-              self.form.townPayed = self.form.town
-            }
-            self.commonData = res.data
-          } else {
-            self.openErrorModal(res.err)
-          }
-        })
       },
       focusModalCloseButton (modalRef) {
         this.$refs[modalRef].$refs.closeButton.focus()
@@ -1052,7 +1060,11 @@
           return []
         }
         var options = []
-        options.push({html: '&nbsp', value: null})
+         if (this.outcomeCodes.length == 0) {
+          options.push({html: '&nbsp;Нема партија и позиција издавања', value: null})
+        } else {
+          options.push({html: '&nbsp;', value: null})
+        }
         this.outcomeCodes.forEach(oc => {
           options.push({html: '<span class="partPosOptionText">' + asRoman(oc.partition) + '/' + oc.position + '</span><span class="descriptionOptionText">' + (oc.description ? oc.description : '') + '</span>', value: oc})
         })
@@ -1259,9 +1271,8 @@
         this.form.fifthCodeValid = null
         this.form.reason = null
         this.form.received = null
-        this.form.churchMunicipality = this.commonData ? this.commonData.churchMunicipality : null
-        this.form.town = this.commonData ? this.commonData.churchTown : null
-        this.form.townPayed = this.form.town
+        this.form.town = this.churchTown
+        this.form.townPayed = this.churchTown
       },
       openErrorModal(error) {
         this.errorText = error
@@ -1399,9 +1410,6 @@
   }
   #outcomeAsTextInputPt2 {
     width: 255px;
-  }
-  #churchMunicipalityInput {
-    width: 305px;
   }
   #townInput {
     width: 320px;

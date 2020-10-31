@@ -1,5 +1,7 @@
 const state = {
-  bookingYear: new Date().getFullYear()
+  bookingYear: new Date().getFullYear(),
+  churchMunicipality: 'Старо Хопово',  // naziv
+  churchTown: 'Старом Хопову' // u
 }
 
 const mutations = {

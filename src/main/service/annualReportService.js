@@ -6,7 +6,6 @@ const { TotalOutcomePage } = require('../model/annualReport/totalOutcomePage')
 const { SharesPage } = require('../model/annualReport/sharesPage')
 const { TotalPage } = require('../model/annualReport/totalPage')
 
-const annualReportCommonDao = require('../dao/annualReportCommonDao')
 const annualReportDao = require('../dao/annualReportDao')
 const incomeCodeDao = require('../dao/incomeCodeDao')
 const outcomeCodeDao = require('../dao/outcomeCodeDao')
@@ -44,21 +43,6 @@ function asRoman(num) {
   return Array(+digits.join("") + 1).join("M") + roman_num;
 }
 
-async function getAnnualReportCommon () {
-  console.log('Getting annual report common')
-  const common = await annualReportCommonDao.findOne()
-  console.log(`Returning annual report common: \n${JSON.stringify(common, null, 2)}`)
-  return common
-}
-
-async function createAnnualReportCommon (common) {
-  delete common._id
-  console.log(`Creating annual report common: \n${JSON.stringify(common, null, 2)}`)
-  await annualReportCommonDao.removeAll(common)
-  await annualReportCommonDao.insert(common)
-  console.log('Successfully created annual report common')
-}
-
 async function getAnnualReportData (year) {
   console.log(`Getting annual report data for year ${year}`)
   const annualReportData = await annualReportDao.findOneByYear(year)
@@ -76,7 +60,7 @@ async function createAnnualReportData (annualReportData) {
 
 async function getAnnualReport (year) {
   console.log(`Getting annual report for year ${year}`)
-  const annualReportCommon = await annualReportCommonDao.findOne()
+  
   const annualReportData = await annualReportDao.findOneByYear(year)
   const incomeCodes = await incomeCodeDao.findByYear(year)
   const outcomeCodes = await outcomeCodeDao.findByYear(year)
@@ -88,8 +72,8 @@ async function getAnnualReport (year) {
   const annualReport = new AnnualReport()
   // common
   annualReport.year = year
-  annualReport.churchMunicipality = annualReportCommon ? annualReportCommon.churchMunicipality : null
-  annualReport.churchTown = annualReportCommon ? annualReportCommon.churchTown : null
+  annualReport.churchMunicipality = 'Старо Хопово'
+  annualReport.churchTown = 'Старом Хопову'
   annualReport.incomeCodes = incomeCodes ? incomeCodes : []
   annualReport.outcomeCodes = outcomeCodes ? outcomeCodes : []
   // total income page
@@ -737,8 +721,6 @@ function pdfSettings () {
 }
 
 module.exports = {
-  getAnnualReportCommon: getAnnualReportCommon,
-  createAnnualReportCommon: createAnnualReportCommon,
   getAnnualReportData: getAnnualReportData,
   createAnnualReportData: createAnnualReportData,
   getAnnualReport: getAnnualReport,

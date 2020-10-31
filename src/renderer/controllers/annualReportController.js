@@ -36,24 +36,6 @@ function getAnnualReportPages (annualReport) {
   })
 }
 
-function getAnnualReportCommon () {
-  return new Promise(function (resolve) {
-    ipcRenderer.send('get-annual-report-common')
-    ipcRenderer.once('get-annual-report-common-reply', (event, res) => {
-      resolve(res)
-    })
-  })
-}
-
-function createAnnualReportCommon (common) {
-  return new Promise(function (resolve) {
-    ipcRenderer.send('create-annual-report-common', common)
-    ipcRenderer.once('create-annual-report-common-reply', (event, res) => {
-      resolve(res)
-    })
-  })
-}
-
 function createAnnualReportPdf () {
   return new Promise(function (resolve) {
     ipcRenderer.send('create-annual-report-pdf')
@@ -65,8 +47,6 @@ function createAnnualReportPdf () {
 
 module.exports = {
   getAnnualReport: getAnnualReport,
-  getAnnualReportCommon: getAnnualReportCommon,
-  createAnnualReportCommon: createAnnualReportCommon,
   getAnnualReportData: getAnnualReportData,
   createAnnualReportData: createAnnualReportData,
   getAnnualReportPages: getAnnualReportPages,

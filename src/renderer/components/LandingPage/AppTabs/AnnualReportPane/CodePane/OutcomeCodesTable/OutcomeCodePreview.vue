@@ -14,7 +14,7 @@
       <br>
       <b-row>
         <b-col cols="2">
-          <label for="partitionInput">Партија:</label>
+          Партија:
         </b-col>
         <b-col>
           <b-form-group>
@@ -22,9 +22,10 @@
           </b-form-group>
         </b-col>
       </b-row>
+      <br>
       <b-row>
         <b-col cols="2">
-          <label for="positionInput">Позиција:</label>
+          Позиција:
         </b-col>
         <b-col>
           <b-form-group>
@@ -32,9 +33,10 @@
           </b-form-group>
         </b-col>
       </b-row>
+      <br>
       <b-row>
         <b-col cols="2">
-          <label for="descriptionInput">Опис:</label>
+          Опис:
         </b-col>
         <b-col>
           <b-form-group>

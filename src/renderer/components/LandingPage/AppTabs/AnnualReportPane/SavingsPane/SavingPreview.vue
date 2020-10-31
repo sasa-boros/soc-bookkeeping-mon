@@ -14,7 +14,7 @@
       <br>
       <b-row>
         <b-col cols="4">
-          <label for="accountInput">Број рачуна:</label>
+          Број рачуна:
         </b-col>
         <b-col>
           <b-form-group>
@@ -22,9 +22,10 @@
           </b-form-group>
         </b-col>
       </b-row>
+      <br>
       <b-row>
         <b-col cols="4">
-          <label for="savingEntityInput">Новчани завод:</label>
+          Новчани завод:
         </b-col>
         <b-col>
           <b-form-group>
@@ -32,9 +33,10 @@
           </b-form-group>
         </b-col>
       </b-row>
+      <br>
       <b-row>
         <b-col cols="4">
-          <label for="amountInput">Стање на почетку године:</label>
+          Стање на почетку године:
         </b-col>
         <b-col>
           <b-form-group>
@@ -42,9 +44,10 @@
           </b-form-group>
         </b-col>
       </b-row>
+      <br>
       <b-row>
         <b-col cols="4">
-          <label for="amountDepositedInput">У току године уложено:</label>
+          У току године уложено:
         </b-col>
         <b-col>
           <b-form-group>
@@ -52,9 +55,10 @@
           </b-form-group>
         </b-col>
       </b-row>
+      <br>
       <b-row>
         <b-col cols="4">
-          <label for="amountWithdrawnInput">У току године изузето:</label>
+          У току године изузето:
         </b-col>
         <b-col>
           <b-form-group>

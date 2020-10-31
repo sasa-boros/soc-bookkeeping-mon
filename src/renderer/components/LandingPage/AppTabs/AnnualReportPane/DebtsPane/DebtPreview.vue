@@ -14,7 +14,7 @@
       <br>
       <b-row>
         <b-col cols="2">
-          <label for="descriptionInput">Опис:</label>
+          Опис:
         </b-col>
         <b-col>
           <b-form-group>
@@ -22,9 +22,10 @@
           </b-form-group>
         </b-col>
       </b-row>
+      <br>
       <b-row>
         <b-col cols="2">
-          <label for="amountInput">Износ:</label>
+          Износ:
         </b-col>
         <b-col>
           <b-form-group>

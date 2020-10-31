@@ -230,7 +230,7 @@
           this.highlightedRow = updatedRow
           this.highlightedRowTimeout = setTimeout(() => {
             updatedRow.style.setProperty('box-shadow', 'none')
-          }, 2500)
+          }, 1500)
         }
       },
       clearRowHighlight () {

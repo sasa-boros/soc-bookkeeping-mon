@@ -36,7 +36,6 @@ async function importBackup (bakPath) {
 async function loadDbs() {
     console.log('Loading dbs')
     var db = {}
-    db.annualReportCommons = new Datastore({ filename: path.join(app.getPath('userData'), config.db.collections.annualReportCommons), autoload: true})
     db.annualReports = new Datastore({ filename:  path.join(app.getPath('userData'), config.db.collections.annualReports), autoload: true})
     db.paymentSlips = new Datastore({ filename:  path.join(app.getPath('userData'), config.db.collections.paymentSlips), autoload: true})
     db.receipts = new Datastore({ filename: path.join(app.getPath('userData'), config.db.collections.receipts), autoload: true})

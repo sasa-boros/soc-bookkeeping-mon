@@ -4,7 +4,6 @@ const config = {
   db: {
     path: dbPath,
     collections: {
-      annualReportCommons: `${dbPath}/annualReportCommons`,
       annualReports: `${dbPath}/annualReports`,
       paymentSlips: `${dbPath}/paymentSlips`,
       receipts: `${dbPath}/receipts`,

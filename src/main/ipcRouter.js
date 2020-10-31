@@ -370,22 +370,6 @@ ipcMain.on('get-annual-report', async (event, bookingYear) => {
   }
 })
 
-ipcMain.on('get-annual-report-common', async (event) => {
-  try {
-    reply(event, 'get-annual-report-common-reply', await annualReportService.getAnnualReportCommon())
-  } catch (err) {
-    replyError(event, 'get-annual-report-common-reply', err.message ? err.message : err)
-  }
-})
-
-ipcMain.on('create-annual-report-common', async (event, common) => {
-  try {
-    reply(event, 'create-annual-report-common-reply', await annualReportService.createAnnualReportCommon(common))
-  } catch (err) {
-    replyError(event, 'create-annual-report-common-reply', err.message ? err.message : err)
-  }
-})
-
 ipcMain.on('get-annual-report-data', async (event, year) => {
   try {
     reply(event, 'get-annual-report-data-reply', await annualReportService.getAnnualReportData(year))
