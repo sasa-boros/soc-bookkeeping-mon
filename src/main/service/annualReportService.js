@@ -169,7 +169,8 @@ async function getAnnualReport (year) {
   if (annualReport.sharesPage.savingAmountOnYearEnd.lt(0.0)) {
     annualReport.warnings.push("Улози на штедњи (страна 14) имају негативну вредност на крају године.")
   }
-  annualReport.totalPage.totalPropertyValue = annualReport.totalOutcomePage.transferToNextYear.plus(annualReport.sharesPage.nominalValueOnYearEnd).plus(annualReport.sharesPage.savingAmountOnYearEnd).plus(annualReport.totalPage.realEstateLandValue).plus(annualReport.totalPage.realEstateBuildingsValue).plus(annualReport.totalPage.totalItemValue)
+  annualReport.totalPage.totalCash = annualReport.totalOutcomePage.transferToNextYear.minus(annualReport.sharesPage.savingAmountOnYearEnd)
+  annualReport.totalPage.totalPropertyValue = annualReport.totalOutcomePage.transferToNextYear.plus(annualReport.sharesPage.nominalValueOnYearEnd).plus(annualReport.totalPage.realEstateLandValue).plus(annualReport.totalPage.realEstateBuildingsValue).plus(annualReport.totalPage.totalItemValue)
   annualReport.totalPage.propertyValue = annualReport.totalPage.totalPropertyValue.minus(annualReport.totalPage.totalDebt)
   if (annualReport.totalPage.propertyValue.lt(0.0)) {
     annualReport.warnings.push("Чиста имовина (страна 14) има негативну вредност.")
@@ -296,6 +297,7 @@ function transformBigsToNumbers(annualReport) {
   annualReport.totalPage.realEstateBuildingsValue = parseFloat(annualReport.totalPage.realEstateBuildingsValue)
   annualReport.totalPage.totalItemValue = parseFloat(annualReport.totalPage.totalItemValue)
   annualReport.totalPage.totalPropertyValue = parseFloat(annualReport.totalPage.totalPropertyValue)
+  annualReport.totalPage.totalCash = parseFloat(annualReport.totalPage.totalCash)
   annualReport.totalPage.totalDebt = parseFloat(annualReport.totalPage.totalDebt)
   annualReport.totalPage.propertyValue = parseFloat(annualReport.totalPage.propertyValue)
 }
@@ -614,7 +616,7 @@ function populateTotalPage(annualReport, annualReportPages, itemsStartIndex, deb
   }
   totalPageContext.church = annualReport.churchMunicipality
   if (itemsStartIndex == 0 &&  debtsStartIndex == 0) {
-    totalPageContext['E5'] = formatAmount(annualReport.totalOutcomePage.transferToNextYear)
+    totalPageContext['E5'] = formatAmount(annualReport.totalPage.totalCash)
     totalPageContext['E6'] = formatAmount(annualReport.sharesPage.savingAmountOnYearEnd)
     totalPageContext['E7'] = formatAmount(annualReport.sharesPage.nominalValueOnYearEnd)
     totalPageContext['C8'] = annualReport.totalPage.realEstateBuildingsSurface
